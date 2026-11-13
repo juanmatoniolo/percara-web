@@ -1,8 +1,27 @@
 // src/lib/seo.js
 import { CONTACT } from '@/lib/site-config';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://inmobiliariapercara.com';
+/* URL absoluta del sitio para canonical y og:image (WhatsApp exige URLs absolutas y accesibles).
+   Si la variable apunta a localhost estando en Vercel, se usa el dominio del proyecto en Vercel. */
+function resolverSiteUrl() {
+  const env = process.env.NEXT_PUBLIC_SITE_URL;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (env && !(vercel && /localhost|127\.0\.0\.1/.test(env))) return env.replace(/\/$/, '');
+  if (vercel) return `https://${vercel}`;
+  return 'https://inmobiliariapercara.com';
+}
+
+export const SITE_URL = resolverSiteUrl();
 export const SITE_NAME = 'Inmobiliaria Percara';
+
+/** Imagen para compartir del sitio (generada desde public/logo.png con scripts/generate-og-default.mjs). */
+export const OG_SITIO = {
+  url: '/og-percara.jpg',
+  width: 1200,
+  height: 630,
+  type: 'image/jpeg',
+  alt: 'Percara Negocios Inmobiliarios, Chajarí',
+};
 const DEFAULT_TITLE = 'Casas, Campos y Terrenos en Venta en Chajarí | Inmobiliaria Percara';
 const DEFAULT_DESCRIPTION =
   'Compra y venta de casas, campos y terrenos en Chajarí y la región. Encuentre su propiedad ideal con asesoramiento personalizado.';
@@ -13,6 +32,21 @@ export const siteMetadata = {
   description: DEFAULT_DESCRIPTION,
   robots: { index: true, follow: true },
   verification: { google: 'meP8QjZrYsX5mdA_ItrEyTV8H3ajxH4PCiKX8Q7dk4w' },
+  openGraph: {
+    type: 'website',
+    locale: 'es_AR',
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: '/',
+    images: [OG_SITIO],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [OG_SITIO],
+  },
 };
 
 export const siteViewport = {
@@ -26,10 +60,10 @@ export function pageMetadata({
   title,
   description = DEFAULT_DESCRIPTION,
   path = '/',
-  images,
+  images = [OG_SITIO],
 } = {}) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE;
-  const social = { title: fullTitle, description, ...(images ? { images } : {}) };
+  const social = { title: fullTitle, description, images };
   return {
     ...(title ? { title } : {}),
     description,
@@ -59,13 +93,6 @@ export function jsonLdInmobiliaria() {
   };
 }
 
-const OG_RESPALDO = {
-  url: '/banner.webp',
-  width: 1024,
-  height: 434,
-  alt: 'Inmobiliaria Percara, Chajarí',
-};
-
 /**
  * Metadata completa de una propiedad: title y description con sus datos (precio, superficie,
  * dormitorios, localidad), canonical, Open Graph y Twitter con la OG precalculada (1200x630).
@@ -74,17 +101,10 @@ const OG_RESPALDO = {
  */
 export function metadataPropiedad(p, { precio, datos, descripcion }) {
   const path = `/propiedades/${p.slug}`;
-  const portada = p.imagenes[0];
+  /* Sin OG precalculada (todavía sin fotos) se usa la del sitio: nunca WebP, que WhatsApp no siempre muestra */
   const imagen = p.og_image_url
-    ? { url: p.og_image_url, width: 1200, height: 630, alt: p.titulo }
-    : portada
-      ? {
-          url: portada.url,
-          width: portada.ancho,
-          height: portada.alto,
-          alt: portada.alt || p.titulo,
-        }
-      : OG_RESPALDO;
+    ? { url: p.og_image_url, width: 1200, height: 630, type: 'image/jpeg', alt: p.titulo }
+    : OG_SITIO;
   const description = [`${precio}.`, datos.join(' · ') + (datos.length ? '.' : ''), descripcion]
     .filter(Boolean)
     .join(' ')
@@ -164,5 +184,5 @@ export function serializeJsonLd(data) {
    Metadata global (title con plantilla, robots, verificación de Search Console), viewport con
    themeColor, helper pageMetadata() con canonical/OpenGraph/Twitter por página y JSON-LD: sitio
    (RealEstateAgent), jsonLdBreadcrumb(items) y jsonLdPropiedad(p) (RealEstateListing + Offer).
-   metadataPropiedad(p, textos) arma la metadata del detalle con los datos de la propiedad.
-   Depende de: lib/site-config.js, variable NEXT_PUBLIC_SITE_URL */
+   metadataPropiedad(p, textos) arma la metadata del detalle; OG_SITIO (public/og-percara.jpg) es la
+   imagen por defecto al compartir. Depende de: lib/site-config.js, NEXT_PUBLIC_SITE_URL / VERCEL_* */
