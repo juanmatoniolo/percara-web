@@ -1,0 +1,230 @@
+/* src/components/layout/site-header.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes header-scrolled {
+  from {
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+
+  to {
+    border-bottom-color: var(--glass-border);
+    box-shadow: var(--shadow-float);
+  }
+}
+
+@keyframes progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  border-bottom: var(--border-w) solid var(--glass-border);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .header {
+    background: var(--color-surface);
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: min(100% - 2 * var(--gutter), var(--container));
+  height: var(--header-h);
+  margin-inline: auto;
+}
+
+.brand {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-2);
+  min-height: var(--tap);
+  align-content: center;
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.brand:active {
+  transform: scale(var(--press-scale));
+}
+
+.brandSub {
+  display: none;
+  font-weight: 600;
+  letter-spacing: normal;
+  color: var(--color-accent-text);
+}
+
+.nav {
+  display: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 var(--space-2);
+  height: var(--progress-h);
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur) var(--ease-spring);
+}
+
+.link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.progress {
+  position: absolute;
+  inset: auto 0 calc(var(--progress-h) * -1);
+  height: var(--progress-h);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* Efectos de scroll (scroll-driven, sin JS): sombra y progreso de lectura */
+@supports (animation-timeline: scroll()) {
+  .header {
+    border-bottom-color: transparent;
+    animation: header-scrolled linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 var(--header-scroll-range);
+  }
+
+  .progress {
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .brandSub {
+    display: inline;
+  }
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .nav {
+    display: block;
+  }
+
+  .brandSub {
+    display: none;
+  }
+}
+
+/* 4. ≥1024px */
+@media (min-width: 1024px) {
+  .list {
+    gap: var(--space-7);
+  }
+
+  .brandSub {
+    display: inline;
+  }
+}
+
+/* 8. orientation: landscape (móviles bajos) */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .brandSub {
+    display: none;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-primary);
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .progress {
+    animation: none;
+  }
+
+  .progress {
+    display: none;
+  }
+
+  .brand,
+  .link,
+  .link::after {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .header {
+    position: static;
+    border: 0;
+  }
+
+  .nav,
+  .actions,
+  .progress {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Header de vidrio esmerilado (blur + saturate, respaldo blanco sin soporte): marca en azul con
+   bajada verde, links que pasan a azul con subrayado verde elástico, sombra flotante al scroll y
+   barra de progreso verde a azul (scroll-driven, sin JS).
+   Depende de: styles/tokens.css */

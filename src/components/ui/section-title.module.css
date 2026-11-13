@@ -1,0 +1,46 @@
+/* src/components/ui/section-title.module.css */
+
+/* 1. Base (móvil 320px) */
+.title {
+  display: grid;
+  gap: var(--space-3);
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading);
+}
+
+/* Línea de marca: tramo verde que remata en un punto azul */
+.title::after {
+  content: '';
+  width: var(--underline-w);
+  height: var(--underline-h);
+  background:
+    radial-gradient(circle, var(--color-primary) 50%, transparent 52%) right / var(--underline-h)
+      100% no-repeat,
+    linear-gradient(90deg, var(--color-accent), var(--color-accent)) left /
+      calc(100% - var(--underline-h) * 2) 100% no-repeat;
+  border-radius: var(--radius-pill);
+}
+
+.title[data-align='center'] {
+  justify-items: center;
+  text-align: center;
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .title {
+    gap: var(--space-4);
+  }
+}
+
+/* 12. print */
+@media print {
+  .title::after {
+    background: CanvasText;
+  }
+}
+
+/* RESUMEN
+   Título de sección en azul de marca con una línea verde corta rematada en un punto azul,
+   alineable al inicio o centrada (data-align). Depende de: styles/tokens.css */

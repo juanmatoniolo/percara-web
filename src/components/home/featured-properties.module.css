@@ -1,0 +1,103 @@
+/* src/components/home/featured-properties.module.css */
+
+/* 1. Base (móvil 320px) */
+.section {
+  padding-block: var(--section-y);
+  background: linear-gradient(
+    180deg,
+    var(--color-bg),
+    var(--color-surface-alt) 50%,
+    var(--color-bg)
+  );
+}
+
+.inner {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.headText {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.lead {
+  max-width: 48ch;
+  color: var(--color-muted);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-5);
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease-spring);
+}
+
+.more svg {
+  color: var(--color-accent);
+  transition: transform var(--dur) var(--ease-spring);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .head {
+    margin-bottom: var(--space-7);
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .more:hover {
+    background: var(--color-primary-hover);
+    box-shadow: var(--shadow-float);
+  }
+
+  .more:hover svg {
+    transform: translateX(var(--space-1));
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .more,
+  .more svg {
+    transition: none;
+  }
+
+  .more:hover svg {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .section {
+    background: none;
+  }
+
+  .more {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Sección de destacadas: fondo con un velo gris azulado muy suave en el medio (sigue leyéndose blanco),
+   encabezado con título y botón azul "Ver todas" cuya flecha verde avanza al hover. Depende de: tokens.css */

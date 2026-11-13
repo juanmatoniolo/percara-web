@@ -1,0 +1,71 @@
+/* src/components/ui/breadcrumbs.module.css */
+
+/* 1. Base (móvil 320px) */
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.sep {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.current {
+  overflow: hidden;
+  max-width: 28ch;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-primary);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .current {
+    max-width: 48ch;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .list {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Migas de pan: texto gris con separadores verdes, links de 44px que pasan a azul y página actual en
+   azul recortada con puntos suspensivos. Depende de: styles/tokens.css */

@@ -1,0 +1,170 @@
+/* src/components/layout/mobile-nav.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-2) * -1)) scale(var(--press-scale));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--space-3));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu {
+  position: relative;
+}
+
+.trigger {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  list-style: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  border: var(--border-w) solid var(--color-line);
+  border-radius: var(--radius-pill);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.trigger:active {
+  transform: scale(var(--press-scale));
+}
+
+.trigger::-webkit-details-marker {
+  display: none;
+}
+
+.open,
+.close {
+  grid-area: 1 / 1;
+}
+
+.close,
+.menu[open] .open {
+  display: none;
+}
+
+.menu[open] .close {
+  display: block;
+}
+
+.menu[open] .trigger {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-soft);
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  right: 0;
+  width: min(18rem, 100vw - 2 * var(--gutter));
+  padding: var(--space-3);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  transform-origin: top right;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel {
+    background: var(--color-surface);
+  }
+}
+
+.menu[open] .panel {
+  animation: panel-in var(--dur) var(--ease-spring);
+}
+
+.menu[open] .item {
+  animation: item-in var(--dur-slow) var(--ease-spring) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger) / 2);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding-inline: var(--space-3);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  border-radius: var(--radius-lg);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.link:active {
+  transform: scale(var(--press-scale));
+}
+
+.link[aria-current='page'] {
+  color: var(--color-primary);
+  background: var(--color-accent-soft);
+  box-shadow: inset var(--underline-h) 0 0 var(--color-accent);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .menu {
+    display: none;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .trigger:hover {
+    border-color: var(--color-accent);
+  }
+
+  .link:hover {
+    background: var(--color-primary-soft);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .menu[open] .panel,
+  .menu[open] .item {
+    animation: none;
+  }
+
+  .trigger,
+  .link {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .menu {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Menú móvil: botón circular azul de 44px con :active, panel de vidrio esmerilado con entrada elástica
+   y links escalonados; ruta activa en azul con fondo y marca lateral verdes. Oculto desde 768px.
+   Depende de: styles/tokens.css */

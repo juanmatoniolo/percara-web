@@ -1,5 +1,158 @@
 /* src/styles/tokens.css */
+:root {
+  color-scheme: light;
+
+  /* Marca */
+  --brand-blue: #042369;
+  --brand-green: #27ae47;
+
+  /* Superficies: toda la web sobre blanco */
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4f6fa;
+
+  /* Texto y líneas: neutros fríos, apenas azulados */
+  --color-heading: var(--brand-blue);
+  --color-text: #1b2233;
+  --color-text-soft: #3b4356;
+  --color-muted: #5a6376;
+  --color-line: #e2e6ee;
+
+  /* Azul: acción principal (texto blanco 15:1) */
+  --color-primary: var(--brand-blue);
+  --color-primary-hover: #0a3290;
+  --color-primary-soft: #edf1fa;
+  --color-on-primary: #ffffff;
+
+  /* Verde: detalles. #27ae47 sobre blanco da 2.9:1, solo decorativo;
+      para texto verde se usa --color-accent-text (4.9:1, AA) */
+  --color-accent: var(--brand-green);
+  --color-accent-text: #1c8237;
+  --color-accent-soft: #eaf7ee;
+  --color-focus: var(--brand-blue);
+
+  /* Estados del panel (texto AA sobre blanco y sobre su fondo suave) */
+  --color-error: #b42318;
+  --color-error-soft: #fdecea;
+  --color-warning: #8a5300;
+  --color-warning-soft: #fff4e0;
+  --disabled-opacity: 0.6;
+
+  /* Texto sobre el verde vivo (azul de marca, 5:1) */
+  --color-ink: var(--brand-blue);
+
+  --font-display-stack: var(--font-display), 'Segoe UI', system-ui, sans-serif;
+  --font-body-stack: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.8vw, 2.75rem);
+  --text-4xl: clamp(2.125rem, 1.6rem + 2.6vw, 3.5rem);
+  --tracking-wide: 0.12em;
+  --tracking-tight: -0.02em;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.125rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-pill: 999px;
+
+  /* Sombras suaves teñidas de azul de marca */
+  --shadow-sm: 0 1px 2px rgb(4 35 105 / 0.06);
+  --shadow-md: 0 1px 1px rgb(4 35 105 / 0.04), 0 8px 24px -10px rgb(4 35 105 / 0.16);
+  --shadow-lg: 0 24px 48px -20px rgb(4 35 105 / 0.22);
+  --shadow-float:
+    0 1px 1px rgb(4 35 105 / 0.04), 0 8px 24px -8px rgb(4 35 105 / 0.12),
+    0 24px 48px -24px rgb(4 35 105 / 0.16);
+  --shadow-glow-green: 0 10px 28px -10px rgb(39 174 71 / 0.55);
+
+  /* Vidrio esmerilado (solo en lo que flota: header, menús, hojas) */
+  --glass-bg: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  --glass-border: color-mix(in srgb, var(--brand-blue) 8%, transparent);
+  --blur: 20px;
+  --glass-saturate: 1.8;
+
+  --container: 76rem;
+  --gutter: clamp(1.25rem, 0.8rem + 2.2vw, 2.5rem);
+  --section-y: clamp(3.5rem, 2.4rem + 5vw, 6.5rem);
+  --header-h: 4.5rem;
+  --header-scroll-range: 6rem;
+  --tap: 2.75rem;
+  --z-header: 50;
+  --z-dropdown: 60;
+
+  --underline-w: 3rem;
+  --underline-h: 3px;
+  --progress-h: 2px;
+  --border-w: 1px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.35s;
+  --dur-slow: 0.5s;
+  --stagger: 90ms;
+  --reveal-distance: 1.25rem;
+  --press-scale: 0.97;
+  --hover-lift: -4px;
+  --hover-scale: 1.01;
+  --hover-tilt: -4deg;
+  --img-zoom: 1.06;
+  --float-distance: -6px;
+  --blob-opacity: 0.5;
+  --blob-opacity-soft: 0.22;
+}
+
+/* ≥768px */
+@media (min-width: 768px) {
+  :root {
+    --gutter: clamp(1.5rem, 0.8rem + 2.6vw, 2.75rem);
+  }
+}
+
+/* ≥1280px */
+@media (min-width: 1280px) {
+  :root {
+    --container: 80rem;
+  }
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+    --stagger: 0ms;
+    --reveal-distance: 0;
+    --press-scale: 1;
+    --hover-lift: 0;
+    --hover-scale: 1;
+    --hover-tilt: 0deg;
+    --img-zoom: 1;
+    --float-distance: 0;
+  }
+}
 
 /* RESUMEN
-   Stub inicial. Se implementa en su fase.
-   Depende de: (pendiente) */
+   Tokens de diseño: web siempre sobre blanco, azul de marca #042369 para acciones y títulos, verde
+   #27ae47 para detalles (y #1c8237 cuando el verde es texto, AA). Incluye tokens estilo Apple (vidrio,
+   radios amplios, sombra flotante, ease-spring, press-scale), tipografía fluida, espaciado y movimiento.
+   Importado desde app/layout.jsx. */

@@ -1,0 +1,136 @@
+/* src/components/admin/property-row.module.css */
+
+/* 1. Base (móvil 320px) */
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur) var(--ease-spring);
+}
+
+.thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--tap) * 1.8);
+  aspect-ratio: 4 / 3;
+  overflow: clip;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+}
+
+.img {
+  object-fit: cover;
+}
+
+.info {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title {
+  max-width: 100%;
+  overflow: hidden;
+  font-weight: 700;
+  color: var(--color-heading);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: var(--border-w) solid var(--color-line);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-text-soft);
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.icon:active {
+  transform: scale(var(--press-scale));
+}
+
+.icon[data-on] {
+  color: var(--color-accent-text);
+}
+
+.icon[data-on] svg {
+  fill: currentColor;
+}
+
+/* 3. ≥768px: acciones a la derecha en la misma fila */
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .actions {
+    grid-column: auto;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .row:hover {
+    box-shadow: var(--shadow-float);
+  }
+
+  .icon:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .danger:hover {
+    color: var(--color-error);
+    background: var(--color-error-soft);
+  }
+
+  .title:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .icon {
+    transition: none;
+  }
+}
+
+/* RESUMEN
+   Fila del listado del panel: tarjeta blanca con miniatura 4:3, título azul recortado, meta gris y estado;
+   botones de 44px (estrella verde rellena si es destacada, borrar en rojo al hover). En móvil las acciones
+   bajan a una franja; desde 768px van a la derecha. Depende de: styles/tokens.css */

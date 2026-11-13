@@ -1,5 +1,71 @@
 /* src/styles/animations.css */
 
+/* 1. Base (móvil 320px): keyframes compartidos. Sin soporte o con movimiento reducido,
+   todo queda visible en su estado final: las animaciones nunca ocultan contenido. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Entrada de página al navegar. Arranca en 0.01 (no 0) para que el navegador cuente el
+   contenido como pintado desde el primer frame y no se retrase el LCP. */
+@keyframes page-enter {
+  from {
+    opacity: 0.01;
+    transform: translateY(var(--space-3));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Al cambiar de página (template.jsx se vuelve a montar en cada navegación) */
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    animation: page-enter var(--dur-slow) var(--ease-spring) backwards;
+  }
+}
+
+/* Al hacer scroll: bloques que suben y aparecen al entrar en pantalla (sin JS).
+   --i escalona elementos hermanos. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 6%) cover calc(20% + var(--i, 0) * 5%);
+    }
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .reveal {
+    animation: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .page-enter,
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* RESUMEN
-   Stub inicial. Se implementa en su fase.
-   Depende de: (pendiente) */
+   Utilidades globales de movimiento: .page-enter (fundido suave al cambiar de página, usado por
+   app/(public)/template.jsx) y .reveal (aparición al scroll con animation-timeline: view(),
+   escalonable con --i). Sin soporte o con reduced-motion todo queda visible. Depende de: tokens.css */

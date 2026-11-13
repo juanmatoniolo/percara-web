@@ -1,0 +1,63 @@
+/* src/components/home/why-us.module.css */
+
+/* 1. Base (móvil 320px) */
+.block {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-3);
+  color: var(--color-text-soft);
+}
+
+.icon {
+  margin-top: var(--space-1);
+  color: var(--color-accent);
+}
+
+.strong {
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.text {
+  max-width: 60ch;
+  padding-top: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  border-top: var(--border-w) solid var(--color-line);
+}
+
+.text strong {
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .list {
+    gap: var(--space-5);
+  }
+}
+
+/* 12. print */
+@media print {
+  .icon {
+    color: CanvasText;
+  }
+}
+
+/* RESUMEN
+   "¿Por qué elegirnos?": lista de razones con icono verde de marca alineado a la primera línea,
+   título de cada razón en azul y texto de presentación separado por una línea fina.
+   Depende de: styles/tokens.css */

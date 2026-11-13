@@ -1,0 +1,140 @@
+{
+  "_ruta": "docs/REFERENCIAS-SITIOS.json",
+  "_fecha": "2026-11-12",
+  "_nota": "Sitios que el cliente pidió usar como base. Tomar estructura e ideas de UX; NO copiar textos, imágenes ni marca. Los campos null están pendientes de verificar.",
+  "sitios": [
+    {
+      "id": "dal-molin-sainte-marie",
+      "url": "https://www.dalmolinsaintemarie.com.ar",
+      "estado_lectura": "completa",
+      "plataforma": "Wix",
+      "negocio": {
+        "nombre": "DalMolin-SainteMarie (Anabella Dal Molin Negocios Inmobiliarios)",
+        "ciudad": "Chajarí, Entre Ríos",
+        "propuesta": "Compra y venta de propiedades más ingeniería y desarrollos inmobiliarios propios",
+        "equipo": [
+          { "nombre": "Anabella Dal Molin", "rol": "Corredora inmobiliaria e ingeniera civil" },
+          {
+            "nombre": "Alex Sainte Marie",
+            "rol": "Ingeniero civil, gasista y electricista matriculado"
+          }
+        ]
+      },
+      "metadata": {
+        "title": "DalMolin-SainteMarie | Inmobiliaria Dal Molin Anabella | Urquiza 1619, Chajarí, Entre Ríos Province, Argentina",
+        "description": "Asesoramiento profesional en compra y venta de propiedades, negociación transparente y confiable, y desarrollos inmobiliarios propios con altos estándares de calidad.",
+        "canonical": "https://www.dalmolinsaintemarie.com.ar",
+        "og": { "type": "website", "site_name": "DalMolin-SainteMarie" },
+        "twitter_card": "summary_large_image",
+        "schema_org": null,
+        "observaciones": [
+          "El title menciona Urquiza 1619 pero el footer dice Estrada 3795 (esq. Chaco): dirección inconsistente.",
+          "El título es largo y mezcla marca, persona y dirección."
+        ]
+      },
+      "navegacion": {
+        "header": [
+          { "label": "Negocios Inmobiliarios", "ruta": "/properties" },
+          { "label": "Ingeniería y Desarrollos", "ruta": "/ingeniería-y-desarrollos" },
+          { "label": "Nosotros", "ruta": "/" },
+          { "label": "More", "ruta": null }
+        ],
+        "cta_header": { "label": "Contactanos", "destino": "WhatsApp" },
+        "rutas_detalle": "/properties/{slug-descriptivo}"
+      },
+      "home_secciones_en_orden": [
+        {
+          "seccion": "Hero",
+          "contenido": "Pregunta de gancho: ¿Estás listo para encontrar la propiedad ideal o construir tu próximo hogar? Subtítulo emocional, botón de WhatsApp y dos cifras de confianza: 165 propiedades vendidas y +250 clientes felices."
+        },
+        {
+          "seccion": "Asesoramiento integral",
+          "contenido": "Párrafo de presentación con los dos servicios y accesos a Negocios Inmobiliarios e Ingeniería y Desarrollos."
+        },
+        {
+          "seccion": "Propiedades destacadas",
+          "contenido": "3 cards con etiqueta de tipo, título, precio, habitaciones, baños, estado y m2, más enlace Ver todas las propiedades.",
+          "datos_en_card": [
+            "tipo (Casa, Lote)",
+            "titulo",
+            "precio (USD o texto 'Ver precios en descripción')",
+            "habitaciones",
+            "banos",
+            "estado (Construcción, Excelente, Muy Bueno)",
+            "mts2"
+          ]
+        },
+        {
+          "seccion": "Nosotros",
+          "contenido": "Texto corto, cuatro valores (Transparencia, Profesionalismo, Compromiso, Confidencialidad), botón de contacto y tarjetas del equipo con foto y matrícula."
+        },
+        {
+          "seccion": "Footer",
+          "contenido": "Redes (Facebook, Instagram), servicios, WhatsApp, email y dirección con enlace a Google Maps."
+        }
+      ],
+      "contacto": {
+        "whatsapp": "+54 9 3456 49-8790",
+        "email": "dalmolinsaintemarie@gmail.com",
+        "direccion_footer": "Estrada 3795 (esquina Chaco), Chajarí, Entre Ríos",
+        "redes": ["Facebook", "Instagram"]
+      },
+      "ux_detectada": [
+        "Un solo CTA constante (WhatsApp) en header y secciones.",
+        "Prueba social con cifras reales arriba del todo.",
+        "Equipo con nombre, rol y foto: genera confianza local.",
+        "Cards con ficha técnica corta y homogénea.",
+        "Doble línea de negocio (inmobiliaria e ingeniería)."
+      ],
+      "puntos_debiles": [
+        "Sin buscador ni filtros visibles en la home.",
+        "Sin categorías navegables en la home.",
+        "Metadata y dirección inconsistentes.",
+        "Imágenes de placeholder en las cards (Image-empty-state) en la lectura.",
+        "Wix: poco control de SEO técnico y rendimiento."
+      ],
+      "diseno_visual": { "colores": null, "tipografias": null, "estilo": null }
+    },
+    {
+      "id": "crestale-propiedades",
+      "url": "https://www.crestalepropiedades.com.ar",
+      "estado_lectura": "bloqueada (detección de bots). Datos tomados de portales de terceros, NO del sitio.",
+      "negocio": {
+        "nombre": "Crestale Propiedades S.A.",
+        "ciudad": "Rosario, Santa Fe",
+        "direccion": "Córdoba 1452, piso 10, Centro, Rosario",
+        "horarios": "Lunes a viernes de 9:00 a 18:45",
+        "trayectoria": "Más de 25 años según su texto en Zonaprop; publica en Zonaprop desde 2013",
+        "propuesta": "Asesoramiento a empresas, clientes y profesionales con foco en tecnología y vanguardia",
+        "volumen": "Más de 4.000 inmuebles publicados en Argenprop; unos 1.100 en Zonaprop",
+        "tipologia": "Departamentos y emprendimientos nuevos (Puerto Norte, Pichincha, Parque España), casas, oficinas, country (Kentucky Club de Campo, Funes)"
+      },
+      "servicios_detectados": ["Venta", "Emprendimientos", "Solicitud de tasación"],
+      "metadata": null,
+      "navegacion": null,
+      "home_secciones_en_orden": null,
+      "diseno_visual": { "colores": null, "tipografias": null, "estilo": null },
+      "pendiente": "Falta ver el sitio. Opciones: capturas de pantalla de la home, el detalle de propiedad y el buscador; o el HTML guardado desde el navegador (Ctrl+S)."
+    }
+  ],
+  "sintesis_para_percara": {
+    "tomar_de_dal_molin": [
+      "Cifras de confianza en el hero",
+      "Un único CTA de WhatsApp visible y constante",
+      "Sección de equipo con nombre y rol",
+      "Cards con ficha corta homogénea"
+    ],
+    "mejorar_respecto_a_dal_molin": [
+      "Buscador y filtros visibles en la home",
+      "Categorías navegables",
+      "Metadata y JSON-LD consistentes",
+      "Rendimiento y SEO técnico con Server Components"
+    ],
+    "tomar_de_crestale": "Pendiente: requiere ver el sitio. Del perfil público: transparencia de horarios, botón de tasación y presencia de emprendimientos.",
+    "ideas_nuevas_a_considerar": [
+      "Botón 'Solicitar tasación' (lo ofrece Crestale en Argenprop)",
+      "Horarios de atención visibles",
+      "Cifras reales de Percara (propiedades vendidas, años de trayectoria), a pedir al cliente"
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+/* src/app/(public)/propiedades/[slug]/page.module.css */
+
+/* 1. Base (móvil 320px) */
+.page {
+  padding-block: var(--space-4) var(--section-y);
+}
+
+.inner {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-3);
+}
+
+.details {
+  display: grid;
+  gap: var(--space-7);
+  min-width: 0;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.description {
+  max-width: 65ch;
+  color: var(--color-text-soft);
+  white-space: pre-line;
+}
+
+.related {
+  margin-top: var(--section-y);
+  padding-top: var(--section-y);
+  background: linear-gradient(180deg, var(--color-surface-alt), var(--color-bg) 40%);
+}
+
+.relatedHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-4);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-pill);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.more svg {
+  color: var(--color-accent-text);
+  transition: transform var(--dur) var(--ease-spring);
+}
+
+.more:active {
+  transform: scale(var(--press-scale));
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .layout {
+    gap: var(--space-7);
+  }
+}
+
+/* 4. ≥1024px: galería + panel fijo; la ficha y la descripción debajo de la galería */
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(20rem, 1fr);
+    align-items: start;
+    column-gap: var(--space-8);
+  }
+
+  .details {
+    grid-column: 1;
+  }
+
+  .layout > aside {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .more:hover svg {
+    transform: translateX(var(--space-1));
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .more,
+  .more svg {
+    transition: none;
+  }
+
+  .more:active,
+  .more:hover svg {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .related {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Detalle de propiedad: una columna en móvil (galería, panel, ficha, descripción); desde 1024px galería
+   y ficha a la izquierda con panel fijo a la derecha. Bloque de relacionadas con fondo degradado suave
+   y link "Ver todas" en píldora. Depende de: styles/tokens.css */

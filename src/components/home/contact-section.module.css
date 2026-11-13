@@ -1,0 +1,145 @@
+/* src/components/home/contact-section.module.css */
+
+/* 1. Base (móvil 320px) */
+.block {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.lead {
+  color: var(--color-text-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: calc(var(--tap) + var(--space-1));
+  padding-inline: var(--space-4);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--color-line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease-spring),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.pill svg {
+  color: var(--color-accent);
+  transition: transform var(--dur) var(--ease-spring);
+}
+
+/* WhatsApp: verde de marca lleno con texto azul (5:1) y halo verde */
+.pill[data-destacado] {
+  grid-column: 1 / -1;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-glow-green);
+}
+
+.pill[data-destacado] svg {
+  color: currentColor;
+}
+
+.pill:active {
+  transform: scale(var(--press-scale));
+}
+
+.data {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-top: var(--space-5);
+  border-top: var(--border-w) solid var(--color-line);
+}
+
+.data dt {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+}
+
+.data dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pill[data-destacado] {
+    grid-column: auto;
+  }
+
+  .data {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .pill:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+    box-shadow: var(--shadow-float);
+    transform: translateY(var(--hover-lift));
+  }
+
+  .pill:hover svg {
+    transform: scale(var(--hover-scale)) rotate(var(--hover-tilt));
+  }
+
+  .pill[data-destacado]:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow-green), var(--shadow-float);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .pill svg {
+    transition: none;
+  }
+
+  .pill:active,
+  .pill:hover,
+  .pill:hover svg {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .grid {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   "¿Cómo contactarnos?": píldoras blancas con texto azul e icono verde que se elevan al hover
+   (2 columnas en móvil, 3 desde 480px), WhatsApp en verde lleno con texto azul y halo, y datos con
+   etiqueta verde y valor azul. Todo en la paleta de marca. Depende de: styles/tokens.css */

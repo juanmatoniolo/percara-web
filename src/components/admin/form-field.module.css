@@ -1,0 +1,95 @@
+/* src/components/admin/form-field.module.css */
+
+/* 1. Base (móvil 320px): todo a ancho completo */
+.field {
+  grid-column: 1 / -1;
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.req {
+  color: var(--color-error);
+}
+
+.control {
+  width: 100%;
+  min-height: calc(var(--tap) + var(--space-1));
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--color-line);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease-spring);
+}
+
+textarea.control {
+  min-height: calc(var(--tap) * 5);
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.control:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 calc(var(--border-w) * 3) var(--color-primary-soft);
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 calc(var(--border-w) * 3) var(--color-error-soft);
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.error {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+/* 2. ≥480px: medias columnas */
+@media (min-width: 480px) {
+  .field[data-ancho='half'],
+  .field[data-ancho='third'] {
+    grid-column: span 3;
+  }
+}
+
+/* 3. ≥768px: tercios */
+@media (min-width: 768px) {
+  .field[data-ancho='third'] {
+    grid-column: span 2;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .control:not([aria-invalid='true']):hover {
+    border-color: var(--color-accent);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .control {
+    transition: none;
+  }
+}
+
+/* RESUMEN
+   Campo del panel sobre grilla de 6 columnas: ancho completo en móvil, mitades desde 480px y tercios desde
+   768px. Controles de 48px con foco azul y halo, error en rojo AA con halo rojo suave, hover verde.
+   Depende de: styles/tokens.css */

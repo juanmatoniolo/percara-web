@@ -1,0 +1,75 @@
+/* src/components/ui/whatsapp-float.module.css */
+
+/* 1. Base (móvil 320px) */
+.float {
+  position: fixed;
+  right: calc(var(--space-4) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  z-index: calc(var(--z-header) - 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: calc(var(--tap) + var(--space-2));
+  min-height: calc(var(--tap) + var(--space-2));
+  background: var(--color-accent);
+  color: var(--color-ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-glow-green), var(--shadow-lg);
+  transition:
+    transform var(--dur) var(--ease-spring),
+    box-shadow var(--dur) var(--ease-spring);
+}
+
+.float:active {
+  transform: scale(var(--press-scale));
+}
+
+.label {
+  display: none;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .float {
+    padding-inline: var(--space-5);
+  }
+
+  .label {
+    display: inline;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .float:hover {
+    transform: translateY(var(--hover-lift));
+    box-shadow: var(--shadow-glow-green), var(--shadow-float);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .float {
+    transition: none;
+  }
+
+  .float:hover,
+  .float:active {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .float {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Botón flotante de WhatsApp: verde de marca con texto azul (5:1) y halo verde, fijo abajo a la
+   derecha con safe-area, área táctil mayor a 44px, elevación elástica al hover y :active con escala.
+   Depende de: styles/tokens.css */

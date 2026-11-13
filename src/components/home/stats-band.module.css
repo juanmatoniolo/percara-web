@@ -1,0 +1,165 @@
+/* src/components/home/stats-band.module.css */
+
+/* 1. Base (móvil 320px) */
+@property --n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes count-up {
+  from {
+    --n: 0;
+  }
+
+  to {
+    --n: var(--to);
+  }
+}
+
+.band {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+  padding-block: var(--space-4) var(--section-y);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.item {
+  position: relative;
+  display: grid;
+  height: 100%;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  overflow: clip;
+  transition:
+    transform var(--dur) var(--ease-spring),
+    box-shadow var(--dur) var(--ease-spring);
+}
+
+/* Filete verde superior que crece al hover */
+.item::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--underline-h);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+  transform: scaleX(0.25);
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  margin-bottom: var(--space-3);
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+}
+
+.big {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-primary);
+}
+
+/* Sin soporte: muestra el valor final (--n arranca en --to) */
+.count {
+  --n: var(--to);
+  counter-reset: n var(--n);
+  font-variant-numeric: tabular-nums;
+}
+
+.count::after {
+  content: counter(n);
+}
+
+.text {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .item {
+    padding: var(--space-6) var(--space-5);
+  }
+}
+
+/* 4. ≥1024px: cuatro columnas */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .big {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .item:hover {
+    transform: translateY(var(--hover-lift));
+    box-shadow: var(--shadow-float), var(--shadow-lg);
+  }
+
+  .item:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+/* 11. prefers-reduced-motion: contador al entrar en pantalla, solo con movimiento permitido */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .count {
+      animation: count-up linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .item::before {
+    transition: none;
+  }
+
+  .item:hover {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .item {
+    box-shadow: none;
+    border-color: CanvasText;
+  }
+
+  .item::before {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Banda de datos: 2 columnas en móvil, 4 desde 1024px. Tarjetas blancas con ícono verde, título azul,
+   filete degradado verde-azul que se completa al hover y contador "+10" animado con @property y
+   animation-timeline: view(). Sin soporte o con reduced-motion, muestra el valor final. Depende de: tokens.css */

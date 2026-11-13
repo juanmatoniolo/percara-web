@@ -1,0 +1,207 @@
+/* src/components/home/cta-band.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+  padding-bottom: var(--section-y);
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-7) var(--space-5);
+  color: var(--color-on-primary);
+  background:
+    radial-gradient(
+      80% 120% at 100% 0%,
+      color-mix(in srgb, var(--color-accent) 35%, transparent),
+      transparent 60%
+    ),
+    var(--color-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-float), var(--shadow-lg);
+  overflow: clip;
+}
+
+.ring {
+  position: absolute;
+  z-index: -1;
+  aspect-ratio: 1;
+  border: var(--underline-h) dashed color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-radius: 50%;
+}
+
+.ringA {
+  top: calc(var(--space-9) * -1);
+  right: calc(var(--space-9) * -1);
+  width: calc(var(--space-10) * 2.5);
+}
+
+.ringB {
+  bottom: calc(var(--space-8) * -1);
+  left: calc(var(--space-8) * -1);
+  width: calc(var(--space-10) * 1.5);
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--color-on-primary) 12%, transparent);
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 40rem;
+}
+
+.eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.title {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.text {
+  max-width: 52ch;
+  font-size: var(--text-lg);
+}
+
+.actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: calc(var(--tap) + var(--space-2));
+  padding-inline: var(--space-6);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.primary {
+  color: var(--color-ink);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow-green);
+}
+
+.secondary {
+  color: var(--color-on-primary);
+  border: var(--border-w) solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.primary:active,
+.secondary:active {
+  transform: scale(var(--press-scale));
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline-color: var(--color-on-primary);
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .actions {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .card {
+    padding: var(--space-8) var(--space-7);
+  }
+}
+
+/* 4. ≥1024px: texto y botones en una fila */
+@media (min-width: 1024px) {
+  .card {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: var(--space-9) var(--space-8);
+  }
+
+  .actions {
+    grid-auto-flow: row;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .primary:hover,
+  .secondary:hover {
+    transform: translateY(var(--hover-lift));
+  }
+
+  .primary:hover {
+    box-shadow: var(--shadow-glow-green), var(--shadow-float);
+  }
+
+  .secondary:hover {
+    background: color-mix(in srgb, var(--color-on-primary) 10%, transparent);
+  }
+}
+
+/* 11. prefers-reduced-motion: anillo girando solo con movimiento permitido */
+@media (prefers-reduced-motion: no-preference) {
+  .ringA {
+    animation: spin calc(var(--dur-slow) * 80) linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary,
+  .secondary {
+    transition: none;
+  }
+
+  .primary:hover,
+  .secondary:hover,
+  .primary:active,
+  .secondary:active {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .card {
+    color: CanvasText;
+    background: none;
+    box-shadow: none;
+    border: var(--border-w) solid CanvasText;
+  }
+
+  .ring,
+  .actions {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Banda CTA: tarjeta azul de marca con brillo verde en la esquina, anillos (uno punteado que gira muy
+   lento), eyebrow verde, título y texto blancos, botones WhatsApp verde con halo y teléfono con borde
+   blanco. En fila desde 1024px. Depende de: styles/tokens.css */

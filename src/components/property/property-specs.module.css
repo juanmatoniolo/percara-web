@@ -1,0 +1,72 @@
+/* src/components/property/property-specs.module.css */
+
+/* 1. Base (móvil 320px): lista agrupada estilo iOS */
+.list {
+  margin: 0;
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  overflow: clip;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: calc(var(--tap) + var(--space-2));
+  padding: var(--space-2) var(--space-5);
+  border-bottom: var(--border-w) solid var(--color-line);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-muted);
+}
+
+.label svg {
+  flex: none;
+  color: var(--color-accent-text);
+}
+
+.value {
+  margin: 0;
+  font-weight: 700;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-heading);
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .row:hover {
+    background: var(--color-accent-soft);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .list {
+    box-shadow: none;
+    border-color: CanvasText;
+  }
+}
+
+/* RESUMEN
+   Ficha técnica como lista agrupada: bloque blanco redondeado con sombra flotante, filas de 52px con
+   ícono verde, etiqueta gris y valor azul; hover verde suave. Depende de: styles/tokens.css */

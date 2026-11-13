@@ -1,0 +1,34 @@
+/* src/app/(public)/page.module.css */
+
+/* 1. Base (móvil 320px) */
+.duo {
+  padding-block: var(--section-y);
+  background: var(--color-bg);
+}
+
+.duoInner {
+  display: grid;
+  gap: var(--space-8);
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+/* 4. ≥1024px: dos columnas, como el sitio actual */
+@media (min-width: 1024px) {
+  .duoInner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-9);
+  }
+}
+
+/* 12. print */
+@media print {
+  .duo {
+    padding-block: var(--space-5);
+    border: 0;
+  }
+}
+
+/* RESUMEN
+   Estilos de la home: contenedor del bloque doble (por qué elegirnos + contacto), una columna en
+   móvil y dos desde 1024px. Depende de: styles/tokens.css */

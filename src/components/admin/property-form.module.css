@@ -1,0 +1,153 @@
+/* src/components/admin/property-form.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  color: var(--color-error);
+  background: var(--color-error-soft);
+  border-radius: var(--radius-lg);
+}
+
+.group {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.legend {
+  float: left;
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.check {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  font-weight: 700;
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+
+.check small {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.check input {
+  width: calc(var(--space-5));
+  height: calc(var(--space-5));
+  accent-color: var(--color-accent-text);
+}
+
+/* Barra de guardado pegada abajo mientras se completa el formulario */
+.bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-3) 0 calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(transparent, var(--color-surface-alt) 35%);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: calc(var(--tap) + var(--space-2));
+  padding-inline: var(--space-7);
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-float);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.submit svg {
+  color: var(--color-accent);
+}
+
+.submit:active {
+  transform: scale(var(--press-scale));
+}
+
+.submit:disabled {
+  cursor: progress;
+  opacity: var(--disabled-opacity);
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .submit {
+    width: auto;
+  }
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .group {
+    padding: var(--space-6);
+    column-gap: var(--space-5);
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .submit:not(:disabled):hover {
+    background: var(--color-primary-hover);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .spin {
+    animation: spin var(--dur-slow) linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submit {
+    transition: none;
+  }
+}
+
+/* RESUMEN
+   Formulario de propiedad: grupos en tarjetas blancas sobre grilla de 6 columnas, alerta de error roja,
+   checkboxes de 44px en verde y barra de guardado fija abajo con botón azul en píldora y spinner.
+   Depende de: styles/tokens.css */

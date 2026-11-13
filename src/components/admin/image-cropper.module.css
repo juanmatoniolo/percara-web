@@ -1,0 +1,215 @@
+/* src/components/admin/image-cropper.module.css */
+
+/* 1. Base (móvil 320px): hoja a pantalla casi completa */
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-6)) scale(var(--press-scale));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dialog {
+  width: min(100% - 2 * var(--space-3), 44rem);
+  max-height: calc(100dvh - 2 * var(--space-3));
+  padding: var(--space-4);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 0;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-float), var(--shadow-lg);
+}
+
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--brand-blue) 45%, transparent);
+  -webkit-backdrop-filter: blur(var(--space-1));
+  backdrop-filter: blur(var(--space-1));
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+
+.title span {
+  margin-left: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-muted);
+  border-radius: 50%;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.frame:active {
+  cursor: grabbing;
+}
+
+.frame:focus-visible {
+  outline-offset: calc(var(--border-w) * 2);
+}
+
+.img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* Guías de tercios */
+.grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      transparent calc(100% / 3 - 0.5px),
+      rgb(255 255 255 / 0.55) calc(100% / 3),
+      transparent calc(100% / 3 + 0.5px),
+      transparent calc(200% / 3 - 0.5px),
+      rgb(255 255 255 / 0.55) calc(200% / 3),
+      transparent calc(200% / 3 + 0.5px)
+    ),
+    linear-gradient(
+      180deg,
+      transparent calc(100% / 3 - 0.5px),
+      rgb(255 255 255 / 0.55) calc(100% / 3),
+      transparent calc(100% / 3 + 0.5px),
+      transparent calc(200% / 3 - 0.5px),
+      rgb(255 255 255 / 0.55) calc(200% / 3),
+      transparent calc(200% / 3 + 0.5px)
+    );
+  box-shadow: inset 0 0 0 var(--underline-h) var(--color-accent);
+  border-radius: inherit;
+}
+
+.zoom {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.zoom button {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-primary);
+  border-radius: 50%;
+}
+
+.zoom input {
+  width: 100%;
+  accent-color: var(--color-accent-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.skip,
+.ok {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-5);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.skip {
+  color: var(--color-text-soft);
+  background: var(--color-surface-alt);
+}
+
+.ok {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+.ok svg {
+  color: var(--color-accent);
+}
+
+.skip:active,
+.ok:active {
+  transform: scale(var(--press-scale));
+}
+
+.ok:disabled,
+.zoom button:disabled {
+  opacity: var(--disabled-opacity);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .dialog {
+    padding: var(--space-6);
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .close:hover,
+  .zoom button:hover {
+    background: var(--color-surface-alt);
+  }
+
+  .ok:not(:disabled):hover {
+    background: var(--color-primary-hover);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[open] {
+    animation: sheet-in var(--dur) var(--ease-spring);
+  }
+}
+
+/* RESUMEN
+   Visor de recorte: diálogo modal blanco con fondo azul desenfocado, marco 4:3 con guías de tercios y borde
+   verde, cursor de arrastre, slider de zoom verde y acciones (omitir gris, usar recorte azul). Entra con
+   escala elástica. Depende de: styles/tokens.css */

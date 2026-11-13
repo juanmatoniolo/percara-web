@@ -1,8 +1,23 @@
 // src/app/(public)/layout.jsx
-export default function Layout({ children }) {
-  return children;
+import SiteHeader from '@/components/layout/site-header';
+import SiteFooter from '@/components/layout/site-footer';
+import WhatsAppFloat from '@/components/ui/whatsapp-float';
+
+export default function PublicLayout({ children }) {
+  return (
+    <>
+      <a href="#contenido" className="skip-link">
+        Saltar al contenido
+      </a>
+      <SiteHeader />
+      <main id="contenido">{children}</main>
+      <SiteFooter />
+      <WhatsAppFloat />
+    </>
+  );
 }
 
 /* RESUMEN
-   Stub inicial. Se implementa en su fase.
-   Depende de: (pendiente) */
+   Layout del sitio público (Server Component): enlace de salto, header, contenido, footer y botón
+   flotante de WhatsApp. Recibe `children`.
+   Depende de: components/layout/site-header.jsx, site-footer.jsx, components/ui/whatsapp-float.jsx */

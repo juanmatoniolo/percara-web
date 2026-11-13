@@ -1,0 +1,125 @@
+/* src/components/property/listing-view.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--press-scale)) rotate(var(--hover-tilt));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.head {
+  padding-block: var(--space-6) var(--space-5);
+  background:
+    radial-gradient(60% 120% at 100% 0%, var(--color-accent-soft), transparent 70%), var(--color-bg);
+}
+
+.inner {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.titleRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: calc(var(--tap) * 1.4);
+  height: calc(var(--tap) * 1.4);
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-float);
+}
+
+.badge svg {
+  color: var(--color-accent);
+}
+
+.title {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading);
+}
+
+.lead {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+}
+
+.total {
+  display: inline-flex;
+  margin-top: var(--space-5);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+}
+
+.results {
+  padding-block: var(--space-6) var(--section-y);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .head {
+    padding-block: var(--space-7) var(--space-6);
+  }
+
+  .titleRow {
+    gap: var(--space-5);
+  }
+
+  .badge {
+    width: calc(var(--tap) * 1.75);
+    height: calc(var(--tap) * 1.75);
+    border-radius: var(--radius-xl);
+  }
+
+  .results {
+    padding-top: var(--space-7);
+  }
+}
+
+/* 8. orientation: landscape (móviles bajos) */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .head {
+    padding-block: var(--space-4);
+  }
+}
+
+/* 11. prefers-reduced-motion: entrada del ícono solo con movimiento permitido */
+@media (prefers-reduced-motion: no-preference) {
+  .badge {
+    animation: badge-in var(--dur-slow) var(--ease-spring) both;
+  }
+}
+
+/* 12. print */
+@media print {
+  .head {
+    background: none;
+  }
+
+  .badge {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Encabezado de listados con halo verde suave arriba a la derecha, placa
+   azul con ícono verde que entra con giro elástico, H1 azul, bajada y total en píldora verde; luego la
+   zona de resultados. Depende de: styles/tokens.css */

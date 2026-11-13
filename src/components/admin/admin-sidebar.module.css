@@ -1,0 +1,221 @@
+/* src/components/admin/admin-sidebar.module.css */
+
+/* 1. Base (móvil 320px): barra superior fija de vidrio */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--gutter);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  border-bottom: var(--border-w) solid var(--glass-border);
+}
+
+.brand {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.brand span {
+  margin-left: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+  vertical-align: middle;
+}
+
+.nav {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.list {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.link,
+.logout {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-soft);
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.link svg,
+.logout svg {
+  color: var(--color-accent-text);
+}
+
+.link[aria-current='page'] {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  box-shadow: inset var(--underline-h) 0 0 var(--color-accent);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  margin-left: auto;
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.cta svg {
+  color: var(--color-accent);
+}
+
+.cta:active,
+.logout:active {
+  transform: scale(var(--press-scale));
+}
+
+.foot {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.foot > a,
+.user {
+  display: none;
+}
+
+.logout {
+  color: var(--color-muted);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar {
+    background: var(--color-surface);
+  }
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .foot > a {
+    display: inline-flex;
+  }
+}
+
+/* 4. ≥1024px: barra lateral a todo el alto */
+@media (min-width: 1024px) {
+  .bar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100dvh;
+    padding: var(--space-6) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 0;
+    border-right: var(--border-w) solid var(--color-line);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .brand {
+    padding-inline: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-5);
+  }
+
+  .list {
+    flex-direction: column;
+  }
+
+  .cta {
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .foot {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: var(--border-w) solid var(--color-line);
+  }
+
+  .user {
+    display: block;
+    overflow: hidden;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .link:not([aria-current='page']):hover,
+  .logout:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-alt);
+  }
+
+  .cta:hover {
+    background: var(--color-primary-hover);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .logout,
+  .cta {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .bar {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Barra del panel: en móvil, barra superior de vidrio con marca, salir y links + "Nueva propiedad";
+   desde 1024px, barra lateral blanca a todo el alto con links apilados, link activo en azul con marca
+   verde y pie con ver sitio, email y salir. Depende de: styles/tokens.css */

@@ -1,0 +1,96 @@
+/* src/components/layout/site-footer.module.css */
+
+/* 1. Base (móvil 320px) */
+.footer {
+  padding-block: var(--space-7) calc(var(--space-9) + env(safe-area-inset-bottom, 0px));
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  text-align: center;
+  border-top: var(--underline-h) solid var(--color-accent);
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+  font-size: var(--text-sm);
+}
+
+/* Sin opacidad: blanco pleno sobre el azul de marca (15:1) */
+.soft {
+  font-weight: 400;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--space-5);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  font-weight: 700;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: var(--progress-h);
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.link svg {
+  color: var(--color-accent);
+}
+
+.link:focus-visible {
+  outline-color: currentColor;
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .footer {
+    padding-block: var(--space-8);
+  }
+
+  .inner {
+    gap: var(--space-4);
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: var(--color-accent);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .footer {
+    padding-block: var(--space-5);
+    background: none;
+    color: CanvasText;
+    border: 0;
+  }
+
+  .row {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Footer en azul de marca con texto blanco (AA) y filete superior verde, todo centrado, enlaces de
+   44px con iconos verdes y subrayado verde al pasar el mouse. En móvil deja espacio abajo para el botón
+   flotante de WhatsApp. Depende de: styles/tokens.css */

@@ -1,0 +1,45 @@
+/* src/components/property/property-grid.module.css */
+
+/* 1. Base (móvil 320px) */
+.grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.item {
+  min-width: 0;
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+/* 4. ≥1024px */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 7. ≥1920px */
+@media (min-width: 1920px) {
+  .grid {
+    gap: var(--space-7);
+  }
+}
+
+/* 12. print */
+@media print {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+/* RESUMEN
+   Grilla de cards: 1, 2 y 3 columnas según ancho, con separación amplia; 2 columnas al imprimir.
+   Depende de: styles/tokens.css */
