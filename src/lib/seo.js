@@ -101,10 +101,18 @@ export function jsonLdInmobiliaria() {
  */
 export function metadataPropiedad(p, { precio, datos, descripcion }) {
   const path = `/propiedades/${p.slug}`;
-  /* Sin OG precalculada (todavía sin fotos) se usa la del sitio: nunca WebP, que WhatsApp no siempre muestra */
+  /* Orden: OG precalculada (JPEG 1200x630 hecha con la primera foto) > la primera foto > la del sitio */
+  const portada = p.imagenes[0];
   const imagen = p.og_image_url
     ? { url: p.og_image_url, width: 1200, height: 630, type: 'image/jpeg', alt: p.titulo }
-    : OG_SITIO;
+    : portada
+      ? {
+          url: portada.url,
+          width: portada.ancho,
+          height: portada.alto,
+          alt: portada.alt || p.titulo,
+        }
+      : OG_SITIO;
   const description = [`${precio}.`, datos.join(' · ') + (datos.length ? '.' : ''), descripcion]
     .filter(Boolean)
     .join(' ')

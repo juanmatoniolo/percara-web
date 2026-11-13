@@ -12,8 +12,8 @@
   gap: var(--space-2);
   min-width: calc(var(--tap) + var(--space-2));
   min-height: calc(var(--tap) + var(--space-2));
-  background: var(--color-accent);
-  color: var(--color-ink);
+  background: var(--color-whatsapp);
+  color: var(--color-on-whatsapp);
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-glow-green), var(--shadow-lg);
   transition:
@@ -45,6 +45,7 @@
 /* 9. hover: hover */
 @media (hover: hover) {
   .float:hover {
+    background: var(--color-whatsapp-hover);
     transform: translateY(var(--hover-lift));
     box-shadow: var(--shadow-glow-green), var(--shadow-float);
   }

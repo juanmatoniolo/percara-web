@@ -86,8 +86,8 @@
 }
 
 .primary {
-  color: var(--color-ink);
-  background: var(--color-accent);
+  color: var(--color-on-whatsapp);
+  background: var(--color-whatsapp);
   box-shadow: var(--shadow-glow-green);
 }
 
@@ -114,6 +114,10 @@
   .secondary:hover {
     transform: translateY(var(--hover-lift));
     box-shadow: var(--shadow-float);
+  }
+
+  .primary:hover {
+    background: var(--color-whatsapp-hover);
   }
 }
 

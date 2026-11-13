@@ -46,9 +46,9 @@
 /* WhatsApp: verde de marca lleno con texto azul (5:1) y halo verde */
 .pill[data-destacado] {
   grid-column: 1 / -1;
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-ink);
+  background: var(--color-whatsapp);
+  border-color: var(--color-whatsapp);
+  color: var(--color-on-whatsapp);
   box-shadow: var(--shadow-glow-green);
 }
 
@@ -112,8 +112,8 @@
   }
 
   .pill[data-destacado]:hover {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
+    background: var(--color-whatsapp-hover);
+    border-color: var(--color-whatsapp-hover);
     box-shadow: var(--shadow-glow-green), var(--shadow-float);
   }
 }

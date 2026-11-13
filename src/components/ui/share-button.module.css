@@ -1,0 +1,159 @@
+/* src/components/ui/share-button.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-4)) scale(var(--press-scale));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Botón grande con texto: fácil de ver y de tocar (48px) */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: calc(var(--tap) + var(--space-1));
+  padding-inline: var(--space-5);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.trigger svg {
+  color: var(--color-accent-text);
+}
+
+.trigger:active,
+.whatsapp:active,
+.copy:active,
+.close:active {
+  transform: scale(var(--press-scale));
+}
+
+/* Panel centrado en pantalla (popover nativo: se cierra con Escape o tocando afuera) */
+.panel {
+  width: min(100% - 2 * var(--space-4), 24rem);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 0;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-float), var(--shadow-lg);
+}
+
+.panel:popover-open {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.panel::backdrop {
+  background: color-mix(in srgb, var(--brand-blue) 40%, transparent);
+}
+
+.title {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.name {
+  margin-bottom: var(--space-2);
+  color: var(--color-muted);
+}
+
+.whatsapp,
+.copy,
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: calc(var(--tap) + var(--space-3));
+  font-size: var(--text-lg);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.whatsapp {
+  color: var(--color-on-whatsapp);
+  background: var(--color-whatsapp);
+}
+
+.copy {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+.close {
+  min-height: var(--tap);
+  font-size: var(--text-base);
+  color: var(--color-muted);
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .trigger:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+
+  .whatsapp:hover {
+    background: var(--color-whatsapp-hover);
+  }
+
+  .copy:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .close:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .panel:popover-open {
+    animation: panel-in var(--dur) var(--ease-spring);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .whatsapp,
+  .copy,
+  .close {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .trigger,
+  .panel {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Botón Compartir: píldora azul suave de 48px con ícono verde; panel popover centrado con fondo azul
+   translúcido, botones grandes (56px) de WhatsApp (verde, texto blanco) y copiar enlace (azul), y cerrar.
+   Depende de: styles/tokens.css */

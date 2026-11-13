@@ -1,6 +1,7 @@
 // src/components/property/property-contact.jsx
 import { MapPin, Phone } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/icons';
+import ShareButton from '@/components/ui/share-button';
 import { CONTACT, whatsappUrl } from '@/lib/site-config';
 import { precioPublico } from '@/lib/format';
 import { SITE_URL } from '@/lib/seo';
@@ -53,6 +54,11 @@ export default function PropertyContact({ propiedad: p }) {
           <Phone size={18} aria-hidden="true" />
           Llamar
         </a>
+        <ShareButton
+          path={`/propiedades/${p.slug}`}
+          titulo={p.titulo}
+          texto={`${p.titulo} - ${precioPublico(p)}`}
+        />
       </div>
       <p className={styles.note}>Atención personalizada de Percara Negocios Inmobiliarios.</p>
     </aside>
@@ -61,5 +67,5 @@ export default function PropertyContact({ propiedad: p }) {
 
 /* RESUMEN
    Panel del detalle (Server Component): chips de categoría y operación, H1, ubicación, precio grande y
-   CTAs a WhatsApp (mensaje con título y URL de la propiedad) y llamada. Recibe `propiedad`.
-   Depende de: components/ui/icons.jsx, lib/{site-config,format,seo}.js, property-contact.module.css */
+   CTAs a WhatsApp (mensaje con título y URL de la propiedad), llamada y Compartir. Recibe `propiedad`.
+   Depende de: components/ui/{icons,share-button}.jsx, lib/{site-config,format,seo}.js, module.css */

@@ -38,6 +38,12 @@
   --color-warning-soft: #fff4e0;
   --disabled-opacity: 0.6;
 
+  /* Botones de WhatsApp: verde oscuro de marca con texto blanco (4.9:1, AA).
+     El verde vivo #27ae47 con blanco da 2.9:1 y no alcanza AA. */
+  --color-whatsapp: #1c8237;
+  --color-whatsapp-hover: #166b2d;
+  --color-on-whatsapp: #ffffff;
+
   /* Texto sobre el verde vivo (azul de marca, 5:1) */
   --color-ink: var(--brand-blue);
 

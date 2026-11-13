@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Bath, BedDouble, Car, MapPin, Maximize2 } from 'lucide-react';
+import ShareButton from '@/components/ui/share-button';
 import { iconoCategoria } from '@/lib/categories-meta';
 import { formatSuperficie, precioPublico } from '@/lib/format';
 import styles from './property-card.module.css';
@@ -77,6 +78,15 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
           </dl>
         </div>
       </Link>
+
+      {/* Fuera del link: un botón no puede ir dentro de un <a> */}
+      <div className={styles.foot}>
+        <ShareButton
+          path={`/propiedades/${p.slug}`}
+          titulo={p.titulo}
+          texto={`${p.titulo} - ${precioPublico(p)}`}
+        />
+      </div>
     </article>
   );
 }
@@ -84,5 +94,5 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
 /* RESUMEN
    Card de propiedad (Server Component). Recibe `propiedad`, `prioridad` (solo la imagen LCP) y `nivel`
    del título. Imagen 4:3 (o placeholder con el ícono de la categoría), chip de categoría, precio, título,
-   localidad y ficha fija de 4 datos (superficie, habitaciones, baños, cochera Sí/No; "–" si falta).
-   Depende de: lib/{format,categories-meta}.js, property-card.module.css */
+   localidad, ficha fija de 4 datos (superficie, habitaciones, baños, cochera Sí/No) y botón Compartir.
+   Depende de: components/ui/share-button.jsx, lib/{format,categories-meta}.js, property-card.module.css */
