@@ -56,12 +56,13 @@
   width: max-content;
   min-width: 16rem;
   padding: var(--space-2);
-  background: var(--glass-bg);
+  /* Casi opaco: dentro del header de vidrio el blur propio no alcanza para leer bien las opciones */
+  background: var(--menu-bg);
   -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
-  border: var(--border-w) solid var(--glass-border);
+  border: var(--border-w) solid var(--color-line);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-float);
+  box-shadow: var(--shadow-float), var(--shadow-lg);
   translate: -50% 0;
   transform-origin: top center;
 }
@@ -135,6 +136,7 @@
 }
 
 /* RESUMEN
+   Panel casi opaco (--menu-bg) para leer bien las opciones.
    Desplegable "Inmuebles": disparador que pasa a azul con chevron verde que gira, panel de vidrio
    esmerilado con radio amplio y entrada elástica, links de 44px con hover verde suave y :active.
    Depende de: styles/tokens.css */

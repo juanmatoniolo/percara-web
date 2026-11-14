@@ -98,6 +98,9 @@
   --gutter: clamp(1.25rem, 0.8rem + 2.2vw, 2.5rem);
   --section-y: clamp(3.5rem, 2.4rem + 5vw, 6.5rem);
   --header-h: 4.5rem;
+  --logo-h: clamp(2.25rem, 1.95rem + 1.2vw, 3rem);
+  /* Paneles desplegables: casi opacos para leer bien las opciones sobre cualquier fondo */
+  --menu-bg: color-mix(in srgb, var(--color-surface) 96%, transparent);
   --header-scroll-range: 6rem;
   --tap: 2.75rem;
   --z-header: 50;

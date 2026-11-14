@@ -1,4 +1,5 @@
 // src/components/layout/site-header.jsx
+import Image from 'next/image';
 import Link from 'next/link';
 import { CATEGORIAS } from '@/lib/queries/categories';
 import InmueblesMenu from './inmuebles-menu';
@@ -22,13 +23,17 @@ export default function SiteHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        {/* TODO: reemplazar por el logo (casa con trazo verde) cuando esté en /public */}
-        <Link
-          href="/"
-          className={styles.brand}
-          aria-label="Percara Negocios Inmobiliarios, ir al inicio"
-        >
-          Percara <span className={styles.brandSub}>Negocios Inmobiliarios</span>
+        <Link href="/" className={styles.brand}>
+          {/* Logo generado con scripts/generate-logo-header.mjs (fondo transparente, 567x128) */}
+          <Image
+            src="/logo-percara.webp"
+            alt="Percara Negocios Inmobiliarios, ir al inicio"
+            width={567}
+            height={128}
+            sizes="14rem"
+            loading="eager"
+            className={styles.logo}
+          />
         </Link>
 
         <nav className={styles.nav} aria-label="Principal">
@@ -56,7 +61,7 @@ export default function SiteHeader() {
 }
 
 /* RESUMEN
-   Header fijo (Server Component): marca, desplegable "Inmuebles" con categorías, anclas suaves a
+   Header fijo (Server Component): logo (public/logo-percara.webp), desplegable "Inmuebles" con categorías, anclas suaves a
    #sobre-nosotros y #contacto de la home, menú móvil y barra de progreso de lectura (verde).
-   Depende de: lib/queries/categories.js, components/layout/{inmuebles-menu,mobile-nav}.jsx,
+   Depende de: next/image, lib/queries/categories.js, components/layout/{inmuebles-menu,mobile-nav}.jsx,
    site-header.module.css */
