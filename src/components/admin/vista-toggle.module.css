@@ -1,0 +1,68 @@
+/* src/components/admin/vista-toggle.module.css */
+
+/* 1. Base (móvil 320px): control segmentado */
+.toggle {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-pill);
+}
+
+.opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-soft);
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur) var(--ease-spring),
+    color var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease-spring);
+}
+
+.opt svg {
+  color: var(--color-accent-text);
+}
+
+.opt[aria-pressed='true'] {
+  color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.opt:active {
+  transform: scale(var(--press-scale));
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .opt:not([aria-pressed='true']):hover {
+    color: var(--color-primary);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .opt {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .toggle {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Control segmentado gris en píldora: la opción activa se ve como una pastilla blanca con sombra y texto
+   azul; íconos verdes; botones de 44px. Depende de: styles/tokens.css */

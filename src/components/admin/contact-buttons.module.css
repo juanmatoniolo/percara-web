@@ -1,0 +1,97 @@
+/* src/components/admin/contact-buttons.module.css */
+
+/* 1. Base (móvil 320px) */
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.whatsapp,
+.call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.whatsapp {
+  color: var(--color-on-whatsapp);
+  background: var(--color-whatsapp);
+}
+
+.call {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+.whatsapp:active,
+.call:active {
+  transform: scale(var(--press-scale));
+}
+
+/* Compacto: solo íconos en pantallas chicas (el nombre está en aria-label) */
+.wrap[data-compacto] .whatsapp,
+.wrap[data-compacto] .call {
+  padding-inline: 0;
+}
+
+.wrap[data-compacto] .texto {
+  display: none;
+}
+
+.sin {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* 3. ≥768px: con texto también en modo compacto */
+@media (min-width: 768px) {
+  .wrap[data-compacto] .whatsapp,
+  .wrap[data-compacto] .call {
+    padding-inline: var(--space-4);
+  }
+
+  .wrap[data-compacto] .texto {
+    display: inline;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .whatsapp:hover {
+    background: var(--color-whatsapp-hover);
+  }
+
+  .call:hover {
+    background: var(--color-primary-hover);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .whatsapp,
+  .call {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .wrap {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Botones de contacto de 44px: WhatsApp verde oscuro con texto blanco (AA) y Llamar azul, en píldora.
+   Modo compacto: solo íconos en móvil y con texto desde 768px. Depende de: styles/tokens.css */

@@ -1,6 +1,6 @@
 # TRASPASO DE CONTEXTO: Percara Negocios Inmobiliarios
 
-Actualizado: 2026-11-12. Fuente única del estado del proyecto (antes estaba duplicado al final de
+Actualizado: 2026-11-14. Fuente única del estado del proyecto (antes estaba duplicado al final de
 ESPECIFICACION.md y CONTEXTO-SITIO-ACTUAL.md). Continuar desde acá: no rehacer lo hecho y respetar
 "Decisiones tomadas" y "Preferencias de trabajo".
 
@@ -64,6 +64,20 @@ Imágenes
   Se regenera si cambia portada, título, precio, moneda o mostrar_precio; se borra la anterior.
 - Borrar propiedad borra toda su carpeta en R2. Quitar una foto borra sus 3 variantes.
 
+Agenda de clientes y Carpeta de pedidos (2026-11-14)
+
+- Tablas privadas (solo admin, nunca el sitio): `clientes`, `cliente_propiedades` (N a N con `rol`
+  comprador | propietario; `estado` de seguimiento solo para compradores) y `pedidos` (agenda personal:
+  RLS además exige `autor_id = auth.uid()`). SQL: `supabase/migrations/003` y `004`.
+- El dueño NO va en `propiedades` (es de lectura pública): va en `cliente_propiedades` con rol propietario.
+- Datos opcionales para escritura en `clientes`: DNI/CUIT, nacimiento, nacionalidad, estado civil,
+  cónyuge, profesión, domicilio, origen.
+- Botones WhatsApp/Llamar con mensaje según rol (`lib/telefono.js` normaliza números argentinos a
+  549+área+número; sin característica asume 3456 de Chajarí). Si el número no sirve, solo "Llamar".
+- Carpeta: vista lista (Atrasados/Hoy/Próximos/Sin fecha) o calendario mensual; la elección se guarda
+  en la cookie `pedidos_vista`. "Hoy" se calcula con zona America/Argentina/Buenos_Aires.
+- `<body suppressHydrationWarning>` en el layout raíz por extensiones (ColorZilla) que agregan atributos.
+
 Diseño
 
 - Fondo blanco en toda la web, SIN modo oscuro (se eliminó el theme-toggle).
@@ -83,7 +97,7 @@ Diseño
 | 4 Route Handlers + queries | Parcial: `lib/queries/{properties,admin-properties,categories}.js` hechas. `app/api/*` siguen stub.                                                                                                                                                                                                                                                                                               |
 | 5 Layout, tokens, UI       | Hecha: header de vidrio, menú Inmuebles, menú móvil, footer azul, WhatsApp flotante, tokens.                                                                                                                                                                                                                                                                                                      |
 | 6 Páginas públicas + SEO   | Parcial: home, `/propiedades`, `/categorias/[categoria]` (pestañas), `/propiedades/[slug]` con generateMetadata, OG y JSON-LD (RealEstateListing + Offer, BreadcrumbList, RealEstateAgent) hechas. Faltan: `sitemap.js` (stub), `not-found.jsx` y `error.jsx` (stubs), `opengraph-image.jsx` (stub), páginas `/sobre-nosotros` y `/contacto` (hoy son anclas de la home), botón Compartir y mapa. |
-| 7 Dashboard                | Casi hecha: login oculto, resumen, listado con filtros y acciones (destacar, publicar, editar, borrar), alta/edición con Zod, gestor de fotos con visor 4:3. Falta `/dashboard/configuracion` (stub, sin link en el menú).                                                                                                                                                                        |
+| 7 Dashboard                | Casi hecha: login oculto, resumen, listado con filtros y acciones (destacar, publicar, editar, borrar), alta/edición con Zod, gestor de fotos con visor 4:3. Falta `/dashboard/configuracion` (stub, sin link en el menú). Agenda de clientes (`/dashboard/clientes`), Carpeta de pedidos (`/dashboard/pedidos`) y "Dueños y compradores" en cada propiedad: hechos, sin probar con sesión real.  |
 | 8 Migración y lanzamiento  | Pendiente: `scripts/migrate-mysql.js`, redirects 301, headers de seguridad (CSP, etc.), sitemap, checklist Lighthouse.                                                                                                                                                                                                                                                                            |
 
 Probado: build OK; códigos HTTP (404 real, 307 desde el buscador del hero, `/dashboard` -> `/login`);
@@ -92,6 +106,8 @@ subida a R2 (requiere las credenciales del usuario).
 
 ## 6. Pendientes del usuario (en orden)
 
+0. Ejecutar `supabase/migrations/003_clientes_pedidos.sql` y luego `004_propietarios_datos_cliente.sql`
+   (sin esto, Clientes y Carpeta muestran error; el resto del panel sigue andando).
 1. Ejecutar `supabase/migrations/002_mostrar_precio.sql` en Supabase. SIN ESTO el sitio y el panel
    fallan al leer propiedades (la columna `mostrar_precio` todavía no existe).
 2. Corregir `.env.local`: `NEXT_PUBLIC_SITE_URL=http://localhost:3000` (hoy dice `:300`).

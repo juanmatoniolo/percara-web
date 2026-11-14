@@ -29,7 +29,9 @@ export default function RootLayout({ children }) {
       className={`${display.variable} ${body.variable}`}
       data-scroll-behavior="smooth"
     >
-      <body>{children}</body>
+      {/* suppressHydrationWarning: extensiones (ColorZilla, Grammarly...) agregan atributos al <body>
+          antes de que cargue React. Solo ignora atributos de esta etiqueta, no de sus hijos. */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
@@ -37,5 +39,5 @@ export default function RootLayout({ children }) {
 /* RESUMEN
    Layout raíz (Server Component). Carga Montserrat (títulos) y Lato (cuerpo) con next/font, estilos
    globales y metadata. Tema único claro (sin modo oscuro ni JS de tema). Marca el scroll suave
-   para anclas (data-scroll-behavior). Recibe `children`; renderiza <html lang="es-AR">.
+   para anclas (data-scroll-behavior); ignora atributos que agregan extensiones al <body>. Recibe `children`; renderiza <html lang="es-AR">.
    Depende de: lib/seo.js, styles/tokens.css, styles/animations.css, app/globals.css */

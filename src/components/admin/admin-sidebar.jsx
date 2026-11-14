@@ -1,5 +1,13 @@
 // src/components/admin/admin-sidebar.jsx
-import { ExternalLink, House, LayoutDashboard, LogOut, Plus } from 'lucide-react';
+import {
+  ExternalLink,
+  FolderOpen,
+  House,
+  LayoutDashboard,
+  LogOut,
+  Plus,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import NavLink from '@/components/layout/nav-link';
 import { cerrarSesion } from '@/actions/auth';
@@ -8,6 +16,8 @@ import styles from './admin-sidebar.module.css';
 const LINKS = [
   { href: '/dashboard', label: 'Resumen', Icono: LayoutDashboard, exact: true },
   { href: '/dashboard/propiedades', label: 'Propiedades', Icono: House, exact: false },
+  { href: '/dashboard/clientes', label: 'Clientes', Icono: Users, exact: false },
+  { href: '/dashboard/pedidos', label: 'Carpeta de pedidos', Icono: FolderOpen, exact: false },
 ];
 
 /** @param {{ email: string }} props */
@@ -55,6 +65,6 @@ export default function AdminSidebar({ email }) {
 }
 
 /* RESUMEN
-   Barra del panel (Server Component): marca, links Resumen/Propiedades con estado activo, botón "Nueva
+   Barra del panel (Server Component): marca, links Resumen/Propiedades/Clientes/Carpeta de pedidos con estado activo, botón "Nueva
    propiedad", ver sitio, email del admin y cerrar sesión (Server Action). Recibe `email`.
    Depende de: components/layout/nav-link.jsx, actions/auth.js, admin-sidebar.module.css */

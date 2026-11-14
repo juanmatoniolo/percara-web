@@ -1,0 +1,195 @@
+/* src/components/admin/pedido-item.module.css */
+
+/* 1. Base (móvil 320px) */
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition:
+    box-shadow var(--dur) var(--ease-spring),
+    opacity var(--dur) var(--ease);
+}
+
+.item[data-atrasado] {
+  border-left: calc(var(--border-w) * 3) solid var(--color-error);
+}
+
+.item[data-estado='hecho'],
+.item[data-estado='cancelado'] {
+  background: var(--color-surface-alt);
+  box-shadow: none;
+}
+
+.item[data-estado='hecho'] .title,
+.item[data-estado='cancelado'] .title {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* Casilla redonda de 44px: vacía = pendiente; verde con tilde = hecho */
+.check {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: transparent;
+  border: calc(var(--border-w) * 2) solid var(--color-line);
+  border-radius: 50%;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.check[aria-pressed='true'] {
+  color: var(--color-on-whatsapp);
+  background: var(--color-accent-text);
+  border-color: var(--color-accent-text);
+}
+
+.check:active {
+  transform: scale(var(--press-scale));
+}
+
+.body {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.title {
+  margin-right: var(--space-1);
+  font-weight: 700;
+  color: var(--color-heading);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.meta svg {
+  color: var(--color-accent-text);
+}
+
+.late {
+  color: var(--color-error);
+}
+
+.detalle {
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+  white-space: pre-line;
+}
+
+.rel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  min-height: var(--tap);
+  padding-inline: var(--space-3);
+  overflow: hidden;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-pill);
+}
+
+.chip svg {
+  flex: none;
+  color: var(--color-accent-text);
+}
+
+.edit {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-text-soft);
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .item:hover {
+    box-shadow: var(--shadow-float);
+  }
+
+  .check:hover {
+    color: var(--color-accent-text);
+    border-color: var(--color-accent);
+  }
+
+  .check[aria-pressed='true']:hover {
+    color: var(--color-on-whatsapp);
+    background: var(--color-whatsapp-hover);
+  }
+
+  .edit:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .title:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .check,
+  .edit {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .checkForm,
+  .edit {
+    display: none;
+  }
+
+  .item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* RESUMEN
+   Pedido: tarjeta con casilla redonda de 44px (al hover asoma el tilde verde; hecho = verde lleno), título
+   azul (tachado si está hecho o cancelado), filete rojo si está atrasado, chips azules de cliente y
+   propiedad y botón editar. Depende de: styles/tokens.css */

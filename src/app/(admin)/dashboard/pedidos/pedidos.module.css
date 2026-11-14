@@ -1,0 +1,44 @@
+/* src/app/(admin)/dashboard/pedidos/pedidos.module.css */
+
+/* 1. Base (móvil 320px) */
+.lead {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.danger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-error);
+  border: var(--border-w) solid var(--color-error-soft);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.danger:active {
+  transform: scale(var(--press-scale));
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .danger:hover {
+    background: var(--color-error-soft);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .danger {
+    transition: none;
+  }
+}
+
+/* RESUMEN
+   Estilos propios de la Carpeta de pedidos: bajada gris bajo el título y botón "Borrar pedido" en rojo
+   con borde (44px). El resto se comparte con el listado de propiedades. Depende de: styles/tokens.css */

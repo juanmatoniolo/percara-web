@@ -1,0 +1,82 @@
+/* src/components/admin/cliente-form.module.css */
+
+/* 1. Base (móvil 320px): desplegable de datos para escritura */
+.extra {
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: calc(var(--tap) + var(--space-3));
+  padding-inline: var(--space-5);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-heading);
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Chevron verde que gira al abrir */
+.summary::after {
+  content: '';
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-left: auto;
+  border-right: calc(var(--border-w) * 2) solid var(--color-accent-text);
+  border-bottom: calc(var(--border-w) * 2) solid var(--color-accent-text);
+  transform: rotate(45deg);
+  transition: transform var(--dur) var(--ease-spring);
+}
+
+.extra[open] .summary::after {
+  transform: rotate(-135deg);
+}
+
+.summary:focus-visible {
+  outline: calc(var(--border-w) * 2) solid var(--color-focus);
+  outline-offset: calc(var(--border-w) * -2);
+  border-radius: var(--radius-xl);
+}
+
+/* El fieldset de adentro no repite tarjeta */
+.inner {
+  padding-top: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .summary:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .summary::after {
+    transition: none;
+  }
+}
+
+/* 12. print: se imprime abierto */
+@media print {
+  .summary::after {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Desplegable "Datos para reserva y escritura": tarjeta blanca con resumen de 56px, chevron verde que gira
+   al abrir, foco visible azul y fieldset interior sin borde. Depende de: styles/tokens.css */

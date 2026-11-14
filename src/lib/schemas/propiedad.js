@@ -1,25 +1,6 @@
 // src/lib/schemas/propiedad.js
 import { z } from 'zod';
-
-const vacioANull = (v) => (v === '' || v === null || v === undefined ? null : v);
-
-/** Número opcional desde un input (vacío = null). */
-const numeroOpcional = (msg, { min = 0, max = Number.MAX_SAFE_INTEGER, entero = false } = {}) =>
-  z.preprocess(
-    (v) => (vacioANull(v) === null ? null : Number(v)),
-    (entero ? z.number({ error: msg }).int(msg) : z.number({ error: msg }))
-      .min(min, msg)
-      .max(max, msg)
-      .nullable(),
-  );
-
-const textoOpcional = (max) =>
-  z.preprocess(
-    (v) => (typeof v === 'string' ? vacioANull(v.trim()) : null),
-    z.string().max(max).nullable(),
-  );
-
-const checkbox = z.preprocess((v) => v === 'on' || v === 'true' || v === true, z.boolean());
+import { checkbox, numeroOpcional, textoOpcional, uuidSchema, vacioANull } from './campos';
 
 /* Acepta lo que copia Google Maps: "-30.7624, -57.9808", "(-30.76,-57.98)" o un link con "@-30.76,-57.98" */
 const COORDS = /(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)/;
@@ -67,7 +48,7 @@ export const propiedadSchema = z.object({
   estado: z.enum(['borrador', 'publicada', 'vendida'], { error: 'Estado inválido.' }),
 });
 
-export const uuidSchema = z.string().uuid();
+export { uuidSchema };
 export const estadoSchema = propiedadSchema.shape.estado;
 
 /**
@@ -89,4 +70,4 @@ export function aFila({ coordenadas: c, ...data }) {
 /* RESUMEN
    Schema Zod de alta/edición de propiedad: textos recortados, números opcionales, precio con
    mostrar_precio, coordenadas en un solo campo (formato de Google Maps -> lat/lng) y checkboxes.
-   Exporta propiedadSchema, uuidSchema, estadoSchema, desdeFormData y aFila. Depende de: zod */
+   Exporta propiedadSchema, uuidSchema, estadoSchema, desdeFormData y aFila. Depende de: zod, ./campos.js */

@@ -43,6 +43,7 @@
 
 .list {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-1);
 }
 
@@ -217,5 +218,5 @@
 
 /* RESUMEN
    Barra del panel: en móvil, barra superior de vidrio con marca, salir y links + "Nueva propiedad";
-   desde 1024px, barra lateral blanca a todo el alto con links apilados, link activo en azul con marca
+   con links que bajan de línea si no entran; desde 1024px, barra lateral blanca a todo el alto con links apilados, link activo en azul con marca
    verde y pie con ver sitio, email y salir. Depende de: styles/tokens.css */
