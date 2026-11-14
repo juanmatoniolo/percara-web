@@ -83,8 +83,27 @@ export async function getConteoPorCategoria() {
   }, /** @type {Record<string, number>} */ ({}));
 }
 
+/**
+ * Datos mínimos de las publicadas para el sitemap (slug, fecha y fotos).
+ * @returns {Promise<{ slug: string, updated_at: string, titulo: string, imagenes: any[] }[]>}
+ */
+export async function getPropiedadesSitemap() {
+  const { data, error } = await getPublicClient()
+    .from('propiedades')
+    .select('slug, titulo, updated_at, imagenes')
+    .eq('estado', 'publicada')
+    .order('updated_at', { ascending: false })
+    .limit(5000);
+  if (error) {
+    console.error('getPropiedadesSitemap:', error.code);
+    return [];
+  }
+  return data;
+}
+
 /* RESUMEN
    Lecturas públicas de propiedades (solo 'publicada', cacheadas con tag 'propiedades'):
-   getPropiedades({categoria, limite, destacadasPrimero}), getPropiedad(slug) y getConteoPorCategoria().
+   getPropiedades({categoria, limite, destacadasPrimero}), getPropiedad(slug), getConteoPorCategoria() y
+   getPropiedadesSitemap().
    Valida slugs con Zod y devuelve { ok, data } o { ok: false, error } sin detalles internos.
    Depende de: lib/supabase/public.js, zod, types/index.js */

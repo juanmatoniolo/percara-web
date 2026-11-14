@@ -1,5 +1,6 @@
 // src/components/admin/admin-sidebar.jsx
 import {
+  Building2,
   ExternalLink,
   FolderOpen,
   House,
@@ -18,6 +19,12 @@ const LINKS = [
   { href: '/dashboard/propiedades', label: 'Propiedades', Icono: House, exact: false },
   { href: '/dashboard/clientes', label: 'Clientes', Icono: Users, exact: false },
   { href: '/dashboard/pedidos', label: 'Carpeta de pedidos', Icono: FolderOpen, exact: false },
+  {
+    href: '/dashboard/configuracion',
+    label: 'Datos de la inmobiliaria',
+    Icono: Building2,
+    exact: false,
+  },
 ];
 
 /** @param {{ email: string }} props */
@@ -65,6 +72,6 @@ export default function AdminSidebar({ email }) {
 }
 
 /* RESUMEN
-   Barra del panel (Server Component): marca, links Resumen/Propiedades/Clientes/Carpeta de pedidos con estado activo, botón "Nueva
+   Barra del panel (Server Component): marca, links Resumen/Propiedades/Clientes/Carpeta de pedidos/Datos de la inmobiliaria con estado activo, botón "Nueva
    propiedad", ver sitio, email del admin y cerrar sesión (Server Action). Recibe `email`.
    Depende de: components/layout/nav-link.jsx, actions/auth.js, admin-sidebar.module.css */

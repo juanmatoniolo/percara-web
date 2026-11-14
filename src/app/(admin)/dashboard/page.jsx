@@ -1,6 +1,6 @@
 // src/app/(admin)/dashboard/page.jsx
 import Link from 'next/link';
-import { ArrowRight, Eye, FileClock, Handshake, Plus, Star } from 'lucide-react';
+import { ArrowRight, Building2, Eye, FileClock, Handshake, Plus, Star } from 'lucide-react';
 import EstadoBadge from '@/components/admin/estado-badge';
 import { requireAdmin } from '@/lib/auth';
 import { listarPropiedadesAdmin, resumenAdmin } from '@/lib/queries/admin-properties';
@@ -46,10 +46,16 @@ export default async function DashboardPage() {
             {r ? `${r.total} propiedades en total` : 'No se pudo cargar el resumen.'}
           </p>
         </div>
-        <Link href="/dashboard/propiedades/nueva" className={styles.cta}>
-          <Plus size={18} aria-hidden="true" />
-          Nueva propiedad
-        </Link>
+        <div className={styles.headActions}>
+          <Link href="/dashboard/configuracion" className={styles.ghost}>
+            <Building2 size={18} aria-hidden="true" />
+            Datos de la inmobiliaria
+          </Link>
+          <Link href="/dashboard/propiedades/nueva" className={styles.cta}>
+            <Plus size={18} aria-hidden="true" />
+            Nueva propiedad
+          </Link>
+        </div>
       </header>
 
       <ul className={styles.stats}>
@@ -99,5 +105,6 @@ export default async function DashboardPage() {
 
 /* RESUMEN
    Resumen del panel (Server Component, verifica admin): tarjetas con conteos por estado y destacadas
-   (enlazan al listado filtrado), acceso a "Nueva propiedad" y las 5 últimas modificadas.
+   (enlazan al listado filtrado), accesos a "Datos de la inmobiliaria" y "Nueva propiedad" y las 5 últimas
+   modificadas.
    Depende de: components/admin/estado-badge.jsx, lib/auth.js, lib/queries/admin-properties.js, page.module.css */

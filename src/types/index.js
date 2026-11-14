@@ -49,13 +49,19 @@
  */
 
 /**
+ * Fila única de `configuracion`: datos de contacto editables en /dashboard/configuracion.
  * @typedef {Object} Configuracion
- * @property {string | null} telefono
- * @property {string | null} whatsapp
+ * @property {string | null} telefono   Como se muestra.
+ * @property {string | null} whatsapp   Como se cargó; se normaliza a 549... para wa.me.
  * @property {string | null} email
- * @property {string | null} direccion
- * @property {Record<string, string>} redes
- * @property {Record<string, string>} horarios
+ * @property {string | null} direccion  Calle y número.
+ * @property {string | null} localidad
+ * @property {string | null} provincia
+ * @property {string | null} maps_url   Link de Google Maps (opcional; si no, se arma con la dirección).
+ * @property {string | null} instagram  Usuario, sin @.
+ * @property {string | null} facebook   Usuario o nombre de la página.
+ * @property {Record<string, string>} redes     (sin uso por ahora)
+ * @property {Record<string, string>} horarios  (sin uso por ahora)
  * @property {string | null} texto_sobre_nosotros
  */
 

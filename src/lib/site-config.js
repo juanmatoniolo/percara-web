@@ -1,25 +1,22 @@
 // src/lib/site-config.js
-export const CONTACT = {
+
+/**
+ * Datos de contacto de RESPALDO. Los reales se editan en /dashboard/configuracion (tabla `configuracion`);
+ * estos se usan solo si la base no responde o un campo está vacío, para que el sitio nunca quede sin
+ * WhatsApp ni teléfono. Mismos campos que la tabla.
+ */
+export const CONTACTO_RESPALDO = {
   telefono: '+54 9 3456 55-3422',
-  telefonoE164: '+5493456553422',
-  whatsapp: '5493456553422',
+  whatsapp: '+54 9 3456 55-3422',
   email: 'Inmobiliariapercara@hotmail.com',
-  direccion: 'Salvarredy 1919, Chajarí, Entre Ríos',
-  direccionCorta: 'Salvarredy 1919, Chajarí',
-  mapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=Salvarredy+1919%2C+Chajar%C3%AD%2C+Entre+R%C3%ADos',
-  instagram: 'https://www.instagram.com/percaranegociosinmobiliarios',
-  instagramUser: '@percaranegociosinmobiliarios',
-  facebook: 'https://www.facebook.com/inmobiliariapercara',
-  facebookUser: 'inmobiliariapercara',
+  direccion: 'Salvarredy 1919',
+  localidad: 'Chajarí',
+  provincia: 'Entre Ríos',
+  maps_url: null,
+  instagram: 'percaranegociosinmobiliarios',
+  facebook: 'inmobiliariapercara',
 };
 
-export function whatsappUrl(text) {
-  const base = `https://wa.me/${CONTACT.whatsapp}`;
-  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
-}
-
 /* RESUMEN
-   Datos de contacto de la inmobiliaria (teléfono, WhatsApp, email, dirección, redes) y helper
-   whatsappUrl(texto). Fuente temporal: se reemplazará por la tabla `configuracion` de Supabase.
-   Depende de: nada */
+   Datos de contacto de respaldo de la inmobiliaria (mismos campos que la tabla `configuracion`).
+   Los usa lib/contacto.js cuando la base falla o falta un dato. Depende de: nada */

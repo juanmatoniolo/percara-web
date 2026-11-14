@@ -1,5 +1,4 @@
 // src/lib/seo.js
-import { CONTACT } from '@/lib/site-config';
 
 /* URL absoluta del sitio para canonical y og:image (WhatsApp exige URLs absolutas y accesibles).
    Si la variable apunta a localhost estando en Vercel, se usa el dominio del proyecto en Vercel. */
@@ -73,23 +72,27 @@ export function pageMetadata({
   };
 }
 
-export function jsonLdInmobiliaria() {
+/**
+ * RealEstateAgent del sitio con los datos de contacto del panel.
+ * @param {import('@/lib/contacto').Contacto} contacto
+ */
+export function jsonLdInmobiliaria(contacto) {
   return {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
     name: 'Percara Negocios Inmobiliarios',
     url: SITE_URL,
-    telephone: CONTACT.telefonoE164,
-    email: CONTACT.email,
+    telephone: contacto.telefonoHref.replace(/^tel:/, ''),
+    email: contacto.email,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Salvarredy 1919',
-      addressLocality: 'Chajarí',
-      addressRegion: 'Entre Ríos',
+      streetAddress: contacto.direccion,
+      addressLocality: contacto.localidad,
+      addressRegion: contacto.provincia,
       addressCountry: 'AR',
     },
-    areaServed: 'Chajarí, Entre Ríos, Argentina',
-    sameAs: [CONTACT.instagram, CONTACT.facebook],
+    areaServed: `${contacto.localidad}, ${contacto.provincia}, Argentina`,
+    sameAs: [contacto.instagram, contacto.facebook].filter(Boolean),
   };
 }
 
@@ -193,4 +196,5 @@ export function serializeJsonLd(data) {
    themeColor, helper pageMetadata() con canonical/OpenGraph/Twitter por página y JSON-LD: sitio
    (RealEstateAgent), jsonLdBreadcrumb(items) y jsonLdPropiedad(p) (RealEstateListing + Offer).
    metadataPropiedad(p, textos) arma la metadata del detalle; OG_SITIO (public/og-percara.jpg) es la
-   imagen por defecto al compartir. Depende de: lib/site-config.js, NEXT_PUBLIC_SITE_URL / VERCEL_* */
+   imagen por defecto al compartir. jsonLdInmobiliaria(contacto) usa los datos del panel.
+   Depende de: NEXT_PUBLIC_SITE_URL / VERCEL_* */

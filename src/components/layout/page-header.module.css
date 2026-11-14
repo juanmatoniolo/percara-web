@@ -1,0 +1,40 @@
+/* src/components/layout/page-header.module.css */
+
+/* 1. Base (móvil 320px) */
+.head {
+  display: grid;
+  gap: var(--space-3);
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+  padding-top: var(--space-7);
+}
+
+.title {
+  font-size: var(--text-4xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading);
+}
+
+.lead {
+  max-width: 44rem;
+  font-size: var(--text-lg);
+  color: var(--color-muted);
+}
+
+/* 4. ≥1024px */
+@media (min-width: 1024px) {
+  .head {
+    padding-top: var(--space-8);
+  }
+}
+
+/* 12. print */
+@media print {
+  .head {
+    padding-top: 0;
+  }
+}
+
+/* RESUMEN
+   Encabezado de páginas institucionales: contenedor centrado, H1 grande azul con tracking ajustado y
+   bajada gris de ancho de lectura. Depende de: styles/tokens.css */

@@ -2,7 +2,8 @@
 import { MapPin, Phone } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/icons';
 import ShareButton from '@/components/ui/share-button';
-import { CONTACT, whatsappUrl } from '@/lib/site-config';
+import { whatsappUrl } from '@/lib/contacto';
+import { getContacto } from '@/lib/queries/settings';
 import { precioPublico } from '@/lib/format';
 import { SITE_URL } from '@/lib/seo';
 import styles from './property-contact.module.css';
@@ -11,7 +12,8 @@ import styles from './property-contact.module.css';
  * Panel de precio y contacto del detalle (fijo en escritorio).
  * @param {{ propiedad: import('@/types').Propiedad }} props
  */
-export default function PropertyContact({ propiedad: p }) {
+export default async function PropertyContact({ propiedad: p }) {
+  const contacto = await getContacto();
   const url = new URL(`/propiedades/${p.slug}`, SITE_URL).toString();
   const mensaje = `Hola, me interesa "${p.titulo}". ${url}`;
 
@@ -42,7 +44,7 @@ export default function PropertyContact({ propiedad: p }) {
 
       <div className={styles.actions}>
         <a
-          href={whatsappUrl(mensaje)}
+          href={whatsappUrl(contacto, mensaje)}
           className={styles.primary}
           target="_blank"
           rel="noopener noreferrer"
@@ -50,7 +52,7 @@ export default function PropertyContact({ propiedad: p }) {
           <WhatsAppIcon size={20} />
           Consultar por WhatsApp
         </a>
-        <a href={`tel:${CONTACT.telefonoE164}`} className={styles.secondary}>
+        <a href={contacto.telefonoHref} className={styles.secondary}>
           <Phone size={18} aria-hidden="true" />
           Llamar
         </a>
@@ -68,4 +70,4 @@ export default function PropertyContact({ propiedad: p }) {
 /* RESUMEN
    Panel del detalle (Server Component): chips de categoría y operación, H1, ubicación, precio grande y
    CTAs a WhatsApp (mensaje con título y URL de la propiedad), llamada y Compartir. Recibe `propiedad`.
-   Depende de: components/ui/{icons,share-button}.jsx, lib/{site-config,format,seo}.js, module.css */
+   Depende de: components/ui/{icons,share-button}.jsx, lib/{contacto,format,seo}.js, lib/queries/settings.js, module.css */

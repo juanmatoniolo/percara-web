@@ -1,12 +1,15 @@
 // src/components/home/cta-band.jsx
 import { Phone } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/icons';
-import { CONTACT, whatsappUrl } from '@/lib/site-config';
+import { whatsappUrl } from '@/lib/contacto';
+import { getContacto } from '@/lib/queries/settings';
 import styles from './cta-band.module.css';
 
 const MENSAJE = 'Hola, quisiera vender o tasar una propiedad.';
 
-export default function CtaBand() {
+export default async function CtaBand() {
+  const contacto = await getContacto();
+
   return (
     <section className={styles.wrap} aria-labelledby="cta-title">
       <div className={`${styles.card} reveal`}>
@@ -26,7 +29,7 @@ export default function CtaBand() {
 
         <div className={styles.actions}>
           <a
-            href={whatsappUrl(MENSAJE)}
+            href={whatsappUrl(contacto, MENSAJE)}
             className={styles.primary}
             target="_blank"
             rel="noopener noreferrer"
@@ -34,9 +37,9 @@ export default function CtaBand() {
             <WhatsAppIcon size={20} />
             Escribir por WhatsApp
           </a>
-          <a href={`tel:${CONTACT.telefonoE164}`} className={styles.secondary}>
+          <a href={contacto.telefonoHref} className={styles.secondary}>
             <Phone size={18} aria-hidden="true" />
-            {CONTACT.telefono}
+            {contacto.telefono}
           </a>
         </div>
       </div>
@@ -47,4 +50,4 @@ export default function CtaBand() {
 /* RESUMEN
    Banda de llamado a la acción (Server Component): tarjeta azul de marca con anillos decorativos,
    título "¿Quiere vender o tasar su propiedad?" y CTAs a WhatsApp (mensaje prellenado) y teléfono.
-   Depende de: components/ui/icons.jsx, lib/site-config.js, cta-band.module.css */
+   Depende de: components/ui/icons.jsx, lib/contacto.js, lib/queries/settings.js, cta-band.module.css */

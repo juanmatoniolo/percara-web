@@ -23,6 +23,17 @@
   border-radius: var(--radius-lg);
 }
 
+.ok {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-lg);
+}
+
 .group {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -148,6 +159,7 @@
 }
 
 /* RESUMEN
-   Formulario de propiedad: grupos en tarjetas blancas sobre grilla de 6 columnas, alerta de error roja,
+   Formulario de propiedad (y de los demás forms del panel): grupos en tarjetas blancas sobre grilla de 6
+   columnas, alerta de error roja, aviso de guardado verde (.ok),
    checkboxes de 44px en verde y barra de guardado fija abajo con botón azul en píldora y spinner.
    Depende de: styles/tokens.css */

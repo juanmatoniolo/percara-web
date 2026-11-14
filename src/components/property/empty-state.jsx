@@ -2,14 +2,16 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/icons';
-import { whatsappUrl } from '@/lib/site-config';
+import { whatsappUrl } from '@/lib/contacto';
+import { getContacto } from '@/lib/queries/settings';
 import styles from './empty-state.module.css';
 
 /**
  * Estado vacío de un listado con salida a WhatsApp y a todas las propiedades.
  * @param {{ Icono: import('react').ComponentType<any>, categoria?: string, error?: boolean }} props
  */
-export default function EmptyState({ Icono, categoria, error = false }) {
+export default async function EmptyState({ Icono, categoria, error = false }) {
+  const contacto = await getContacto();
   const titulo = error
     ? 'No pudimos cargar las propiedades'
     : `Pronto verá ${categoria ? categoria.toLowerCase() : 'propiedades'} aquí`;
@@ -29,7 +31,7 @@ export default function EmptyState({ Icono, categoria, error = false }) {
       <p className={styles.text}>{texto}</p>
       <div className={styles.actions}>
         <a
-          href={whatsappUrl(mensaje)}
+          href={whatsappUrl(contacto, mensaje)}
           className={styles.primary}
           target="_blank"
           rel="noopener noreferrer"
@@ -49,4 +51,4 @@ export default function EmptyState({ Icono, categoria, error = false }) {
 /* RESUMEN
    Estado vacío o de error de un listado (Server Component): ícono con anillos que laten, título,
    texto y CTAs a WhatsApp (mensaje con la categoría) y a /propiedades. Recibe `Icono`, `categoria`
-   y `error`. Depende de: components/ui/icons.jsx, lib/site-config.js, empty-state.module.css */
+   y `error`. Depende de: components/ui/icons.jsx, lib/contacto.js, lib/queries/settings.js, empty-state.module.css */

@@ -1,16 +1,14 @@
 // src/components/layout/site-header.jsx
-import Image from 'next/image';
 import Link from 'next/link';
 import { CATEGORIAS } from '@/lib/queries/categories';
 import InmueblesMenu from './inmuebles-menu';
 import MobileNav from './mobile-nav';
 import styles from './site-header.module.css';
 
-/* "Sobre nosotros" y "Contacto" son anclas a secciones de la home: desde cualquier página
-   llevan a "/" y se desplazan suavemente hasta el id (scroll-behavior: smooth). */
+/* Páginas propias e indexables (antes eran anclas de la home) */
 const ANCLAS = [
-  { href: '/#sobre-nosotros', label: 'Sobre nosotros' },
-  { href: '/#contacto', label: 'Contacto' },
+  { href: '/sobre-nosotros', label: 'Sobre nosotros' },
+  { href: '/contacto', label: 'Contacto' },
 ];
 
 const LINKS_MOVIL = [
@@ -24,14 +22,17 @@ export default function SiteHeader() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <Link href="/" className={styles.brand}>
-          {/* Logo generado con scripts/generate-logo-header.mjs (fondo transparente, 567x128) */}
-          <Image
+          {/* <img> simple con prioridad baja a propósito: React/next precargaban el logo en cada página
+              (competía con la imagen principal) y next/image armaba 16 tamaños de un archivo de 30 KB. Lo genera
+              scripts/generate-logo-header.mjs (fondo transparente, 567x128). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/logo-percara.webp"
             alt="Percara Negocios Inmobiliarios, ir al inicio"
             width={567}
             height={128}
-            sizes="14rem"
-            loading="eager"
+            decoding="async"
+            fetchPriority="low"
             className={styles.logo}
           />
         </Link>
@@ -61,7 +62,7 @@ export default function SiteHeader() {
 }
 
 /* RESUMEN
-   Header fijo (Server Component): logo (public/logo-percara.webp), desplegable "Inmuebles" con categorías, anclas suaves a
-   #sobre-nosotros y #contacto de la home, menú móvil y barra de progreso de lectura (verde).
-   Depende de: next/image, lib/queries/categories.js, components/layout/{inmuebles-menu,mobile-nav}.jsx,
+   Header fijo (Server Component): logo (public/logo-percara.webp), desplegable "Inmuebles" con categorías, links a
+   /sobre-nosotros y /contacto, menú móvil y barra de progreso de lectura (verde).
+   Depende de: lib/queries/categories.js, components/layout/{inmuebles-menu,mobile-nav}.jsx,
    site-header.module.css */

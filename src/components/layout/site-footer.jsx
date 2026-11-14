@@ -1,16 +1,19 @@
 // src/components/layout/site-footer.jsx
 import Link from 'next/link';
-import { CONTACT, whatsappUrl } from '@/lib/site-config';
+import { whatsappUrl } from '@/lib/contacto';
+import { getContacto } from '@/lib/queries/settings';
 import { FacebookIcon, InstagramIcon, WhatsAppIcon } from '@/components/ui/icons';
 import styles from './site-footer.module.css';
 
 const EXTERNO = { target: '_blank', rel: 'noopener noreferrer' };
 
-const REDES = [
-  { label: 'Instagram', href: CONTACT.instagram, Icono: InstagramIcon },
-  { label: 'WhatsApp', href: whatsappUrl(), Icono: WhatsAppIcon },
-  { label: 'Facebook', href: CONTACT.facebook, Icono: FacebookIcon },
-];
+/** @param {import('@/lib/contacto').Contacto} c */
+const redes = (c) =>
+  [
+    { label: 'Instagram', href: c.instagram, Icono: InstagramIcon },
+    { label: 'WhatsApp', href: whatsappUrl(c), Icono: WhatsAppIcon },
+    { label: 'Facebook', href: c.facebook, Icono: FacebookIcon },
+  ].filter((r) => r.href);
 
 /* TODO: crear estas páginas con el texto legal que provea la inmobiliaria (hoy dan 404). */
 const LEGALES = [
@@ -18,7 +21,8 @@ const LEGALES = [
   { label: 'Términos de servicio', href: '/terminos-de-servicio' },
 ];
 
-export default function SiteFooter() {
+export default async function SiteFooter() {
+  const contacto = await getContacto();
   const year = new Date().getFullYear();
 
   return (
@@ -41,7 +45,7 @@ export default function SiteFooter() {
 
         <p className={styles.soft}>Síganos en nuestras redes sociales:</p>
         <ul className={styles.row}>
-          {REDES.map(({ label, href, Icono }) => (
+          {redes(contacto).map(({ label, href, Icono }) => (
             <li key={label}>
               <a href={href} className={styles.link} {...EXTERNO}>
                 <Icono size={16} />
@@ -58,4 +62,4 @@ export default function SiteFooter() {
 /* RESUMEN
    Footer verde centrado y minimalista (Server Component), como el sitio actual: copyright, crédito
    de desarrollo, enlaces legales (TODO: páginas pendientes) y redes sociales.
-   Depende de: lib/site-config.js, components/ui/icons.jsx, site-footer.module.css */
+   Depende de: lib/contacto.js, lib/queries/settings.js, components/ui/icons.jsx, site-footer.module.css */
