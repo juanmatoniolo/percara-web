@@ -4,6 +4,7 @@
 import { useActionState, useState } from 'react';
 import Link from 'next/link';
 import { CircleAlert, CircleCheck, Link2, LoaderCircle, UserPlus } from 'lucide-react';
+import BuscadorSelect from './buscador-select';
 import { vincularPropiedad } from '@/actions/clientes';
 import { ESTADOS_INTERES, ROLES } from '@/lib/schemas/agenda-etiquetas';
 import styles from './vinculo-form.module.css';
@@ -31,25 +32,19 @@ export default function VinculoForm({ modo, fijoId, opciones, rolInicial = 'comp
         {eligeCliente ? 'Agregar dueño o comprador' : 'Vincular a una propiedad'}
       </p>
 
-      <label className={styles.field} htmlFor={`${id}-otro`}>
-        <span>{eligeCliente ? 'Cliente' : 'Propiedad'}</span>
-        <select
-          id={`${id}-otro`}
-          name={eligeCliente ? 'cliente_id' : 'propiedad_id'}
-          required
-          className={styles.control}
-          defaultValue=""
-        >
-          <option value="" disabled>
-            Elegir…
-          </option>
-          {opciones.map((o) => (
-            <option key={o.id} value={o.id}>
-              {eligeCliente ? `${o.nombre}${o.telefono ? ` · ${o.telefono}` : ''}` : o.titulo}
-            </option>
-          ))}
-        </select>
-      </label>
+      <BuscadorSelect
+        key={estado?.n ?? 0}
+        name={eligeCliente ? 'cliente_id' : 'propiedad_id'}
+        label={eligeCliente ? 'Cliente' : 'Propiedad'}
+        opciones={opciones.map((o) =>
+          eligeCliente
+            ? { id: o.id, texto: o.nombre, detalle: o.telefono ?? '' }
+            : { id: o.id, texto: o.titulo },
+        )}
+        placeholder={eligeCliente ? 'Nombre o teléfono…' : 'Título de la propiedad…'}
+        className={styles.field}
+        inputClassName={styles.control}
+      />
 
       <label className={styles.field} htmlFor={`${id}-rol`}>
         <span>Es</span>
@@ -124,6 +119,6 @@ export default function VinculoForm({ modo, fijoId, opciones, rolInicial = 'comp
 }
 
 /* RESUMEN
-   Form para vincular cliente y propiedad (Client Component): elige el otro lado, rol (dueño/comprador),
+   Form para vincular cliente y propiedad (Client Component): busca y elige el otro lado escribiendo, rol (dueño/comprador),
    seguimiento (solo comprador) y notas; envía a vincularPropiedad y avisa el resultado. Link a crear
-   cliente. Recibe `modo`, `fijoId`, `opciones`, `rolInicial`. Depende de: actions/clientes.js, module.css */
+   cliente. Recibe `modo`, `fijoId`, `opciones`, `rolInicial`. Depende de: buscador-select.jsx, actions/clientes.js, module.css */

@@ -3,10 +3,12 @@
 
 import { useActionState } from 'react';
 import { CircleAlert, LoaderCircle, Save } from 'lucide-react';
+import BuscadorSelect from './buscador-select';
 import FormField from './form-field';
 import { guardarPedido } from '@/actions/pedidos';
 import { ESTADOS_PEDIDO, ETIQUETAS_AGENDA, PRIORIDADES } from '@/lib/schemas/agenda-etiquetas';
 import base from './property-form.module.css';
+import ff from './form-field.module.css';
 
 const s = (v) => (v === null || v === undefined ? '' : String(v));
 const opciones = (o) =>
@@ -20,7 +22,7 @@ const opciones = (o) =>
  * Alta / edición de un pedido de la Carpeta (Client Component: useActionState).
  * @param {{
  *   pedido?: any, iniciales?: { fecha?: string, cliente_id?: string, propiedad_id?: string },
- *   clientes: { id: string, nombre: string }[], propiedades: { id: string, titulo: string }[],
+ *   clientes: { id: string, nombre: string, telefono?: string | null }[], propiedades: { id: string, titulo: string }[],
  *   volver: string
  * }} props
  */
@@ -85,32 +87,30 @@ export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedad
 
       <fieldset className={base.group}>
         <legend className={base.legend}>Relacionado con (opcional)</legend>
-        {campo('cliente_id', 'Cliente', {
-          as: 'select',
-          children: [
-            <option key="" value="">
-              Ninguno
-            </option>,
-            ...clientes.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nombre}
-              </option>
-            )),
-          ],
-        })}
-        {campo('propiedad_id', 'Propiedad', {
-          as: 'select',
-          children: [
-            <option key="" value="">
-              Ninguna
-            </option>,
-            ...propiedades.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.titulo}
-              </option>
-            )),
-          ],
-        })}
+        <BuscadorSelect
+          name="cliente_id"
+          label="Cliente"
+          ancho="half"
+          opciones={clientes.map((c) => ({ id: c.id, texto: c.nombre, detalle: c.telefono ?? '' }))}
+          defaultValue={s(v.cliente_id)}
+          placeholder="Nombre o teléfono…"
+          error={err.cliente_id}
+          className={ff.field}
+          labelClassName={ff.label}
+          inputClassName={ff.control}
+        />
+        <BuscadorSelect
+          name="propiedad_id"
+          label="Propiedad"
+          ancho="half"
+          opciones={propiedades.map((p) => ({ id: p.id, texto: p.titulo }))}
+          defaultValue={s(v.propiedad_id)}
+          placeholder="Título de la propiedad…"
+          error={err.propiedad_id}
+          className={ff.field}
+          labelClassName={ff.label}
+          inputClassName={ff.control}
+        />
       </fieldset>
 
       <div className={base.bar}>
@@ -129,5 +129,5 @@ export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedad
 
 /* RESUMEN
    Formulario de la Carpeta de pedidos (Client Component): qué hacer, detalle, fecha, hora, prioridad,
-   estado (al editar) y cliente/propiedad opcionales. Envía a guardarPedido, que vuelve a `volver`.
-   Depende de: form-field.jsx, actions/pedidos.js, lib/schemas/agenda-etiquetas.js, property-form.module.css */
+   estado (al editar) y cliente/propiedad opcionales con buscador. Envía a guardarPedido, que vuelve a `volver`.
+   Depende de: form-field.jsx, buscador-select.jsx, actions/pedidos.js, lib/schemas/agenda-etiquetas.js, property-form.module.css */

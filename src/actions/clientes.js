@@ -91,7 +91,8 @@ export async function vincularPropiedad(_prev, formData) {
     return { ok: false, error: 'No se pudo vincular. Intente de nuevo.' };
   }
   revalidarPanel();
-  return { ok: true, error: null };
+  /* `n` cambia en cada éxito: el form lo usa como key para vaciar el buscador */
+  return { ok: true, error: null, n: Date.now() };
 }
 
 /** Cambia el seguimiento de un comprador. Form con `cliente_id`, `propiedad_id` y `estado`. */

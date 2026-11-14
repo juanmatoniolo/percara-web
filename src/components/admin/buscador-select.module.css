@@ -1,0 +1,133 @@
+/* src/components/admin/buscador-select.module.css */
+
+/* 1. Base (móvil 320px) */
+.wrap {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.box {
+  position: relative;
+}
+
+.lupa {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  color: var(--color-accent-text);
+  pointer-events: none;
+  translate: 0 -50%;
+}
+
+/* Espacio para la lupa y el botón de borrar (más específico que la clase del control que llega por props) */
+.box .input {
+  padding-left: var(--space-7);
+  padding-right: calc(var(--tap) + var(--space-1));
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  right: var(--space-1);
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-muted);
+  border-radius: 50%;
+  translate: 0 -50%;
+}
+
+.list {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: calc(100% + var(--space-1));
+  right: 0;
+  left: 0;
+  display: grid;
+  max-height: calc(var(--tap) * 7);
+  padding: var(--space-1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-float), var(--shadow-lg);
+}
+
+.list[hidden] {
+  display: none;
+}
+
+.opt {
+  display: grid;
+  align-content: center;
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.opt[aria-selected='true'] {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  box-shadow: inset var(--underline-h) 0 0 var(--color-accent);
+}
+
+.texto {
+  overflow: hidden;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.detalle {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.none {
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.error {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .opt:hover {
+    background: var(--color-surface-alt);
+  }
+
+  .clear:hover {
+    color: var(--color-error);
+    background: var(--color-error-soft);
+  }
+}
+
+/* 12. print */
+@media print {
+  .lupa,
+  .clear,
+  .list {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Buscador con lista desplegable: lupa verde a la izquierda, botón borrar de 44px a la derecha, lista
+   blanca flotante con sombra (máx. 7 filas y scroll), opción activa en azul con marca verde, ayuda y
+   error. El aspecto del input lo pone quien lo usa (inputClassName). Depende de: styles/tokens.css */

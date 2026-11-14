@@ -2,6 +2,8 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /* NEXT_DIST_DIR permite compilar de prueba sin pisar el .next de `npm run dev` (Vercel usa .next) */
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   images: {
     /* Las variantes 400/900/1600 se generan al subir (Sharp): el loader elige la adecuada */
     loader: 'custom',
@@ -21,5 +23,5 @@ export default nextConfig;
 
 /* RESUMEN
    Configuración de Next: loader propio de imágenes (variantes pregeneradas en R2), límite de 12 MB para
-   Server Actions (subida de fotos) e inclusión de la fuente Montserrat en el bundle del panel (OG).
+   Server Actions (subida de fotos) e inclusión de la fuente Montserrat en el bundle del panel (OG). distDir configurable (NEXT_DIST_DIR).
    Headers de seguridad y redirects 301 llegan en la fase 8. Depende de: src/lib/image-loader.js */
