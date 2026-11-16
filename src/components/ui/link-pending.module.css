@@ -1,0 +1,73 @@
+/* src/components/ui/link-pending.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Velo sobre la foto de la card (el contenedor .media ya es position: relative) */
+.cubre {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  animation: aparecer var(--dur) var(--ease) var(--dur-fast) both;
+}
+
+.linea {
+  display: inline-grid;
+  place-items: center;
+  animation: aparecer var(--dur) var(--ease) var(--dur-fast) both;
+}
+
+.spinner {
+  width: var(--space-6);
+  height: var(--space-6);
+  border: calc(var(--border-w) * 3) solid var(--color-primary-soft);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: girar calc(var(--dur-slow) * 2) linear infinite;
+}
+
+.linea .spinner {
+  width: var(--space-4);
+  height: var(--space-4);
+  border-width: calc(var(--border-w) * 2);
+}
+
+/* 11. prefers-reduced-motion: sin giro ni fundido; el velo y el anillo quedan como señal estática */
+@media (prefers-reduced-motion: reduce) {
+  .cubre,
+  .linea,
+  .spinner {
+    animation: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .cubre,
+  .linea {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Estilos del indicador de carga de links: velo de vidrio con spinner azul sobre la foto (cubre) o spinner
+   chico en línea (linea). Aparece con retraso corto; sin animación con reduced-motion.
+   Depende de: styles/tokens.css */

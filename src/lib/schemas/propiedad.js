@@ -35,11 +35,18 @@ export const propiedadSchema = z.object({
     .number({ error: 'Elija una categoría.' })
     .int()
     .positive('Elija una categoría.'),
-  localidad: textoOpcional(80),
+  localidad: z
+    .string({ error: 'Indique la localidad.' })
+    .trim()
+    .min(2, 'Indique la localidad.')
+    .max(80, 'Máximo 80 caracteres.'),
   direccion: textoOpcional(160),
   coordenadas,
   superficie_total: numeroOpcional('Superficie inválida.', { max: 1e9 }),
   superficie_cubierta: numeroOpcional('Superficie inválida.', { max: 1e7 }),
+  superficie_semicubierta: numeroOpcional('Superficie inválida.', { max: 1e7 }),
+  medida_frente: numeroOpcional('Medida inválida.', { max: 1e5 }),
+  medida_fondo: numeroOpcional('Medida inválida.', { max: 1e5 }),
   ambientes: numeroOpcional('Número inválido.', { max: 99, entero: true }),
   dormitorios: numeroOpcional('Número inválido.', { max: 99, entero: true }),
   banos: numeroOpcional('Número inválido.', { max: 99, entero: true }),

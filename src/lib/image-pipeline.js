@@ -39,7 +39,7 @@ export async function procesarImagen(entrada) {
       const buffer = await base
         .clone()
         .resize(w, h, { fit: 'cover', position: 'centre', withoutEnlargement: false })
-        .webp({ quality: 80, effort: 5 })
+        .webp({ quality: 76, effort: 6, smartSubsample: true })
         .toBuffer();
       return { ancho: w, alto: h, buffer };
     }),
@@ -110,5 +110,5 @@ export async function generarOg({ portada, titulo, precio }) {
 
 /* RESUMEN
    Pipeline de imágenes con Sharp (solo servidor): tipoReal (magic bytes JPEG/PNG/WebP), procesarImagen
-   (EXIF->rotación, sin metadatos, 4:3, WebP q80 en 400/900/1600 + blur 10px) y generarOg (1200x630 con
+   (EXIF->rotación, sin metadatos, 4:3, WebP q76 con submuestreo inteligente en 400/900/1600 + blur 10px) y generarOg (1200x630 con
    degradado de marca, título y precio, fuente Montserrat incluida). Depende de: sharp, src/assets/fonts */

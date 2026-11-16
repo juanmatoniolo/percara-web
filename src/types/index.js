@@ -36,6 +36,9 @@
  * @property {number | null} lng
  * @property {number | null} superficie_total
  * @property {number | null} superficie_cubierta
+ * @property {number | null} superficie_semicubierta
+ * @property {number | null} medida_frente  Metros de frente del terreno.
+ * @property {number | null} medida_fondo   Metros de fondo del terreno.
  * @property {number | null} ambientes
  * @property {number | null} dormitorios
  * @property {number | null} banos

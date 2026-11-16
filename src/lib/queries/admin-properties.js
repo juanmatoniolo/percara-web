@@ -66,7 +66,16 @@ export async function categoriasConId() {
   return data;
 }
 
+/** Localidades ya usadas (sin repetir, orden alfabético) para sugerirlas al cargar una propiedad. */
+export async function localidadesCargadas() {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase.from('propiedades').select('localidad');
+  if (error) return [];
+  const unicas = new Set(data.map((r) => r.localidad?.trim()).filter(Boolean));
+  return [...unicas].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
 /* RESUMEN
    Lecturas del panel con sesión de admin (sin caché): listarPropiedadesAdmin({estado, categoria, q})
-   validado con Zod, getPropiedadAdmin(id), resumenAdmin() (conteos por estado) y categoriasConId().
+   validado con Zod, getPropiedadAdmin(id), resumenAdmin() (conteos por estado), categoriasConId() y localidadesCargadas().
    Requiere requireAdmin() antes. Depende de: lib/supabase/server.js, zod, server-only */

@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import ListingView from '@/components/property/listing-view';
 import { CATEGORIAS } from '@/lib/queries/categories';
 import { getCategoria } from '@/lib/categories-meta';
-import { getConteoPorCategoria, getPropiedades } from '@/lib/queries/properties';
+import { getConteoPorCategoria, getLocalidades, getPropiedades } from '@/lib/queries/properties';
+import { POR_PAGINA, leerFiltros } from '@/lib/listado';
 import { jsonLdBreadcrumb, pageMetadata, serializeJsonLd } from '@/lib/seo';
 
 export const revalidate = 3600;
@@ -24,13 +25,15 @@ export async function generateMetadata({ params }) {
   });
 }
 
-export default async function CategoriaPage({ params }) {
+export default async function CategoriaPage({ params, searchParams }) {
   const { categoria } = await params;
   const cat = getCategoria(categoria);
   if (!cat) notFound();
 
+  const localidades = await getLocalidades(cat.slug);
+  const { localidad, pagina } = leerFiltros(await searchParams, localidades);
   const [resultado, conteo] = await Promise.all([
-    getPropiedades({ categoria: cat.slug }),
+    getPropiedades({ categoria: cat.slug, localidad, pagina, limite: POR_PAGINA }),
     getConteoPorCategoria(),
   ]);
 
@@ -55,12 +58,17 @@ export default async function CategoriaPage({ params }) {
         migas={migas}
         resultado={resultado}
         conteo={conteo}
+        base={`/categorias/${cat.slug}`}
+        localidades={localidades}
+        localidad={localidad}
+        pagina={pagina}
       />
     </>
   );
 }
 
 /* RESUMEN
-   Página de categoría (ISR 1 h, 9 rutas estáticas, 404 para slugs desconocidos). generateMetadata con
+   Página de categoría (9 rutas, 404 para slugs desconocidos; se arma por pedido por los filtros y
+   los datos salen de la caché con tag 'propiedades'). generateMetadata con
    title, description y canonical; JSON-LD BreadcrumbList. Lee propiedades publicadas de la categoría
-   y el conteo para las pestañas. Depende de: listing-view.jsx, lib/{categories-meta,seo}.js, queries */
+   (24 por página, filtro ?localidad= con las localidades de la categoría) y el conteo de las pestañas. Depende de: listing-view.jsx, lib/{categories-meta,seo}.js, queries */

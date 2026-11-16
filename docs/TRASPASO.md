@@ -78,6 +78,16 @@ Agenda de clientes y Carpeta de pedidos (2026-11-14)
   en la cookie `pedidos_vista`. "Hoy" se calcula con zona America/Argentina/Buenos_Aires.
 - `<body suppressHydrationWarning>` en el layout raíz por extensiones (ColorZilla) que agregan atributos.
 
+Listado y panel (2026-11-16)
+
+- Listados públicos paginados (24 por página, `lib/listado.js`) con filtro `?localidad=` (solo localidades
+  con publicadas; lista blanca). Página fuera de rango muestra el estado vacío (notFound ahí daba 200 por streaming). Canonical sin parámetros.
+- Localidad obligatoria al cargar una propiedad, con sugerencias de las ya cargadas (datalist).
+- Botón "Agendar cita" en `/dashboard/propiedades/[id]`: abre un pedido nuevo de la Carpeta con la
+  propiedad y el título "Visita: ..." precargados.
+- Borrados: stubs `api/{propiedades,categorias}`, `actions/contact.js`, `supabase/client.js`,
+  `seed-demo.sql`, scripts `check-r2`, `extract-styles` y de migración.
+
 SEO y velocidad (2026-11-14)
 
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
@@ -103,12 +113,12 @@ Diseño
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 Scaffolding              | Hecha.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 2 SQL + clientes           | Hecha: schema.sql ejecutado; `lib/supabase/{server,public,middleware}.js`, `lib/r2.js`, `lib/env.js`, `lib/env-public.js`. `lib/supabase/client.js` sigue stub (no se necesitó).                                                                                                                                                                                                                                                                  |
-| 3 Pipeline + actions       | Hecha: `lib/image-pipeline.js`, `lib/og-propiedad.js`, `actions/{properties,images,auth}.js`. `actions/settings.js` y `actions/contact.js` siguen stub.                                                                                                                                                                                                                                                                                           |
+| 3 Pipeline + actions       | Hecha: `lib/image-pipeline.js`, `lib/og-propiedad.js`, `actions/{properties,images,auth,settings}.js`. Formulario de contacto propio no existe (se contacta por WhatsApp).                                                                                                                                                                                                                                                                        |
 | 4 Route Handlers + queries | Parcial: `lib/queries/{properties,admin-properties,categories}.js` hechas. `app/api/*` siguen stub.                                                                                                                                                                                                                                                                                                                                               |
 | 5 Layout, tokens, UI       | Hecha: header de vidrio, menú Inmuebles, menú móvil, footer azul, WhatsApp flotante, tokens.                                                                                                                                                                                                                                                                                                                                                      |
 | 6 Páginas públicas + SEO   | Hecha: home, `/propiedades`, categorías, detalle, `/sobre-nosotros` y `/contacto` (con mapa diferido), cada una con metadata, canonical y JSON-LD. `sitemap.xml` dinámico (con fotos), `robots.txt`, `manifest.webmanifest`, íconos (favicon, apple-icon, Android 192/512/maskable; `scripts/generate-icons.mjs`), 404 y error propios. Falta: OG estático de respaldo ya cubierto por `og-percara.jpg`.                                          |
 | 7 Dashboard                | Casi hecha: login oculto, resumen, listado con filtros y acciones (destacar, publicar, editar, borrar), alta/edición con Zod, gestor de fotos con visor 4:3. `/dashboard/configuracion` (Datos de la inmobiliaria) hecha: edita contacto, oficina y redes de todo el sitio. Agenda de clientes (`/dashboard/clientes`), Carpeta de pedidos (`/dashboard/pedidos`) y "Dueños y compradores" en cada propiedad: hechos, sin probar con sesión real. |
-| 8 Migración y lanzamiento  | Pendiente: `scripts/migrate-mysql.js`, redirects 301, headers de seguridad (CSP, etc.), sitemap, checklist Lighthouse.                                                                                                                                                                                                                                                                                                                            |
+| 8 Migración y lanzamiento  | Migración HECHA (2026-11-16): 152 propiedades de la base vieja importadas y publicadas, 384 fotos en R2; `id_viejo`/`slug_viejo` en la tabla. Mapa de slugs viejos -> nuevos en `docs/redirecciones-301.json`. Scripts de migración borrados (no se versionaron). Falta: URL vieja de una propiedad para cargar los 301, CSP, checklist Lighthouse.                                                                                               |
 
 Probado: build OK; códigos HTTP (404 real, 307 desde el buscador del hero, `/dashboard` -> `/login`);
 pipeline de imágenes y OG con `public/banner.webp`. NO probado de punta a punta: login real, CRUD y
@@ -116,25 +126,26 @@ subida a R2 (requiere las credenciales del usuario).
 
 ## 6. Pendientes del usuario (en orden)
 
-0. Ejecutar `supabase/migrations/005_configuracion_contacto.sql` (sin esto el sitio usa los datos de
+0. Ejecutar `supabase/migrations/006_medidas_migracion.sql` (frente, fondo, semicubierta, id_viejo, slug_viejo). SIN ESTO el sitio falla al leer propiedades. Después correr la migración (ver encabezado de `scripts/migrate-mysql.js`).
+1. Ejecutar `supabase/migrations/005_configuracion_contacto.sql` (sin esto el sitio usa los datos de
    respaldo de `lib/site-config.js` y el panel no puede guardar). 003 y 004 ya se ejecutaron.
    0b. (hecho) `003_clientes_pedidos.sql` y `004_propietarios_datos_cliente.sql`
    (sin esto, Clientes y Carpeta muestran error; el resto del panel sigue andando).
-1. Ejecutar `supabase/migrations/002_mostrar_precio.sql` en Supabase. SIN ESTO el sitio y el panel
+2. Ejecutar `supabase/migrations/002_mostrar_precio.sql` en Supabase. SIN ESTO el sitio y el panel
    fallan al leer propiedades (la columna `mostrar_precio` todavía no existe).
-2. Corregir `.env.local`: `NEXT_PUBLIC_SITE_URL=http://localhost:3000` (hoy dice `:300`).
-3. Verificar o crear el usuario admin (SQL dado en el chat) y probar: login, crear propiedad, subir
+3. Corregir `.env.local`: `NEXT_PUBLIC_SITE_URL=http://localhost:3000` (hoy dice `:300`).
+4. Verificar o crear el usuario admin (SQL dado en el chat) y probar: login, crear propiedad, subir
    fotos, cambiar portada, publicar, ver en el sitio, borrar.
-4. Opcional: `supabase/seed-demo.sql` (9 propiedades `demo-*`). Borrarlas antes del lanzamiento.
-5. ROTAR claves expuestas: secret key de Supabase y token/claves de R2 `percara-web-r2`.
-6. Limpiar el final de `supabase/schema.sql`: tiene pegadas líneas de PowerShell (`'@ | Set-Content ...`).
-7. ESLint roto: `eslint.config.mjs` usa el formato de Next 16 (`eslint-config-next/core-web-vitals`)
+5. (hecho) Datos demo eliminados; la base tiene las propiedades reales.
+6. ROTAR claves expuestas: secret key de Supabase y token/claves de R2 `percara-web-r2`.
+7. Limpiar el final de `supabase/schema.sql`: tiene pegadas líneas de PowerShell (`'@ | Set-Content ...`).
+8. ESLint roto: `eslint.config.mjs` usa el formato de Next 16 (`eslint-config-next/core-web-vitals`)
    con el paquete de Next 15. `npm run lint` falla; el build sí pasa.
-8. Banner del hero (`public/banner.webp`, 1024x434): trae texto incrustado y la dirección
+9. Banner del hero (`public/banner.webp`, 1024x434): trae texto incrustado y la dirección
    "Rivadavia 3935"; el sitio usa "Salvarredy 1919" (editable en /dashboard/configuracion). Confirmar la dirección
    correcta y conseguir una foto de 1600 px o más, sin texto.
-9. Mover la skill a `.claude/skills/apple-style/SKILL.md`.
-10. Confirmar con el cliente si quieren cantidad de cocheras (hoy Sí/No) y "estado de conservación".
+10. Mover la skill a `.claude/skills/apple-style/SKILL.md`.
+11. Confirmar con el cliente si quieren cantidad de cocheras (hoy Sí/No) y "estado de conservación".
 
 ## 7. Mapa de archivos clave
 
@@ -146,7 +157,7 @@ subida a R2 (requiere las credenciales del usuario).
 - Esquemas Zod: `lib/schemas/{auth,propiedad}.js`; etiquetas para el cliente en `propiedad-etiquetas.js`.
 - Seguridad: `lib/auth.js` (getAdmin, requireAdmin, assertAdmin), `lib/rate-limit.js` (en memoria, por
   instancia: en Vercel con varias instancias no es global).
-- SQL: `supabase/schema.sql`, `supabase/migrations/002_mostrar_precio.sql`, `supabase/seed-demo.sql`.
+- SQL: `supabase/schema.sql`, `supabase/migrations/002` a `006`.
 
 ## 8. Infraestructura
 

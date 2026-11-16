@@ -10,8 +10,11 @@ const slugSchema = z
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
 const CAMPOS = `id, titulo, slug, descripcion, precio, mostrar_precio, moneda, operacion, localidad, direccion, lat, lng,
-  superficie_total, superficie_cubierta, ambientes, dormitorios, banos, cochera, imagenes,
+  superficie_total, superficie_cubierta, superficie_semicubierta, medida_frente, medida_fondo, ambientes, dormitorios, banos, cochera, imagenes,
   og_image_url, destacada, estado, created_at, updated_at, categoria:categorias!inner(nombre, slug)`;
+
+/** numeric de Postgres llega como string: lo pasa a número (null si falta). */
+const numero = (v) => (v === null || v === undefined ? null : Number(v));
 
 /** @param {any} fila @returns {import('@/types').Propiedad} */
 function normalizar(fila) {
@@ -21,31 +24,70 @@ function normalizar(fila) {
     ...fila,
     precio: fila.precio === null ? null : Number(fila.precio),
     superficie_total: fila.superficie_total === null ? null : Number(fila.superficie_total),
-    superficie_cubierta:
-      fila.superficie_cubierta === null ? null : Number(fila.superficie_cubierta),
+    superficie_cubierta: numero(fila.superficie_cubierta),
+    superficie_semicubierta: numero(fila.superficie_semicubierta),
+    medida_frente: numero(fila.medida_frente),
+    medida_fondo: numero(fila.medida_fondo),
     imagenes,
   };
 }
 
 /**
- * Propiedades publicadas, más nuevas primero (destacadas antes si se pide).
- * @param {{ categoria?: string, limite?: number, destacadasPrimero?: boolean }} [opts]
- * @returns {Promise<{ ok: true, data: import('@/types').Propiedad[] } | { ok: false, error: string }>}
+ * Propiedades publicadas, más nuevas primero (destacadas antes si se pide), con total para paginar.
+ * `localidad` debe venir validada contra getLocalidades (coincidencia exacta).
+ * @param {{ categoria?: string, localidad?: string, pagina?: number, limite?: number,
+ *   destacadasPrimero?: boolean }} [opts]
+ * @returns {Promise<{ ok: true, data: import('@/types').Propiedad[], total: number } | { ok: false, error: string }>}
  */
-export async function getPropiedades({ categoria, limite = 48, destacadasPrimero = false } = {}) {
-  if (categoria && !slugSchema.safeParse(categoria).success) return { ok: true, data: [] };
+export async function getPropiedades({
+  categoria,
+  localidad,
+  pagina = 1,
+  limite = 48,
+  destacadasPrimero = false,
+} = {}) {
+  if (categoria && !slugSchema.safeParse(categoria).success)
+    return { ok: true, data: [], total: 0 };
 
-  let query = getPublicClient().from('propiedades').select(CAMPOS).eq('estado', 'publicada');
+  let query = getPublicClient()
+    .from('propiedades')
+    .select(CAMPOS, { count: 'exact' })
+    .eq('estado', 'publicada');
   if (categoria) query = query.eq('categoria.slug', categoria);
+  if (localidad) query = query.eq('localidad', localidad);
   if (destacadasPrimero) query = query.order('destacada', { ascending: false });
-  query = query.order('created_at', { ascending: false }).limit(limite);
+  const desde = (pagina - 1) * limite;
+  query = query.order('created_at', { ascending: false }).range(desde, desde + limite - 1);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) {
     console.error('getPropiedades:', error.code);
     return { ok: false, error: 'No se pudieron cargar las propiedades.' };
   }
-  return { ok: true, data: data.map(normalizar) };
+  return { ok: true, data: data.map(normalizar), total: count ?? data.length };
+}
+
+/**
+ * Localidades con propiedades publicadas (opcionalmente de una categoría), con su cantidad, en orden
+ * alfabético. Alimenta el filtro del listado y sirve de lista blanca para ?localidad=.
+ * @param {string} [categoria]  slug
+ * @returns {Promise<{ nombre: string, n: number }[]>}
+ */
+export async function getLocalidades(categoria) {
+  if (categoria && !slugSchema.safeParse(categoria).success) return [];
+  let query = getPublicClient()
+    .from('propiedades')
+    .select('localidad, categoria:categorias!inner(slug)')
+    .eq('estado', 'publicada')
+    .not('localidad', 'is', null);
+  if (categoria) query = query.eq('categoria.slug', categoria);
+  const { data, error } = await query;
+  if (error) return [];
+  const conteo = new Map();
+  for (const { localidad } of data) conteo.set(localidad, (conteo.get(localidad) ?? 0) + 1);
+  return [...conteo]
+    .map(([nombre, n]) => ({ nombre, n }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 }
 
 /**
@@ -103,7 +145,8 @@ export async function getPropiedadesSitemap() {
 
 /* RESUMEN
    Lecturas públicas de propiedades (solo 'publicada', cacheadas con tag 'propiedades'):
-   getPropiedades({categoria, limite, destacadasPrimero}), getPropiedad(slug), getConteoPorCategoria() y
+   getPropiedades({categoria, localidad, pagina, limite, destacadasPrimero}) con total, getLocalidades(categoria),
+   getPropiedad(slug), getConteoPorCategoria() y
    getPropiedadesSitemap().
    Valida slugs con Zod y devuelve { ok, data } o { ok: false, error } sin detalles internos.
    Depende de: lib/supabase/public.js, zod, types/index.js */

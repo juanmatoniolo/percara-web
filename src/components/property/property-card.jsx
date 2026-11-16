@@ -1,5 +1,6 @@
 // src/components/property/property-card.jsx
 import Image from 'next/image';
+import LinkPending from '@/components/ui/link-pending';
 import Link from 'next/link';
 import { Bath, BedDouble, Car, MapPin, Maximize2 } from 'lucide-react';
 import ShareButton from '@/components/ui/share-button';
@@ -48,6 +49,7 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
             {p.categoria.nombre}
           </span>
           {p.destacada && <span className={styles.badge}>Destacada</span>}
+          <LinkPending variante="cubre" />
         </div>
 
         <div className={styles.body}>
@@ -95,4 +97,5 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
    Card de propiedad (Server Component). Recibe `propiedad`, `prioridad` (solo la imagen LCP) y `nivel`
    del título. Imagen 4:3 (o placeholder con el ícono de la categoría), chip de categoría, precio, título,
    localidad, ficha fija de 4 datos (superficie, habitaciones, baños, cochera Sí/No) y botón Compartir.
+   Muestra un velo de carga al tocarla con conexión lenta.
    Depende de: components/ui/share-button.jsx, lib/{format,categories-meta}.js, property-card.module.css */

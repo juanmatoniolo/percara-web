@@ -33,6 +33,19 @@ export function formatSuperficie(m2) {
   return `${NUM.format(m2)} m²`;
 }
 
+const MED = new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+/**
+ * "10,00 x 30,00 m" / "12,85 m de frente" / null.
+ * @param {number | null} frente @param {number | null} fondo
+ */
+export function formatMedidas(frente, fondo) {
+  if (frente && fondo) return `${MED.format(frente)} x ${MED.format(fondo)} m`;
+  if (frente) return `${MED.format(frente)} m de frente`;
+  if (fondo) return `${MED.format(fondo)} m de fondo`;
+  return null;
+}
+
 /** @param {number} n @param {string} singular @param {string} plural */
 export function plural(n, singular, plural) {
   return `${n} ${n === 1 ? singular : plural}`;
@@ -65,6 +78,6 @@ export function recortar(texto, max = 155) {
 
 /* RESUMEN
    Formateo es-AR: formatPrecio (USD/$ o "Consultar precio"), precioPublico(p) (respeta mostrar_precio),
-   formatSuperficie (m² o ha), plural,
+   formatSuperficie (m² o ha), formatMedidas (frente x fondo), plural,
    datosClave(propiedad) para cards y metadata, y recortar(texto) para descriptions.
    Depende de: types/index.js (solo JSDoc) */

@@ -14,6 +14,9 @@ const NUEVA = { moneda: 'USD', estado: 'borrador', mostrar_precio: true };
 const NUMEROS = [
   ['superficie_total', 'Superficie total (m²)', 'Campos: en m² (1 ha = 10.000 m²).'],
   ['superficie_cubierta', 'Superficie cubierta (m²)'],
+  ['superficie_semicubierta', 'Superficie semicubierta (m²)'],
+  ['medida_frente', 'Frente (m)'],
+  ['medida_fondo', 'Fondo (m)'],
   ['ambientes', 'Ambientes'],
   ['dormitorios', 'Habitaciones'],
   ['banos', 'Baños'],
@@ -21,9 +24,9 @@ const NUMEROS = [
 
 /**
  * Alta / edición de propiedad (Client Component: useActionState para errores por campo y envío).
- * @param {{ propiedad?: any, categorias: { id: number, nombre: string }[] }} props
+ * @param {{ propiedad?: any, categorias: { id: number, nombre: string }[], localidades?: string[] }} props
  */
-export default function PropertyForm({ propiedad, categorias }) {
+export default function PropertyForm({ propiedad, categorias, localidades = [] }) {
   const [estado, accion, pendiente] = useActionState(guardarPropiedad, null);
   const inicial = propiedad
     ? {
@@ -116,11 +119,19 @@ export default function PropertyForm({ propiedad, categorias }) {
         <FormField
           name="localidad"
           label="Localidad"
+          required
           maxLength={80}
+          list="localidades-cargadas"
+          autoComplete="off"
           defaultValue={s(v.localidad)}
           error={err.localidad}
-          hint="Ej.: Chajarí"
+          hint="Elija una de la lista o escriba una nueva. Se usa en el filtro del sitio."
         />
+        <datalist id="localidades-cargadas">
+          {localidades.map((l) => (
+            <option key={l} value={l} />
+          ))}
+        </datalist>
         <FormField
           name="direccion"
           label="Dirección o zona"
@@ -152,7 +163,7 @@ export default function PropertyForm({ propiedad, categorias }) {
             hint={hint}
             type="number"
             min="0"
-            step={name.startsWith('superficie') ? 'any' : '1'}
+            step={/^(superficie|medida)/.test(name) ? 'any' : '1'}
             inputMode="decimal"
             defaultValue={s(v[name])}
             error={err[name]}
@@ -209,6 +220,6 @@ export default function PropertyForm({ propiedad, categorias }) {
 
 /* RESUMEN
    Formulario de propiedad (Client Component): datos y precio (con "mostrar precio"), ubicación con
-   coordenadas pegadas de Google Maps, características y publicación (operación fija: venta). Envía a
+   localidad obligatoria (sugiere las ya cargadas), coordenadas pegadas de Google Maps, características y publicación (operación fija: venta). Envía a
    guardarPropiedad; muestra errores por campo y la lista de campos con error, sin perder lo escrito.
    Depende de: form-field.jsx, actions/properties.js, lib/schemas/propiedad-etiquetas.js, module.css */

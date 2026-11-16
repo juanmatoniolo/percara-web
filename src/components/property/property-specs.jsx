@@ -1,6 +1,6 @@
 // src/components/property/property-specs.jsx
-import { Bath, BedDouble, Car, DoorOpen, Home, MapPin, Maximize2, Tag } from 'lucide-react';
-import { formatSuperficie } from '@/lib/format';
+import { Bath, BedDouble, Car, DoorOpen, Home, MapPin, Maximize2, Ruler, Tag } from 'lucide-react';
+import { formatMedidas, formatSuperficie } from '@/lib/format';
 import styles from './property-specs.module.css';
 
 /**
@@ -22,6 +22,12 @@ export default function PropertySpecs({ propiedad: p }) {
       etiqueta: 'Superficie cubierta',
       valor: formatSuperficie(p.superficie_cubierta),
     },
+    {
+      Icono: Maximize2,
+      etiqueta: 'Superficie semicubierta',
+      valor: formatSuperficie(p.superficie_semicubierta),
+    },
+    { Icono: Ruler, etiqueta: 'Medidas', valor: formatMedidas(p.medida_frente, p.medida_fondo) },
     { Icono: DoorOpen, etiqueta: 'Ambientes', valor: p.ambientes },
     { Icono: BedDouble, etiqueta: 'Dormitorios', valor: p.dormitorios },
     { Icono: Bath, etiqueta: 'Baños', valor: p.banos },
@@ -45,4 +51,4 @@ export default function PropertySpecs({ propiedad: p }) {
 
 /* RESUMEN
    Ficha técnica del detalle (Server Component): <dl> agrupada con ícono, etiqueta y valor, sin filas
-   vacías; superficie en m² o ha. Recibe `propiedad`. Depende de: lib/format.js, property-specs.module.css */
+   vacías; superficie en m² o ha y medidas frente x fondo. Recibe `propiedad`. Depende de: lib/format.js, property-specs.module.css */

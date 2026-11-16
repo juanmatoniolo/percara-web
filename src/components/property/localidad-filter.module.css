@@ -1,0 +1,116 @@
+/* src/components/property/localidad-filter.module.css */
+
+/* 1. Base (móvil 320px): etiqueta arriba, select a todo el ancho, botones abajo */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-basis: 100%;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.label svg {
+  color: var(--color-accent);
+}
+
+.select {
+  flex: 1 1 14rem;
+  min-height: var(--tap);
+  padding-inline: var(--space-3);
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.submit {
+  min-height: var(--tap);
+  padding-inline: var(--space-5);
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.submit:active {
+  transform: scale(var(--press-scale));
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--tap);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.select:focus-visible,
+.submit:focus-visible,
+.clear:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+/* 3. ≥768px: todo en una línea */
+@media (min-width: 768px) {
+  .label {
+    flex-basis: auto;
+  }
+
+  .select {
+    flex: 0 1 22rem;
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .submit:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .clear:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .submit {
+    transition: none;
+  }
+
+  .submit:active {
+    transform: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .form {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Filtro de localidad: etiqueta con ícono verde, select de 44px con borde suave, botón azul en píldora con
+   presión elástica y link "Quitar filtro"; en una línea desde 768px. Oculto al imprimir.
+   Depende de: styles/tokens.css */

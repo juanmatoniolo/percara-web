@@ -1,0 +1,117 @@
+/* src/components/property/listing-skeleton.module.css */
+
+/* 1. Base (móvil 320px) */
+@keyframes brillo {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.page {
+  padding-bottom: var(--section-y);
+}
+
+.head {
+  padding-block: var(--space-6) var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-3);
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.bar,
+.media {
+  display: block;
+  background: linear-gradient(
+      90deg,
+      var(--color-surface-alt) 25%,
+      var(--color-surface) 50%,
+      var(--color-surface-alt) 75%
+    )
+    0 0 / 200% 100%;
+  border-radius: var(--radius-sm);
+}
+
+.miga {
+  width: 40%;
+  height: var(--space-3);
+}
+
+.titulo {
+  width: 70%;
+  height: var(--space-6);
+}
+
+.bajada {
+  width: 85%;
+  height: var(--space-4);
+}
+
+.card {
+  display: grid;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  list-style: none;
+}
+
+.media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+}
+
+.precio {
+  width: 45%;
+  height: var(--space-5);
+}
+
+.linea {
+  width: 90%;
+  height: var(--space-4);
+}
+
+.corta {
+  width: 60%;
+  height: var(--space-4);
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .head {
+    padding-block: var(--space-7) var(--space-6);
+  }
+
+  .titulo {
+    width: 45%;
+  }
+
+  .bajada {
+    width: 60%;
+  }
+}
+
+/* 11. prefers-reduced-motion: brillo solo si se permite movimiento */
+@media (prefers-reduced-motion: no-preference) {
+  .bar,
+  .media {
+    animation: brillo calc(var(--dur-slow) * 3) var(--ease) infinite;
+  }
+}
+
+/* 12. print */
+@media print {
+  .page {
+    display: none;
+  }
+}
+
+/* RESUMEN
+   Esqueleto del listado: barras y fotos 4:3 en gris suave con un brillo que recorre de derecha a izquierda
+   (solo si se permite movimiento). Usa la grilla de property-grid. Depende de: styles/tokens.css */

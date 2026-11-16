@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 !.env.example
+
+# Volcados de la base vieja (no se versionan ni se publican)
+/migracion-datos/
