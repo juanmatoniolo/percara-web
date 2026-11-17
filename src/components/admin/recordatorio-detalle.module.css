@@ -1,0 +1,182 @@
+/* src/components/admin/recordatorio-detalle.module.css */
+
+/* 1. Base (móvil 320px) */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  color: var(--color-heading);
+}
+
+.h2 svg {
+  color: var(--color-accent-text);
+}
+
+.datos {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.datos:empty {
+  display: none;
+}
+
+.dato {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.dato dt {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.dato dd {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dato a {
+  color: var(--color-primary);
+}
+
+.dato a:focus-visible,
+.calendario summary:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.prop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.prop svg {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.proxima {
+  justify-self: start;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-lg);
+}
+
+.proxima[data-terminadas] {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+}
+
+.calendario summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.lista {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.lista li[data-pasada] {
+  color: var(--color-muted);
+}
+
+.lista li[data-proxima] {
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.obs {
+  white-space: pre-line;
+  color: var(--color-text-soft);
+}
+
+.empty {
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  border: var(--border-w) dashed var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+/* 2. ≥480px */
+@media (min-width: 480px) {
+  .dato {
+    grid-template-columns: 10rem 1fr;
+    align-items: baseline;
+  }
+}
+
+/* 3. ≥768px */
+@media (min-width: 768px) {
+  .card {
+    padding: var(--space-6);
+  }
+}
+
+/* 4. ≥1024px */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .dato a:hover,
+  .calendario summary:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 12. print */
+@media print {
+  .card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+/* RESUMEN
+   Vista de un recordatorio: tarjetas blancas (dos columnas desde 1024px) con lista de datos etiqueta/valor,
+   aviso de próxima cuota, calendario desplegable con cuotas pasadas en gris y la próxima resaltada, y
+   observaciones con saltos de línea. Depende de: styles/tokens.css */

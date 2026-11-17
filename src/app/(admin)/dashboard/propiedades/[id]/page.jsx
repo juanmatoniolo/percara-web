@@ -1,7 +1,7 @@
 // src/app/(admin)/dashboard/propiedades/[id]/page.jsx
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarPlus, CircleCheck, ExternalLink } from 'lucide-react';
+import { ArrowLeft, BellRing, CalendarPlus, CircleCheck, ExternalLink } from 'lucide-react';
 import PropertyForm from '@/components/admin/property-form';
 import ImageManager from '@/components/admin/image-manager';
 import EstadoBadge from '@/components/admin/estado-badge';
@@ -61,6 +61,10 @@ export default async function EditarPropiedadPage({ params, searchParams }) {
         <Link href={citaHref(p)} className={styles.view}>
           <CalendarPlus size={16} aria-hidden="true" />
           Agendar cita
+        </Link>{' '}
+        <Link href={`/dashboard/recordatorios/nuevo?propiedad=${p.id}`} className={styles.view}>
+          <BellRing size={16} aria-hidden="true" />
+          Registrar negocio
         </Link>
       </p>
       {aviso === 'creada' && (
@@ -83,7 +87,7 @@ export default async function EditarPropiedadPage({ params, searchParams }) {
 
 /* RESUMEN
    Edición de propiedad (Server Component, verifica admin): carga por id (404 si no existe), muestra estado,
-   URL pública fija, botón Agendar cita (pedido con la propiedad), aviso tras crear, gestor de fotos, dueños y compradores (con WhatsApp) y el formulario.
+   URL pública fija, botones Agendar cita (pedido) y Registrar negocio (recordatorio) con la propiedad, aviso tras crear, gestor de fotos, dueños y compradores (con WhatsApp) y el formulario.
    Recibe params.id y searchParams.aviso. Depende de: components/admin/{property-form,image-manager,
    estado-badge,vinculos-propiedad}.jsx, lib/auth.js, lib/queries/{admin-properties,admin-clientes}.js,
    ../editor.module.css */

@@ -121,6 +121,27 @@
  */
 
 /**
+ * Recordatorio: negocio cerrado (cliente + propiedad + cómo se pagó), compartido entre administradores.
+ * @typedef {Object} Recordatorio
+ * @property {string} id
+ * @property {string} titulo
+ * @property {string | null} fecha_operacion   YYYY-MM-DD
+ * @property {string | null} cliente_id
+ * @property {string | null} propiedad_id
+ * @property {'contado' | 'financiado' | 'cuotas' | 'permuta' | 'mixto'} forma_pago
+ * @property {'efectivo' | 'transferencia' | 'cheque' | 'mixto' | 'otro' | null} medio_pago
+ * @property {'ARS' | 'USD'} moneda
+ * @property {number | null} monto_total
+ * @property {number | null} anticipo
+ * @property {number | null} cantidad_cuotas
+ * @property {number | null} monto_cuota
+ * @property {'ARS' | 'USD' | null} moneda_cuotas
+ * @property {string | null} primer_vencimiento   YYYY-MM-DD; las cuotas siguientes son mensuales.
+ * @property {'en_curso' | 'finalizado' | 'cancelado'} estado
+ * @property {string | null} observaciones
+ */
+
+/**
  * @template T
  * @typedef {{ ok: true, data: T } | { ok: false, error: string }} ActionResult
  */
@@ -129,5 +150,5 @@ export {};
 
 /* RESUMEN
    Tipos del dominio solo como @typedef JSDoc (Categoria, ImagenPropiedad, Propiedad, Configuracion,
-   Cliente, ClientePropiedad, Pedido, ActionResult). No exporta valores en runtime. Lo usan queries, componentes y actions.
+   Cliente, ClientePropiedad, Pedido, Recordatorio, ActionResult). No exporta valores en runtime. Lo usan queries, componentes y actions.
    Depende de: nada */

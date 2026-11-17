@@ -1,0 +1,130 @@
+/* src/components/admin/recordatorio-row.module.css */
+
+/* 1. Base (móvil 320px) */
+.row {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur) var(--ease-spring);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  min-width: 0;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.title:focus-visible,
+.vinculos a:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.fecha {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.vinculos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.vinculos:empty {
+  display: none;
+}
+
+.vinculos li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.vinculos svg {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.vinculos a {
+  color: var(--color-primary);
+}
+
+.pago {
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+}
+
+.cuota {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-pill);
+}
+
+.cuota[data-terminadas] {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+}
+
+.obs {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  white-space: pre-line;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* 9. hover: hover */
+@media (hover: hover) {
+  .row:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .vinculos a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
+}
+
+/* 12. print */
+@media print {
+  .row {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}
+
+/* RESUMEN
+   Fila de Recordatorios: tarjeta blanca con título y estado, fecha, vínculos con íconos verdes, resumen del
+   pago, píldora azul con la próxima cuota (verde si ya pasaron todas) y observaciones recortadas a 3 líneas.
+   Depende de: styles/tokens.css */

@@ -13,6 +13,8 @@
 }
 
 .list {
+  /* Contiene a los .sr-only (absolutos) de cada pestaña: sin esto se salían del scroll y ensanchaban la página */
+  position: relative;
   display: flex;
   gap: var(--space-2);
   width: min(100% - 2 * var(--gutter), var(--container));

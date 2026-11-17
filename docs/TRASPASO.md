@@ -78,6 +78,16 @@ Agenda de clientes y Carpeta de pedidos (2026-11-14)
   en la cookie `pedidos_vista`. "Hoy" se calcula con zona America/Argentina/Buenos_Aires.
 - `<body suppressHydrationWarning>` en el layout raíz por extensiones (ColorZilla) que agregan atributos.
 
+Recordatorios (2026-11-16)
+
+- Solapa `/dashboard/recordatorios`: cada negocio cerrado con cliente, propiedad, forma de pago (contado,
+  financiado, cuotas con el vendedor, permuta, mixto), medio (efectivo, transferencia, cheque...), moneda,
+  total, anticipo, cuotas (cantidad, monto, moneda propia, primer vencimiento mensual), estado y
+  observaciones libres. Próxima cuota calculada en `lib/cuotas.js`. Tabla compartida entre admins.
+  SQL: `supabase/migrations/007_recordatorios.sql`. Acceso "Registrar negocio" desde cada propiedad.
+  `/dashboard/recordatorios/[id]` es la vista (solo lectura, con calendario de cuotas y saldo) y
+  `/[id]/editar` el formulario; guardar vuelve a la vista.
+
 Listado y panel (2026-11-16)
 
 - Listados públicos paginados (24 por página, `lib/listado.js`) con filtro `?localidad=` (solo localidades
@@ -165,8 +175,11 @@ subida a R2 (requiere las credenciales del usuario).
   variable `..._ANON_KEY` y `..._SERVICE_ROLE_KEY`). Registro público de Auth DESACTIVADO.
 - R2: bucket `percara-media` (ENAM). Dev: `https://pub-8a07b2867efd49a5b0e0cbac329a91c1.r2.dev`. En
   producción usar dominio propio (ej. `cdn.inmobiliariapercara.com`) y actualizar `R2_PUBLIC_URL`.
-- Variables en `.env.local` (ignorado); `.env.example` aparece borrado en git: restaurarlo (la spec pide
-  versionarlo).
+- Variables en `.env.local` (ignorado); `.env.example` versionado sin valores (restaurado 2026-11-16, sin
+  las MYSQL_*). Auditado: secretos solo en `lib/env.js` y `lib/r2.js` (server-only), ningún secreto en el
+  bundle del cliente.
+- Responsive (2026-11-16): páginas públicas probadas sin desborde horizontal en 320/375/768/1024/1440.
+  Fix: `.list` de category-tabs con `position: relative` (los `.sr-only` absolutos ensanchaban la página).
 
 ## 9. Preferencias de trabajo del usuario
 
