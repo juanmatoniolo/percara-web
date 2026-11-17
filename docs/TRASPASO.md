@@ -1,6 +1,6 @@
 # TRASPASO DE CONTEXTO: Percara Negocios Inmobiliarios
 
-Actualizado: 2026-11-16 (último commit b95165a). Fuente única del estado del proyecto (antes estaba duplicado al final de
+Actualizado: 2026-11-16 (último commit e74c42e). Fuente única del estado del proyecto (antes estaba duplicado al final de
 ESPECIFICACION.md y CONTEXTO-SITIO-ACTUAL.md). Continuar desde acá: no rehacer lo hecho y respetar
 "Decisiones tomadas" y "Preferencias de trabajo".
 
@@ -100,8 +100,14 @@ Listado y panel (2026-11-16)
 
 SEO y velocidad (2026-11-14)
 
+- Panel en móvil (2026-11-17): la fila de marca/"Nueva"/salir se va con el scroll y solo queda fija una
+  fila fina (54 px) de solapas deslizables (textos cortos "Pedidos" y "Datos" bajo 480 px; la activa se
+  centra sola con `NavLink alVista`). `.bar`/`.top` usan `display: contents` en móvil para que el sticky
+  sea relativo a toda la página. Desde 1024 px, barra lateral igual que antes.
 - Galería del detalle: carrusel renderizado en servidor (LCP intacta) + `gallery-controls.jsx` (cliente):
   flechas de vidrio solo con mouse, tira de miniaturas (variante 400) y teclado ← →. En celular se desliza.
+- Botón "Ver en Google Maps" en la tarjeta del detalle (2026-11-17): Maps URLs `search/?api=1&query=lat,lng`
+  (sin API key), solo si lat/lng son válidas y no 0,0 (146 de 152 lo tienen).
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
 - Logo del header como `<img>` con `fetchPriority="low"`: React 19 precargaba toda imagen no lazy y
   competía con la imagen LCP. Solo la LCP lleva `priority`.

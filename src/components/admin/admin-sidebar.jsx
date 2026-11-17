@@ -19,11 +19,18 @@ const LINKS = [
   { href: '/dashboard', label: 'Resumen', Icono: LayoutDashboard, exact: true },
   { href: '/dashboard/propiedades', label: 'Propiedades', Icono: House, exact: false },
   { href: '/dashboard/clientes', label: 'Clientes', Icono: Users, exact: false },
-  { href: '/dashboard/pedidos', label: 'Carpeta de pedidos', Icono: FolderOpen, exact: false },
+  {
+    href: '/dashboard/pedidos',
+    label: 'Carpeta de pedidos',
+    corto: 'Pedidos',
+    Icono: FolderOpen,
+    exact: false,
+  },
   { href: '/dashboard/recordatorios', label: 'Recordatorios', Icono: BellRing, exact: false },
   {
     href: '/dashboard/configuracion',
     label: 'Datos de la inmobiliaria',
+    corto: 'Datos',
     Icono: Building2,
     exact: false,
   },
@@ -31,49 +38,62 @@ const LINKS = [
 
 /** @param {{ email: string }} props */
 export default function AdminSidebar({ email }) {
+  /* Móvil: .bar y .top son display: contents; la fila de marca se va con el scroll y solo la fila de
+     solapas (.nav) queda pegada arriba. Desde 1024px: barra lateral (orden con `order` en el CSS). */
   return (
-    <header className={styles.bar}>
-      <p className={styles.brand}>
-        Percara <span>Panel</span>
-      </p>
+    <div className={styles.bar}>
+      <header className={styles.top}>
+        <p className={styles.brand}>
+          Percara <span>Panel</span>
+        </p>
+        <Link
+          href="/dashboard/propiedades/nueva"
+          className={styles.cta}
+          aria-label="Nueva propiedad"
+        >
+          <Plus size={18} aria-hidden="true" />
+          <span className={styles.ctaTexto}>Nueva propiedad</span>
+          <span className={styles.ctaCorto} aria-hidden="true">
+            Nueva
+          </span>
+        </Link>
+        <div className={styles.foot}>
+          <a href="/" target="_blank" rel="noopener" className={styles.link}>
+            <ExternalLink size={18} aria-hidden="true" />
+            Ver sitio
+          </a>
+          <p className={styles.user} title={email}>
+            {email}
+          </p>
+          <form action={cerrarSesion}>
+            <button type="submit" className={styles.logout} aria-label="Cerrar sesión">
+              <LogOut size={18} aria-hidden="true" />
+              <span className={styles.logoutTexto}>Cerrar sesión</span>
+            </button>
+          </form>
+        </div>
+      </header>
 
       <nav className={styles.nav} aria-label="Panel">
         <ul className={styles.list}>
-          {LINKS.map(({ href, label, Icono, exact }) => (
+          {LINKS.map(({ href, label, corto, Icono, exact }) => (
             <li key={href}>
-              <NavLink href={href} exact={exact} className={styles.link}>
+              <NavLink href={href} exact={exact} className={styles.link} alVista>
                 <Icono size={18} aria-hidden="true" />
-                {label}
+                <span className={corto ? styles.largo : undefined}>{label}</span>
+                {/* Se muestra uno u otro con display: el oculto tampoco se lee */}
+                {corto && <span className={styles.corto}>{corto}</span>}
               </NavLink>
             </li>
           ))}
         </ul>
-        <Link href="/dashboard/propiedades/nueva" className={styles.cta}>
-          <Plus size={18} aria-hidden="true" />
-          Nueva propiedad
-        </Link>
       </nav>
-
-      <div className={styles.foot}>
-        <a href="/" target="_blank" rel="noopener" className={styles.link}>
-          <ExternalLink size={18} aria-hidden="true" />
-          Ver sitio
-        </a>
-        <p className={styles.user} title={email}>
-          {email}
-        </p>
-        <form action={cerrarSesion}>
-          <button type="submit" className={styles.logout}>
-            <LogOut size={18} aria-hidden="true" />
-            Cerrar sesión
-          </button>
-        </form>
-      </div>
-    </header>
+    </div>
   );
 }
 
 /* RESUMEN
-   Barra del panel (Server Component): marca, links Resumen/Propiedades/Clientes/Carpeta de pedidos/Recordatorios/Datos de la inmobiliaria con estado activo, botón "Nueva
-   propiedad", ver sitio, email del admin y cerrar sesión (Server Action). Recibe `email`.
+   Barra del panel (Server Component): marca, "Nueva propiedad", ver sitio, email y cerrar sesión, más
+   las solapas Resumen/Propiedades/Clientes/Pedidos/Recordatorios/Datos con estado activo. En móvil solo
+   la fila de solapas queda fija arriba. Recibe `email`.
    Depende de: components/layout/nav-link.jsx, actions/auth.js, admin-sidebar.module.css */

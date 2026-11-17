@@ -1,22 +1,21 @@
 /* src/components/admin/admin-sidebar.module.css */
 
-/* 1. Base (móvil 320px): barra superior fija de vidrio */
-.bar {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
-  display: grid;
-  grid-template-columns: 1fr auto;
+/* 1. Base (móvil 320px): fila de marca que se va con el scroll + fila de solapas fija y fina */
+.bar,
+.top {
+  display: contents;
+}
+
+.top {
+  display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--gutter);
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
-  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
-  border-bottom: var(--border-w) solid var(--glass-border);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--gutter);
+  background: var(--color-surface);
 }
 
 .brand {
+  margin-right: auto;
   font-family: var(--font-display-stack);
   font-size: var(--text-lg);
   font-weight: 700;
@@ -34,17 +33,30 @@
 }
 
 .nav {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  border-block: var(--border-w) solid var(--glass-border);
 }
 
+/* Una sola fila deslizable; position relative contiene a los absolutos (no ensancha la página) */
 .list {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-1);
+  padding: var(--space-1) var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - var(--space-6)), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - var(--space-6)), transparent);
+}
+
+.list li {
+  flex: none;
 }
 
 .link,
@@ -56,6 +68,7 @@
   padding-inline: var(--space-3);
   font-size: var(--text-sm);
   font-weight: 700;
+  white-space: nowrap;
   color: var(--color-text-soft);
   border-radius: var(--radius-md);
   transition:
@@ -65,21 +78,27 @@
 
 .link svg,
 .logout svg {
+  flex: none;
   color: var(--color-accent-text);
 }
 
 .link[aria-current='page'] {
   color: var(--color-primary);
   background: var(--color-primary-soft);
-  box-shadow: inset var(--underline-h) 0 0 var(--color-accent);
+  box-shadow: inset 0 calc(var(--underline-h) * -1) 0 var(--color-accent);
+}
+
+.largo,
+.ctaTexto,
+.logoutTexto {
+  display: none;
 }
 
 .cta {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   min-height: var(--tap);
-  margin-left: auto;
   padding-inline: var(--space-4);
   font-size: var(--text-sm);
   font-weight: 700;
@@ -102,11 +121,8 @@
 }
 
 .foot {
-  grid-row: 1;
-  grid-column: 2;
   display: flex;
   align-items: center;
-  gap: var(--space-1);
 }
 
 .foot > a,
@@ -115,65 +131,117 @@
 }
 
 .logout {
+  justify-content: center;
+  min-width: var(--tap);
+  padding-inline: var(--space-2);
   color: var(--color-muted);
 }
 
+.link:focus-visible,
+.logout:focus-visible,
+.cta:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: calc(var(--border-w) * -1);
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .bar {
+  .nav {
     background: var(--color-surface);
+  }
+}
+
+/* 2. ≥480px: entran los textos completos de las solapas */
+@media (min-width: 480px) {
+  .largo {
+    display: inline;
+  }
+
+  .corto {
+    display: none;
   }
 }
 
 /* 3. ≥768px */
 @media (min-width: 768px) {
+  .ctaTexto,
+  .logoutTexto {
+    display: inline;
+  }
+
+  .ctaCorto {
+    display: none;
+  }
+
+  .logout {
+    padding-inline: var(--space-3);
+  }
+
   .foot > a {
     display: inline-flex;
   }
 }
 
-/* 4. ≥1024px: barra lateral a todo el alto */
+/* 4. ≥1024px: barra lateral a todo el alto (orden: marca, solapas, nueva propiedad, pie) */
 @media (min-width: 1024px) {
   .bar {
     position: sticky;
     top: 0;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    gap: var(--space-5);
     height: 100dvh;
     padding: var(--space-6) var(--space-4);
     background: var(--color-surface);
-    border-bottom: 0;
     border-right: var(--border-w) solid var(--color-line);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+  }
+
+  .top {
+    display: contents;
   }
 
   .brand {
+    order: 1;
+    margin: 0 0 var(--space-1);
     padding-inline: var(--space-3);
-    margin-bottom: var(--space-6);
   }
 
   .nav {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-5);
+    position: static;
+    order: 2;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0;
   }
 
   .list {
     flex-direction: column;
+    padding: 0;
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .link[aria-current='page'] {
+    box-shadow: inset var(--underline-h) 0 0 var(--color-accent);
   }
 
   .cta {
+    order: 3;
     justify-content: center;
-    margin-left: 0;
   }
 
   .foot {
+    order: 4;
     flex-direction: column;
     align-items: stretch;
     margin-top: auto;
     padding-top: var(--space-4);
     border-top: var(--border-w) solid var(--color-line);
+  }
+
+  .logout {
+    justify-content: flex-start;
   }
 
   .user {
@@ -211,12 +279,14 @@
 
 /* 12. print */
 @media print {
-  .bar {
+  .top,
+  .nav {
     display: none;
   }
 }
 
 /* RESUMEN
-   Barra del panel: en móvil, barra superior de vidrio con marca, salir y links + "Nueva propiedad";
-   con links que bajan de línea si no entran; desde 1024px, barra lateral blanca a todo el alto con links apilados, link activo en azul con marca
-   verde y pie con ver sitio, email y salir. Depende de: styles/tokens.css */
+   Barra del panel. Móvil: fila blanca de marca + "Nueva" + salir (se va con el scroll) y fila fina de
+   solapas de vidrio fija arriba, deslizable de costado con la activa subrayada en verde; textos cortos
+   en menos de 480px. Desde 1024px: barra lateral blanca a todo el alto con links apilados y pie con ver
+   sitio, email y salir. Depende de: styles/tokens.css */

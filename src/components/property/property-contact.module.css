@@ -90,8 +90,35 @@
   background: var(--color-primary);
 }
 
+/* Igual que el botón Compartir: claro, secundario */
+.maps {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: calc(var(--tap) + var(--space-1));
+  padding-inline: var(--space-5);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.maps svg {
+  color: var(--color-accent-text);
+}
+
+.maps:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
 .primary:active,
-.secondary:active {
+.secondary:active,
+.maps:active {
   transform: scale(var(--press-scale));
 }
 
@@ -133,19 +160,25 @@
   .secondary:hover {
     background: var(--color-primary-hover);
   }
+
+  .maps:hover {
+    background: var(--color-accent-soft);
+  }
 }
 
 /* 11. prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .primary,
-  .secondary {
+  .secondary,
+  .maps {
     transition: none;
   }
 
   .primary:hover,
   .secondary:hover,
   .primary:active,
-  .secondary:active {
+  .secondary:active,
+  .maps:active {
     transform: none;
   }
 }
@@ -164,5 +197,5 @@
 
 /* RESUMEN
    Panel de precio y contacto: chips (categoría azul, operación verde), H1 azul, ubicación, precio grande
-   entre filetes y CTAs en píldora (WhatsApp verde con halo, llamar azul). Desde 1024px es una tarjeta
+   entre filetes y CTAs en píldora (WhatsApp verde con halo, llamar azul, Google Maps claro). Desde 1024px es una tarjeta
    fija junto a la galería. Depende de: styles/tokens.css */
