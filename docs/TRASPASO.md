@@ -1,6 +1,6 @@
 # TRASPASO DE CONTEXTO: Percara Negocios Inmobiliarios
 
-Actualizado: 2026-11-16 (último commit e74c42e). Fuente única del estado del proyecto (antes estaba duplicado al final de
+Actualizado: 2026-11-17 (último commit 4045b07 + header del sitio en /login). Fuente única del estado del proyecto (antes estaba duplicado al final de
 ESPECIFICACION.md y CONTEXTO-SITIO-ACTUAL.md). Continuar desde acá: no rehacer lo hecho y respetar
 "Decisiones tomadas" y "Preferencias de trabajo".
 
@@ -108,6 +108,8 @@ SEO y velocidad (2026-11-14)
   flechas de vidrio solo con mouse, tira de miniaturas (variante 400) y teclado ← →. En celular se desliza.
 - Botón "Ver en Google Maps" en la tarjeta del detalle (2026-11-17): Maps URLs `search/?api=1&query=lat,lng`
   (sin API key), solo si lat/lng son válidas y no 0,0 (146 de 152 lo tienen).
+- `/login` muestra el header del sitio (`SiteHeader`) para volver al inicio con un clic; sigue sin haber
+  links del sitio hacia el login.
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
 - Logo del header como `<img>` con `fetchPriority="low"`: React 19 precargaba toda imagen no lazy y
   competía con la imagen LCP. Solo la LCP lleva `priority`.

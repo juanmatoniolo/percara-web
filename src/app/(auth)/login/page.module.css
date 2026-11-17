@@ -18,7 +18,7 @@
   isolation: isolate;
   display: grid;
   place-items: center;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--header-h));
   padding: var(--space-6) var(--gutter);
   overflow: clip;
   background: var(--color-bg);
@@ -105,6 +105,6 @@
 }
 
 /* RESUMEN
-   Pantalla de login: fondo blanco con halos verde y azul difusos, tarjeta de vidrio centrada con marca,
+   Pantalla de login (debajo del header del sitio): fondo blanco con halos verde y azul difusos, tarjeta de vidrio centrada con marca,
    título y formulario; entra con escala elástica (sin movimiento si se pide reducirlo).
    Depende de: styles/tokens.css */
