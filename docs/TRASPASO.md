@@ -1,6 +1,6 @@
 # TRASPASO DE CONTEXTO: Percara Negocios Inmobiliarios
 
-Actualizado: 2026-11-14. Fuente única del estado del proyecto (antes estaba duplicado al final de
+Actualizado: 2026-11-16 (último commit b95165a). Fuente única del estado del proyecto (antes estaba duplicado al final de
 ESPECIFICACION.md y CONTEXTO-SITIO-ACTUAL.md). Continuar desde acá: no rehacer lo hecho y respetar
 "Decisiones tomadas" y "Preferencias de trabajo".
 
@@ -100,6 +100,8 @@ Listado y panel (2026-11-16)
 
 SEO y velocidad (2026-11-14)
 
+- Galería del detalle: carrusel renderizado en servidor (LCP intacta) + `gallery-controls.jsx` (cliente):
+  flechas de vidrio solo con mouse, tira de miniaturas (variante 400) y teclado ← →. En celular se desliza.
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
 - Logo del header como `<img>` con `fetchPriority="low"`: React 19 precargaba toda imagen no lazy y
   competía con la imagen LCP. Solo la LCP lleva `priority`.
@@ -113,49 +115,43 @@ Diseño
 - Fondo blanco en toda la web, SIN modo oscuro (se eliminó el theme-toggle).
 - Azul de marca #042369 = acción (botones, títulos, links, foco, footer). Verde #27AE47 = detalles
   (líneas, íconos, badges, halos, WhatsApp). Texto verde siempre `--color-accent-text` #1c8237 (AA).
-- Estilo "Apple" (skill en `.claude/apple-style/SKILL.md`; para que Claude Code la cargue debe estar en
-  `.claude/skills/apple-style/`): vidrio esmerilado en lo que flota, radios amplios, sombras teñidas de
+- Estilo "Apple" (skill en `.claude/skills/apple-style/SKILL.md`, la carga Claude Code): vidrio esmerilado en lo que flota, radios amplios, sombras teñidas de
   azul, `--ease-spring`, `:active` con `--press-scale`. Todo movimiento se apaga con reduced-motion.
 
 ## 5. Estado por fase
 
-| Fase                       | Estado                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 Scaffolding              | Hecha.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 2 SQL + clientes           | Hecha: schema.sql ejecutado; `lib/supabase/{server,public,middleware}.js`, `lib/r2.js`, `lib/env.js`, `lib/env-public.js`. `lib/supabase/client.js` sigue stub (no se necesitó).                                                                                                                                                                                                                                                                  |
-| 3 Pipeline + actions       | Hecha: `lib/image-pipeline.js`, `lib/og-propiedad.js`, `actions/{properties,images,auth,settings}.js`. Formulario de contacto propio no existe (se contacta por WhatsApp).                                                                                                                                                                                                                                                                        |
-| 4 Route Handlers + queries | Parcial: `lib/queries/{properties,admin-properties,categories}.js` hechas. `app/api/*` siguen stub.                                                                                                                                                                                                                                                                                                                                               |
-| 5 Layout, tokens, UI       | Hecha: header de vidrio, menú Inmuebles, menú móvil, footer azul, WhatsApp flotante, tokens.                                                                                                                                                                                                                                                                                                                                                      |
-| 6 Páginas públicas + SEO   | Hecha: home, `/propiedades`, categorías, detalle, `/sobre-nosotros` y `/contacto` (con mapa diferido), cada una con metadata, canonical y JSON-LD. `sitemap.xml` dinámico (con fotos), `robots.txt`, `manifest.webmanifest`, íconos (favicon, apple-icon, Android 192/512/maskable; `scripts/generate-icons.mjs`), 404 y error propios. Falta: OG estático de respaldo ya cubierto por `og-percara.jpg`.                                          |
-| 7 Dashboard                | Casi hecha: login oculto, resumen, listado con filtros y acciones (destacar, publicar, editar, borrar), alta/edición con Zod, gestor de fotos con visor 4:3. `/dashboard/configuracion` (Datos de la inmobiliaria) hecha: edita contacto, oficina y redes de todo el sitio. Agenda de clientes (`/dashboard/clientes`), Carpeta de pedidos (`/dashboard/pedidos`) y "Dueños y compradores" en cada propiedad: hechos, sin probar con sesión real. |
-| 8 Migración y lanzamiento  | Migración HECHA (2026-11-16): 152 propiedades de la base vieja importadas y publicadas, 384 fotos en R2; `id_viejo`/`slug_viejo` en la tabla. Mapa de slugs viejos -> nuevos en `docs/redirecciones-301.json`. Scripts de migración borrados (no se versionaron). Falta: URL vieja de una propiedad para cargar los 301, CSP, checklist Lighthouse.                                                                                               |
+| Fase                       | Estado                                                                                                                                                                                                                                                                                                                       |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 Scaffolding              | Hecha.                                                                                                                                                                                                                                                                                                                       |
+| 2 SQL + clientes           | Hecha: `schema.sql` y migraciones 002 a 007 EJECUTADAS (verificado 2026-11-16). `lib/supabase/{server,public,middleware}.js`, `lib/r2.js`, `lib/env.js`, `lib/env-public.js`.                                                                                                                                                |
+| 3 Pipeline + actions       | Hecha: `lib/image-pipeline.js` (WebP q76, effort 6, smartSubsample), `lib/og-propiedad.js`, `actions/{properties,images,auth,settings,clientes,pedidos,recordatorios}.js`. Sin formulario de contacto (se contacta por WhatsApp).                                                                                            |
+| 4 Route Handlers + queries | Queries hechas en `lib/queries/*`. Los stubs de `app/api/*` se borraron: no se usan (todo es Server Components).                                                                                                                                                                                                             |
+| 5 Layout, tokens, UI       | Hecha: header de vidrio, menú Inmuebles, menú móvil, footer azul, WhatsApp flotante, tokens, skeletons de carga y `LinkPending` (`useLinkStatus`).                                                                                                                                                                           |
+| 6 Páginas públicas + SEO   | Hecha: home, `/propiedades` (grupo `(listado)` con loading propio), categorías (layout que valida antes del loading = 404 real), detalle, `/sobre-nosotros`, `/contacto`, metadata, canonical, JSON-LD, sitemap con fotos, robots, manifest, íconos, 404 y error propios. Responsive verificado 320 a 1440 px.               |
+| 7 Dashboard                | Hecha: login oculto, resumen, propiedades (CRUD, fotos con visor 4:3, medidas, localidad obligatoria con sugerencias, "Agendar cita", "Registrar negocio"), configuración, Clientes, Carpeta de pedidos, Recordatorios (listado, vista, edición). Sin prueba automatizada con sesión real (el usuario la usa en producción). |
+| 8 Migración y lanzamiento  | Migración HECHA: 152 propiedades publicadas, 384 fotos en R2; `id_viejo`/`slug_viejo` en la tabla; mapa en `docs/redirecciones-301.json`. Scripts de migración borrados (nunca versionados; el dump vive en `migracion-datos/`, ignorado). Falta: 301, CSP completa, Lighthouse.                                             |
 
-Probado: build OK; códigos HTTP (404 real, 307 desde el buscador del hero, `/dashboard` -> `/login`);
-pipeline de imágenes y OG con `public/banner.webp`. NO probado de punta a punta: login real, CRUD y
-subida a R2 (requiere las credenciales del usuario).
+Probado (2026-11-16): lint (0 errores) y build; producción con códigos HTTP correctos (404 real en
+categoría y propiedad inexistentes), sitemap de 165 URLs, TTFB 0,35 a 1 s; HTML 20-32 KB gzip, JS ~156 KB.
+Sin desborde horizontal en páginas públicas a 320/375/768/1024/1440 (script CDP con Chrome headless).
+Lighthouse por `npx` lo bloquea el clasificador de permisos y la API de PageSpeed dio cuota agotada:
+medir a mano en pagespeed.web.dev.
 
-## 6. Pendientes del usuario (en orden)
+## 6. Pendientes (en orden)
 
-0. Ejecutar `supabase/migrations/006_medidas_migracion.sql` (frente, fondo, semicubierta, id_viejo, slug_viejo). SIN ESTO el sitio falla al leer propiedades. Después correr la migración (ver encabezado de `scripts/migrate-mysql.js`).
-1. Ejecutar `supabase/migrations/005_configuracion_contacto.sql` (sin esto el sitio usa los datos de
-   respaldo de `lib/site-config.js` y el panel no puede guardar). 003 y 004 ya se ejecutaron.
-   0b. (hecho) `003_clientes_pedidos.sql` y `004_propietarios_datos_cliente.sql`
-   (sin esto, Clientes y Carpeta muestran error; el resto del panel sigue andando).
-2. Ejecutar `supabase/migrations/002_mostrar_precio.sql` en Supabase. SIN ESTO el sitio y el panel
-   fallan al leer propiedades (la columna `mostrar_precio` todavía no existe).
-3. Corregir `.env.local`: `NEXT_PUBLIC_SITE_URL=http://localhost:3000` (hoy dice `:300`).
-4. Verificar o crear el usuario admin (SQL dado en el chat) y probar: login, crear propiedad, subir
-   fotos, cambiar portada, publicar, ver en el sitio, borrar.
-5. (hecho) Datos demo eliminados; la base tiene las propiedades reales.
-6. ROTAR claves expuestas: secret key de Supabase y token/claves de R2 `percara-web-r2`.
-7. Limpiar el final de `supabase/schema.sql`: tiene pegadas líneas de PowerShell (`'@ | Set-Content ...`).
-8. ESLint roto: `eslint.config.mjs` usa el formato de Next 16 (`eslint-config-next/core-web-vitals`)
-   con el paquete de Next 15. `npm run lint` falla; el build sí pasa.
-9. Banner del hero (`public/banner.webp`, 1024x434): trae texto incrustado y la dirección
-   "Rivadavia 3935"; el sitio usa "Salvarredy 1919" (editable en /dashboard/configuracion). Confirmar la dirección
-   correcta y conseguir una foto de 1600 px o más, sin texto.
-10. Mover la skill a `.claude/skills/apple-style/SKILL.md`.
-11. Confirmar con el cliente si quieren cantidad de cocheras (hoy Sí/No) y "estado de conservación".
+1. Redirecciones 301: falta que el usuario pase una URL de propiedad del sitio viejo (patrón de ruta) para
+   armar `redirects()` en `next.config.mjs` con `docs/redirecciones-301.json`.
+2. Corregir localidades mal cargadas desde el panel: "Corrientes", "Juan Pujol Corrientes",
+   "Departamento Curuzú", "Saenz Valiente" (unificar nombres; el filtro las lista tal cual).
+3. ROTAR claves expuestas antes: secret key de Supabase y token/claves de R2 `percara-web-r2`.
+4. Dominio propio para R2 (`r2.dev` tiene límite de tasa) y actualizar `R2_PUBLIC_URL` (y `remotePatterns`).
+5. En Vercel: `NEXT_PUBLIC_SITE_URL=https://inmobiliariapercara.com`.
+6. CSP completa en `next.config.mjs` y checklist Lighthouse >= 95 (fase 8).
+7. Banner del hero (`public/banner.webp`, 1024x434) trae texto y "Rivadavia 3935"; el sitio usa
+   "Salvarredy 1919" (editable en /dashboard/configuracion). Confirmar dirección y conseguir foto >= 1600 px sin texto.
+8. Confirmar con el cliente: cantidad de cocheras (hoy Sí/No) y "estado de conservación".
+9. ISR: propiedades publicadas por script no revalidan ISR hasta 1 h; si se cambia algo
+   por SQL directo, guardar cualquier propiedad en el panel para forzar `revalidateTag`.
 
 ## 7. Mapa de archivos clave
 
@@ -163,11 +159,19 @@ subida a R2 (requiere las credenciales del usuario).
   Sitio: `getContacto()` en `lib/queries/settings.js` (cacheada con tag `propiedades`) + `lib/contacto.js`
   (normaliza y arma links). Respaldo si la base falla: `lib/site-config.js` (CONTACTO_RESPALDO).
 - Categorías: `lib/queries/categories.js` (seed estático) + `lib/categories-meta.js` (ícono y bajada).
-- SEO: `lib/seo.js` (pageMetadata, metadataPropiedad, JSON-LD). Formato: `lib/format.js`.
-- Esquemas Zod: `lib/schemas/{auth,propiedad}.js`; etiquetas para el cliente en `propiedad-etiquetas.js`.
+- Listados: `lib/queries/properties.js` (`getPropiedades` con count + range, `getLocalidades`),
+  `lib/listado.js` (POR_PAGINA 24, `leerFiltros`, `urlListado`), `components/property/{listing-view,
+localidad-filter,paginacion,listing-skeleton,category-tabs}.jsx`.
+- Imágenes: `lib/image-pipeline.js` (variantes) y `lib/image-loader.js` (loaderFile; tolerancia 1.35 para
+  elegir 400/900/1600, en celular baja la de 900).
+- SEO: `lib/seo.js` (pageMetadata, metadataPropiedad, JSON-LD). Formato: `lib/format.js` (incluye `formatMedidas`).
+- Esquemas Zod: `lib/schemas/{auth,propiedad,cliente,pedido,recordatorio,campos}.js`; etiquetas en
+  `*-etiquetas.js`.
+- Panel: queries `lib/queries/admin-{properties,clientes,pedidos,recordatorios}.js`; fechas en zona AR
+  `lib/fechas.js`; cuotas `lib/cuotas.js` (`proximaCuota`, `calendarioCuotas`); teléfonos `lib/telefono.js`.
 - Seguridad: `lib/auth.js` (getAdmin, requireAdmin, assertAdmin), `lib/rate-limit.js` (en memoria, por
   instancia: en Vercel con varias instancias no es global).
-- SQL: `supabase/schema.sql`, `supabase/migrations/002` a `006`.
+- SQL: `supabase/schema.sql`, `supabase/migrations/002` a `007` (todas ejecutadas).
 
 ## 8. Infraestructura
 
@@ -185,7 +189,8 @@ subida a R2 (requiere las credenciales del usuario).
 
 - Full stack senior. Respuestas en español, breves, sin introducciones ni despedidas.
 - Por fases: plan corto, esperar OK, al terminar lista de archivos + build, y detenerse.
-- NO commitear ni pushear salvo que el usuario lo pida (2026-11-14). No correr sus comandos pegados.
+- NO commitear ni pushear salvo que el usuario lo pida (2026-11-14). Cuando lo pide: lint + build +
+  revisar secretos, Conventional Commits; el pre-commit corre eslint y prettier. No correr sus comandos pegados.
 - Compilar de prueba con `NEXT_DIST_DIR=.next-prueba` para no pisar el `.next` de su `npm run dev`.
 - No inventar datos de contacto ni contenido: dejar TODO y preguntar.
 - Usa Windows; a veces corre comandos en CMD en vez de PowerShell: dar comandos de PowerShell.

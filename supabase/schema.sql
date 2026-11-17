@@ -139,6 +139,3 @@ on conflict (slug) do nothing;
    Esquema completo de Supabase: administradores, categorias, propiedades y configuracion
    con indices, triggers de updated_at, RLS (lectura publica solo de 'publicada'; escritura solo admin)
    y seed de categorias. Depende de: auth.users. Ejecutar una vez en el SQL Editor. */
-'@ | Set-Content -Encoding UTF8 supabase\schema.sql
-
-Get-Content supabase\schema.sql -Raw | Set-Clipboard

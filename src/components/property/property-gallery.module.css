@@ -57,8 +57,109 @@
   border-radius: var(--radius-pill);
 }
 
+.track:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+/* Controles (solo con más de una foto) */
+.controles {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.escenario {
+  position: relative;
+  min-width: 0;
+}
+
+/* Flechas: en móvil se desliza con el dedo; se muestran con mouse (ver bloque hover/pointer) */
+.flecha {
+  position: absolute;
+  top: 50%;
+  display: none;
+  place-items: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  color: var(--color-primary);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-saturate));
+  border: var(--border-w) solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.anterior {
+  left: var(--space-3);
+}
+
+.siguiente {
+  right: var(--space-3);
+}
+
+.flecha:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flecha:active {
+  transform: translateY(-50%) scale(var(--press-scale));
+}
+
+.flecha:focus-visible,
+.mini:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+/* Miniaturas: tira con scroll propio; position relative contiene a sus hijos absolutos */
+.tira {
+  position: relative;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.tira li {
+  flex: none;
+}
+
+.mini {
+  position: relative;
+  display: block;
+  width: var(--space-9);
+  aspect-ratio: 4 / 3;
+  overflow: clip;
+  padding: 0;
+  background: var(--color-surface-alt);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  opacity: 0.6;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.mini[aria-current] {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 var(--border-w) var(--color-accent);
+  opacity: 1;
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .counter {
+  .counter,
+  .flecha {
     background: var(--color-surface);
   }
 }
@@ -78,13 +179,39 @@
 @media (min-width: 1024px) {
   .track {
     grid-auto-columns: 100%;
+    /* Con mouse se cambia con flechas y miniaturas: sin barra de scroll */
+    scrollbar-width: none;
+  }
+}
+
+/* 9. hover: hover / pointer: fine (mouse): flechas siempre visibles */
+@media (hover: hover) and (pointer: fine) {
+  .flecha {
+    display: grid;
+  }
+
+  .flecha:hover {
+    color: var(--color-surface);
+    background: var(--color-primary);
+  }
+
+  .mini:hover {
+    opacity: 1;
   }
 }
 
 /* 11. prefers-reduced-motion */
 @media (prefers-reduced-motion: no-preference) {
-  .track {
+  .track,
+  .tira {
     scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flecha,
+  .mini {
+    transition: none;
   }
 }
 
@@ -98,11 +225,14 @@
     overflow: visible;
   }
 
-  .counter {
+  .counter,
+  .flecha,
+  .tira {
     display: none;
   }
 }
 
 /* RESUMEN
    Galería: carrusel 4:3 con scroll-snap y radio amplio, contador de vidrio, foto siguiente asomada en
-   tablet y placeholder con halos de marca. Al imprimir, solo la portada. Depende de: styles/tokens.css */
+   tablet, flechas de vidrio (solo con mouse), tira de miniaturas con la actual en verde y placeholder con
+   halos de marca. Al imprimir, solo la portada. Depende de: styles/tokens.css */
