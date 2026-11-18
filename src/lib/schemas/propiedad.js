@@ -1,6 +1,7 @@
 // src/lib/schemas/propiedad.js
 import { z } from 'zod';
 import { checkbox, numeroOpcional, textoOpcional, uuidSchema, vacioANull } from './campos';
+import { PROVINCIAS } from '@/lib/lugares';
 
 /* Acepta lo que copia Google Maps: "-30.7624, -57.9808", "(-30.76,-57.98)" o un link con "@-30.76,-57.98" */
 const COORDS = /(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)/;
@@ -35,11 +36,13 @@ export const propiedadSchema = z.object({
     .number({ error: 'Elija una categoría.' })
     .int()
     .positive('Elija una categoría.'),
+  provincia: z.enum(PROVINCIAS, { error: 'Elija la provincia.' }),
   localidad: z
     .string({ error: 'Indique la localidad.' })
     .trim()
     .min(2, 'Indique la localidad.')
     .max(80, 'Máximo 80 caracteres.'),
+  barrio: textoOpcional(80),
   direccion: textoOpcional(160),
   coordenadas,
   superficie_total: numeroOpcional('Superficie inválida.', { max: 1e9 }),
@@ -75,6 +78,6 @@ export function aFila({ coordenadas: c, ...data }) {
 }
 
 /* RESUMEN
-   Schema Zod de alta/edición de propiedad: textos recortados, números opcionales, precio con
-   mostrar_precio, coordenadas en un solo campo (formato de Google Maps -> lat/lng) y checkboxes.
-   Exporta propiedadSchema, uuidSchema, estadoSchema, desdeFormData y aFila. Depende de: zod, ./campos.js */
+   Schema Zod de alta/edición de propiedad: textos recortados, provincia (lista cerrada), localidad y
+   barrio opcional, números opcionales, precio con mostrar_precio, coordenadas en un solo campo (formato de Google Maps -> lat/lng) y checkboxes.
+   Exporta propiedadSchema, uuidSchema, estadoSchema, desdeFormData y aFila. Depende de: zod, ./campos.js, lib/lugares.js */

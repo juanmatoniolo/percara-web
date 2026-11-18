@@ -129,18 +129,22 @@
   }
 }
 
-/* 4. ≥1024px: todas visibles, sin desvanecido */
+/* 4. ≥1024px: una sola fila compacta (sin íconos) para no ocupar dos renglones; si no entra, se desliza */
 @media (min-width: 1024px) {
-  .list {
-    flex-wrap: wrap;
-    overflow: visible;
-    -webkit-mask-image: none;
-    mask-image: none;
+  .bar {
+    padding-block: var(--space-2);
   }
 
-  .item:first-child,
-  .item:last-child {
-    padding-inline: 0;
+  .list {
+    gap: var(--space-1);
+  }
+
+  .tab {
+    padding-inline: var(--space-3) var(--space-2);
+  }
+
+  .tab svg {
+    display: none;
   }
 }
 
@@ -181,6 +185,6 @@
 }
 
 /* RESUMEN
-   Pestañas de categorías: barra de vidrio fija bajo el header, carrusel con snap y bordes desvanecidos
-   en móvil, todas visibles desde 1024px. Píldoras con ícono verde y contador; la activa en azul con
+   Pestañas de categorías: barra de vidrio fija bajo el header, siempre en una sola fila (carrusel con
+   snap y bordes desvanecidos); desde 1024px más compacta y sin íconos. Píldoras con ícono verde y contador; la activa en azul con
    contador verde y sombra flotante. Depende de: styles/tokens.css */

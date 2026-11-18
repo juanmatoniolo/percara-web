@@ -17,6 +17,7 @@ const SIZES = '(min-width: 1280px) 25rem, (min-width: 768px) 50vw, 100vw';
 export default function PropertyCard({ propiedad: p, prioridad = false, nivel: Titulo = 'h3' }) {
   const portada = p.imagenes[0];
   const Icono = iconoCategoria(p.categoria.slug);
+  const vendida = p.estado === 'vendida';
   /* Ficha fija y homogénea en todas las cards (pedido del cliente): siempre los 4 datos, en el mismo orden */
   const ficha = [
     { Icono: Maximize2, etiqueta: 'Superficie', valor: formatSuperficie(p.superficie_total) },
@@ -26,7 +27,7 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
   ];
 
   return (
-    <article className={styles.card}>
+    <article className={styles.card} data-vendida={vendida || undefined}>
       <Link href={`/propiedades/${p.slug}`} className={styles.link}>
         <div className={styles.media}>
           {portada ? (
@@ -48,7 +49,11 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
             <Icono size={14} aria-hidden="true" />
             {p.categoria.nombre}
           </span>
-          {p.destacada && <span className={styles.badge}>Destacada</span>}
+          {vendida ? (
+            <span className={styles.vendida}>Vendida</span>
+          ) : (
+            p.destacada && <span className={styles.badge}>Destacada</span>
+          )}
           <LinkPending variante="cubre" />
         </div>
 
@@ -58,7 +63,7 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
           {p.localidad && (
             <p className={styles.place}>
               <MapPin size={16} aria-hidden="true" />
-              {p.localidad}
+              {p.barrio ? `${p.barrio}, ${p.localidad}` : p.localidad}
             </p>
           )}
 
@@ -95,7 +100,8 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
 
 /* RESUMEN
    Card de propiedad (Server Component). Recibe `propiedad`, `prioridad` (solo la imagen LCP) y `nivel`
-   del título. Imagen 4:3 (o placeholder con el ícono de la categoría), chip de categoría, precio, título,
+   del título. Imagen 4:3 (o placeholder con el ícono de la categoría), chip de categoría, banda "Vendida"
+   (foto atenuada) o badge "Destacada", precio ("Vendida" si lo está), título,
    localidad, ficha fija de 4 datos (superficie, habitaciones, baños, cochera Sí/No) y botón Compartir.
    Muestra un velo de carga al tocarla con conexión lenta.
    Depende de: components/ui/share-button.jsx, lib/{format,categories-meta}.js, property-card.module.css */

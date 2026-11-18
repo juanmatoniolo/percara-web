@@ -3,14 +3,14 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import PropertyForm from '@/components/admin/property-form';
 import { requireAdmin } from '@/lib/auth';
-import { categoriasConId, localidadesCargadas } from '@/lib/queries/admin-properties';
+import { categoriasConId, lugaresCargados } from '@/lib/queries/admin-properties';
 import styles from '../editor.module.css';
 
 export const metadata = { title: 'Nueva propiedad' };
 
 export default async function NuevaPropiedadPage() {
   await requireAdmin();
-  const [categorias, localidades] = await Promise.all([categoriasConId(), localidadesCargadas()]);
+  const [categorias, lugares] = await Promise.all([categoriasConId(), lugaresCargados()]);
 
   return (
     <div className={styles.page}>
@@ -20,9 +20,9 @@ export default async function NuevaPropiedadPage() {
       </Link>
       <h1 className={styles.title}>Nueva propiedad</h1>
       <p className={styles.lead}>
-        Complete los datos y cree la propiedad; en el paso siguiente se suman las fotos.
+        Complete los datos y sume las fotos: todo se guarda junto al tocar «Crear propiedad».
       </p>
-      <PropertyForm categorias={categorias} localidades={localidades} />
+      <PropertyForm categorias={categorias} lugares={lugares} />
     </div>
   );
 }

@@ -33,11 +33,16 @@ export async function guardarPedido(_prev, formData) {
 
   const id = formData.get('id');
   const { supabase } = auth;
-  const { error } = id
-    ? uuidSchema.safeParse(id).success
-      ? await supabase.from('pedidos').update(parsed.data).eq('id', id)
-      : { error: { code: 'id', message: 'id inválido' } }
-    : await supabase.from('pedidos').insert(parsed.data);
+  if (id && !uuidSchema.safeParse(id).success)
+    return { ok: false, error: 'Pedido inválido.', valores };
+  const escribir = (fila) =>
+    id ? supabase.from('pedidos').update(fila).eq('id', id) : supabase.from('pedidos').insert(fila);
+  let { error } = await escribir(parsed.data);
+  /* Sin la migración 008 la base no tiene las columnas de "qué busca" (PGRST204): guarda el resto */
+  if (error?.code === 'PGRST204') {
+    const { categoria_id, presupuesto, moneda, ...resto } = parsed.data;
+    ({ error } = await escribir(resto));
+  }
   if (error) {
     console.error('guardarPedido:', error.code, error.message);
     return { ok: false, error: 'No se pudo guardar. Intente de nuevo.', valores };

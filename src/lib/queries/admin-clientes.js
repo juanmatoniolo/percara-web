@@ -19,7 +19,7 @@ export async function listarClientes(filtros = {}) {
   const { q, rol } = filtrosSchema.parse(filtros);
   const supabase = await createSupabaseServer();
   let query = supabase.from('clientes').select(
-    `id, nombre, telefono, localidad, busca, activo, updated_at,
+    `id, nombre, telefono, localidad, activo, updated_at,
        vinculos:cliente_propiedades${rol ? '!inner' : ''}(rol)`,
   );
   if (rol) query = query.eq('vinculos.rol', rol);

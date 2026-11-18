@@ -95,6 +95,20 @@
   color: var(--color-error);
 }
 
+/* Qué busca: tipo y presupuesto, en azul con lupa verde */
+.busca {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+}
+
+.busca svg {
+  flex: none;
+  color: var(--color-accent-text);
+}
+
 .detalle {
   font-size: var(--text-sm);
   color: var(--color-text-soft);
@@ -191,5 +205,5 @@
 
 /* RESUMEN
    Pedido: tarjeta con casilla redonda de 44px (al hover asoma el tilde verde; hecho = verde lleno), título
-   azul (tachado si está hecho o cancelado), filete rojo si está atrasado, chips azules de cliente y
+   azul (tachado si está hecho o cancelado), filete rojo si está atrasado, línea "Busca:" azul con lupa verde, chips azules de cliente y
    propiedad y botón editar. Depende de: styles/tokens.css */

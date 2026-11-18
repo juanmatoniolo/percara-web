@@ -1,5 +1,6 @@
 // src/components/home/why-us.jsx
 import { BadgeDollarSign, ClipboardCheck, House, MapPin, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
 import SectionTitle from '@/components/ui/section-title';
 import styles from './why-us.module.css';
 
@@ -14,6 +15,13 @@ const RAZONES = [
   { Icono: ShieldCheck, titulo: 'Transparencia y seguridad', texto: 'en cada operación.' },
   { Icono: MapPin, titulo: 'Ubicaciones estratégicas', texto: 'para inversión y vivienda.' },
 ];
+
+/** Tipo de propiedad destacado que lleva a su categoría (enlace interno con palabra clave). */
+const cat = (slug, texto) => (
+  <Link href={`/categorias/${slug}`} className={styles.cat}>
+    {texto}
+  </Link>
+);
 
 export default function WhyUs() {
   return (
@@ -31,12 +39,16 @@ export default function WhyUs() {
         ))}
       </ul>
 
+      {/* Pedido del cliente: nombrar todos los tipos aunque se repita (palabras clave para SEO local) */}
       <p className={`${styles.text} reveal`}>
-        En <strong>Percara Negocios Inmobiliarios</strong> ofrecemos una amplia variedad de
-        propiedades, desde <strong>casas familiares</strong> y <strong>departamentos</strong> hasta{' '}
-        <strong>terrenos</strong> y <strong>locales comerciales</strong>. Si necesita{' '}
-        <strong>comprar</strong>, <strong>vender</strong> o tasar un inmueble, lo acompañamos en
-        cada paso con transparencia y asesoramiento profesional.
+        En <strong>Percara Negocios Inmobiliarios</strong> nos especializamos en la compra y venta
+        de {cat('campos', 'campos')}, {cat('quintas', 'quintas')} y{' '}
+        {cat('forestaciones', 'forestaciones')} en Chajarí y la región, y también de{' '}
+        {cat('casas', 'casas')}, {cat('terrenos', 'terrenos')},{' '}
+        {cat('departamentos', 'departamentos')} y {cat('locales-y-oficinas', 'locales comerciales')}
+        . Si necesita <strong>comprar</strong>, <strong>vender</strong> o <strong>tasar</strong> un
+        campo, una quinta, una forestación, una casa, un terreno, un departamento o un local
+        comercial, lo acompañamos en cada paso con transparencia y asesoramiento profesional.
       </p>
     </section>
   );
@@ -44,5 +56,6 @@ export default function WhyUs() {
 
 /* RESUMEN
    Bloque "¿Por qué elegirnos?" (Server Component, ancla #sobre-nosotros): título con línea verde,
-   5 razones con icono y texto de presentación con palabras clave. Aparición suave al scroll.
-   Depende de: components/ui/section-title.jsx, why-us.module.css, lucide-react */
+   5 razones con icono y texto de presentación que nombra campos, quintas, forestaciones, casas, terrenos,
+   departamentos y locales (cada uno enlaza a su categoría). Aparición suave al scroll.
+   Depende de: components/ui/section-title.jsx, next/link, why-us.module.css, lucide-react */

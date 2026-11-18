@@ -1,10 +1,14 @@
 // src/components/admin/property-form.jsx
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CircleAlert, LoaderCircle, Save } from 'lucide-react';
 import FormField from './form-field';
+import FotosNuevas from './fotos-nuevas';
+import LugarSelect from './lugar-select';
 import { guardarPropiedad } from '@/actions/properties';
+import { subirFotos } from '@/lib/subir-fotos';
 import { ETIQUETAS } from '@/lib/schemas/propiedad-etiquetas';
 import styles from './property-form.module.css';
 
@@ -24,10 +28,30 @@ const NUMEROS = [
 
 /**
  * Alta / edición de propiedad (Client Component: useActionState para errores por campo y envío).
- * @param {{ propiedad?: any, categorias: { id: number, nombre: string }[], localidades?: string[] }} props
+ * @param {{ propiedad?: any, categorias: { id: number, nombre: string }[],
+ *   lugares?: { localidades: { nombre: string, provincia: string | null }[], barrios: Record<string, string[]> } }} props
  */
-export default function PropertyForm({ propiedad, categorias, localidades = [] }) {
-  const [estado, accion, pendiente] = useActionState(guardarPropiedad, null);
+export default function PropertyForm({
+  propiedad,
+  categorias,
+  lugares = { localidades: [], barrios: {} },
+}) {
+  const router = useRouter();
+  const esAlta = !propiedad?.id;
+  const [fotos, setFotos] = useState([]);
+  const [progreso, setProgreso] = useState(null);
+  /* Edición: guardarPropiedad redirige. Alta: crea, sube las fotos elegidas en orden y abre la edición. */
+  const [estado, accion, pendiente] = useActionState(async (prev, fd) => {
+    const r = await guardarPropiedad(prev, fd);
+    if (!esAlta || !r?.ok) return r;
+    const { subidas, fallidas } = await subirFotos(r.id, fotos, (actual, total) =>
+      setProgreso({ actual, total }),
+    );
+    const q = new URLSearchParams({ aviso: 'creada', fotos: String(subidas) });
+    if (fallidas) q.set('fallidas', String(fallidas));
+    router.push(`/dashboard/propiedades/${r.id}?${q}`);
+    return { ok: true, creando: true };
+  }, null);
   const inicial = propiedad
     ? {
         ...propiedad,
@@ -41,6 +65,17 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
   const err = estado?.campos ?? {};
   const check = (k) => v[k] === true || v[k] === 'on';
   const conError = Object.keys(err).map((k) => ETIQUETAS[k] ?? k);
+  /* Tras crear queda bloqueado hasta que abre la edición (evita crear dos veces) */
+  const ocupado = pendiente || estado?.creando === true;
+  const textoBoton = progreso
+    ? `Subiendo foto ${progreso.actual} de ${progreso.total}…`
+    : ocupado
+      ? 'Guardando…'
+      : !esAlta
+        ? 'Guardar cambios'
+        : fotos.length
+          ? `Crear propiedad (${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'})`
+          : 'Crear propiedad';
 
   return (
     <form action={accion} className={styles.form}>
@@ -116,22 +151,11 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
 
       <fieldset className={styles.group}>
         <legend className={styles.legend}>Ubicación</legend>
-        <FormField
-          name="localidad"
-          label="Localidad"
-          required
-          maxLength={80}
-          list="localidades-cargadas"
-          autoComplete="off"
-          defaultValue={s(v.localidad)}
-          error={err.localidad}
-          hint="Elija una de la lista o escriba una nueva. Se usa en el filtro del sitio."
+        <LugarSelect
+          lugares={lugares}
+          valores={{ provincia: s(v.provincia), localidad: s(v.localidad), barrio: s(v.barrio) }}
+          errores={err}
         />
-        <datalist id="localidades-cargadas">
-          {localidades.map((l) => (
-            <option key={l} value={l} />
-          ))}
-        </datalist>
         <FormField
           name="direccion"
           label="Dirección o zona"
@@ -184,6 +208,10 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
         />
       </fieldset>
 
+      {esAlta && (
+        <FotosNuevas fotos={fotos} onChange={setFotos} progreso={progreso} bloqueado={ocupado} />
+      )}
+
       <fieldset className={styles.group}>
         <legend className={styles.legend}>Publicación</legend>
         <FormField
@@ -192,7 +220,7 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
           as="select"
           defaultValue={s(v.estado)}
           error={err.estado}
-          hint="Solo las publicadas se ven en el sitio."
+          hint="Publicadas: se ven en el sitio. Vendidas: se ven 60 días con la marca Vendida (renovable)."
         >
           <option value="borrador">Borrador</option>
           <option value="publicada">Publicada</option>
@@ -205,13 +233,13 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
       </fieldset>
 
       <div className={styles.bar}>
-        <button type="submit" className={styles.submit} disabled={pendiente} aria-busy={pendiente}>
-          {pendiente ? (
+        <button type="submit" className={styles.submit} disabled={ocupado} aria-busy={ocupado}>
+          {ocupado ? (
             <LoaderCircle className={styles.spin} size={18} aria-hidden="true" />
           ) : (
             <Save size={18} aria-hidden="true" />
           )}
-          {pendiente ? 'Guardando…' : propiedad?.id ? 'Guardar cambios' : 'Crear y cargar fotos'}
+          {textoBoton}
         </button>
       </div>
     </form>
@@ -220,6 +248,8 @@ export default function PropertyForm({ propiedad, categorias, localidades = [] }
 
 /* RESUMEN
    Formulario de propiedad (Client Component): datos y precio (con "mostrar precio"), ubicación con
-   localidad obligatoria (sugiere las ya cargadas), coordenadas pegadas de Google Maps, características y publicación (operación fija: venta). Envía a
-   guardarPropiedad; muestra errores por campo y la lista de campos con error, sin perder lo escrito.
-   Depende de: form-field.jsx, actions/properties.js, lib/schemas/propiedad-etiquetas.js, module.css */
+   provincia, localidad y barrio elegidos de lo ya cargado (lugar-select), coordenadas pegadas de Google Maps, características y
+   publicación (operación fija: venta). En el alta suma las fotos (fotos-nuevas) y, tras crear, las sube en
+   orden con progreso y abre la edición. Errores por campo sin perder lo escrito.
+   Depende de: form-field.jsx, fotos-nuevas.jsx, lugar-select.jsx, actions/properties.js, lib/subir-fotos.js,
+   lib/schemas/propiedad-etiquetas.js, module.css */

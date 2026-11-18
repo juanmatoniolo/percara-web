@@ -17,6 +17,7 @@ export function formatPrecio(precio, moneda) {
  * @param {{ precio: number | null, moneda: 'ARS' | 'USD', mostrar_precio?: boolean }} p
  */
 export function precioPublico(p) {
+  if (p.estado === 'vendida') return 'Vendida';
   return p.mostrar_precio === false ? 'Consultar precio' : formatPrecio(p.precio, p.moneda);
 }
 

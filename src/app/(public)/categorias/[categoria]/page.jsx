@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ListingView from '@/components/property/listing-view';
 import { CATEGORIAS } from '@/lib/queries/categories';
 import { getCategoria } from '@/lib/categories-meta';
-import { getConteoPorCategoria, getLocalidades, getPropiedades } from '@/lib/queries/properties';
+import { getConteoPorCategoria, getLugares, getPropiedades } from '@/lib/queries/properties';
 import { POR_PAGINA, leerFiltros } from '@/lib/listado';
 import { jsonLdBreadcrumb, pageMetadata, serializeJsonLd } from '@/lib/seo';
 
@@ -30,10 +30,10 @@ export default async function CategoriaPage({ params, searchParams }) {
   const cat = getCategoria(categoria);
   if (!cat) notFound();
 
-  const localidades = await getLocalidades(cat.slug);
-  const { localidad, pagina } = leerFiltros(await searchParams, localidades);
+  const arbol = await getLugares(cat.slug);
+  const filtros = leerFiltros(await searchParams, arbol);
   const [resultado, conteo] = await Promise.all([
-    getPropiedades({ categoria: cat.slug, localidad, pagina, limite: POR_PAGINA }),
+    getPropiedades({ ...filtros, categoria: cat.slug, limite: POR_PAGINA }),
     getConteoPorCategoria(),
   ]);
 
@@ -59,9 +59,8 @@ export default async function CategoriaPage({ params, searchParams }) {
         resultado={resultado}
         conteo={conteo}
         base={`/categorias/${cat.slug}`}
-        localidades={localidades}
-        localidad={localidad}
-        pagina={pagina}
+        arbol={arbol}
+        filtros={filtros}
       />
     </>
   );
@@ -71,4 +70,4 @@ export default async function CategoriaPage({ params, searchParams }) {
    Página de categoría (9 rutas, 404 para slugs desconocidos; se arma por pedido por los filtros y
    los datos salen de la caché con tag 'propiedades'). generateMetadata con
    title, description y canonical; JSON-LD BreadcrumbList. Lee propiedades publicadas de la categoría
-   (24 por página, filtro ?localidad= con las localidades de la categoría) y el conteo de las pestañas. Depende de: listing-view.jsx, lib/{categories-meta,seo}.js, queries */
+   (24 por página, filtros provincia > ciudad > barrio de la categoría y con precio) y el conteo de las pestañas. Depende de: listing-view.jsx, lib/{categories-meta,seo}.js, queries */

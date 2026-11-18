@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ExternalLink, EyeOff, Pencil, Send, Star } from 'lucide-react';
 import EstadoBadge from './estado-badge';
 import DeleteButton from './delete-button';
+import VisibilidadVendida from './visibilidad-vendida';
 import { alternarDestacada, cambiarEstado } from '@/actions/properties';
 import { iconoCategoria } from '@/lib/categories-meta';
 import { formatPrecio } from '@/lib/format';
@@ -14,6 +15,8 @@ export default function PropertyRow({ propiedad: p }) {
   const portada = Array.isArray(p.imagenes) ? p.imagenes[0] : null;
   const Icono = iconoCategoria(p.categoria.slug);
   const publicada = p.estado === 'publicada';
+  /* Vendida con días vigentes: también se ve en el sitio */
+  const enSitio = publicada || (p.estado === 'vendida' && new Date(p.vendida_hasta) > new Date());
 
   return (
     <li className={styles.row}>
@@ -35,6 +38,7 @@ export default function PropertyRow({ propiedad: p }) {
           {p.localidad ? ` · ${p.localidad}` : ''}
         </p>
         <EstadoBadge estado={p.estado} />
+        <VisibilidadVendida propiedad={p} compacto />
       </div>
 
       <div className={styles.actions}>
@@ -70,7 +74,7 @@ export default function PropertyRow({ propiedad: p }) {
           </button>
         </form>
 
-        {publicada && (
+        {enSitio && (
           <a
             href={`/propiedades/${p.slug}`}
             target="_blank"
@@ -96,5 +100,6 @@ export default function PropertyRow({ propiedad: p }) {
 
 /* RESUMEN
    Fila del listado del panel (Server Component): miniatura o ícono, título (link a editar), categoría,
-   precio, localidad y estado; acciones destacar, publicar/despublicar (Server Actions por form), ver en el
-   sitio, editar y borrar. Depende de: estado-badge, delete-button, actions/properties.js, lib/*, module.css */
+   precio, localidad y estado (si está vendida, días visibles y "Renovar 60 días"); acciones destacar,
+   publicar/despublicar (Server Actions por form), ver en el sitio, editar y borrar.
+   Depende de: estado-badge, delete-button, visibilidad-vendida, actions/properties.js, lib/*, module.css */

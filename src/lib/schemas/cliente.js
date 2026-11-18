@@ -1,13 +1,6 @@
 // src/lib/schemas/cliente.js
 import { z } from 'zod';
-import {
-  checkbox,
-  enumOpcional,
-  fechaOpcional,
-  numeroOpcional,
-  textoOpcional,
-  uuidSchema,
-} from './campos';
+import { checkbox, enumOpcional, fechaOpcional, textoOpcional, uuidSchema } from './campos';
 import { ESTADOS_CIVILES, ESTADOS_INTERES, ORIGENES, ROLES } from './agenda-etiquetas';
 
 const claves = (o) => /** @type {[string, ...string[]]} */ (Object.keys(o));
@@ -26,13 +19,8 @@ export const clienteSchema = z.object({
     z.string().email('Email inválido.').max(160).nullable(),
   ),
   localidad: textoOpcional(80),
-  busca: textoOpcional(1000),
-  presupuesto: numeroOpcional('Presupuesto inválido.', { max: 1e13 }),
-  moneda: z.enum(['USD', 'ARS'], { error: 'Elija la moneda.' }),
-  categoria_id: z.preprocess(
-    (v) => (v === '' || v === null ? null : Number(v)),
-    z.number().int().positive().nullable(),
-  ),
+  /* Lo que busca (busca, presupuesto, categoría) ya no se carga acá: va a la Carpeta de pedidos.
+     Las columnas siguen en la tabla y no se tocan al guardar. */
   notas: textoOpcional(3000),
   activo: checkbox,
   /* Datos opcionales para reserva y escritura */
@@ -66,6 +54,6 @@ export const vinculoSchema = z
 export const estadoInteresSchema = z.enum(claves(ESTADOS_INTERES));
 
 /* RESUMEN
-   Schemas Zod de la agenda de clientes: clienteSchema (datos básicos, búsqueda, presupuesto y datos
-   opcionales para escritura) y vinculoSchema (cliente + propiedad + rol; el estado se fuerza a null si es
+   Schemas Zod de la agenda de clientes: clienteSchema (contacto, notas y datos opcionales para
+   escritura; lo que busca va a la Carpeta de pedidos) y vinculoSchema (cliente + propiedad + rol; el estado se fuerza a null si es
    dueño). Depende de: zod, ./campos.js, ./agenda-etiquetas.js */

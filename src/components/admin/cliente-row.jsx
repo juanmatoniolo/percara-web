@@ -38,7 +38,6 @@ export default function ClienteRow({ cliente: c }) {
           {compra > 0 && <Tag tono="verde">{`Interesado en ${compra}`}</Tag>}
           {!c.activo && <Tag>Inactivo</Tag>}
         </div>
-        {c.busca && <p className={styles.busca}>Busca: {c.busca}</p>}
       </div>
 
       <div className={styles.actions}>
@@ -55,5 +54,5 @@ export default function ClienteRow({ cliente: c }) {
 
 /* RESUMEN
    Fila de la agenda de clientes (Server Component): iniciales, nombre (link a la ficha), teléfono y
-   localidad, etiquetas de dueño / interesado / inactivo, qué busca y botones de WhatsApp y Llamar.
+   localidad, etiquetas de dueño / interesado / inactivo y botones de WhatsApp y Llamar.
    Recibe `cliente`. Depende de: contact-buttons.jsx, tag.jsx, lib/format.js, cliente-row.module.css */

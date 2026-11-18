@@ -29,6 +29,28 @@
   background: var(--color-accent-soft);
 }
 
+.sold {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+/* Aviso de vendida: verde suave, debajo del precio */
+.soldNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-lg);
+}
+
+.soldNote svg {
+  flex: none;
+}
+
 .title {
   font-size: var(--text-3xl);
   letter-spacing: var(--tracking-tight);
@@ -196,6 +218,6 @@
 }
 
 /* RESUMEN
-   Panel de precio y contacto: chips (categoría azul, operación verde), H1 azul, ubicación, precio grande
-   entre filetes y CTAs en píldora (WhatsApp verde con halo, llamar azul, Google Maps claro). Desde 1024px es una tarjeta
+   Panel de precio y contacto: chips (categoría azul, operación verde o "Vendida" azul lleno), H1 azul,
+   ubicación, precio grande entre filetes, aviso verde de vendida y CTAs en píldora (WhatsApp verde con halo, llamar azul, Google Maps claro). Desde 1024px es una tarjeta
    fija junto a la galería. Depende de: styles/tokens.css */

@@ -8,7 +8,8 @@ export const revalidate = 3600;
 
 const abs = (path) => new URL(path, SITE_URL).toString();
 
-/** sitemap.xml dinámico: páginas fijas, las 9 categorías y cada propiedad publicada con sus fotos. */
+/** sitemap.xml dinámico: páginas fijas, las 9 categorías y cada propiedad visible (publicada o vendida
+    vigente) con sus fotos. */
 export default async function sitemap() {
   const propiedades = await getPropiedadesSitemap();
   const ultima = propiedades[0]?.updated_at ? new Date(propiedades[0].updated_at) : new Date();
@@ -41,5 +42,5 @@ export default async function sitemap() {
 
 /* RESUMEN
    sitemap.xml dinámico (ISR 1 h + tag 'propiedades'): home, /propiedades, /sobre-nosotros, /contacto,
-   las 9 categorías y cada propiedad publicada con fecha de modificación y fotos.
+   las 9 categorías y cada propiedad visible (publicada o vendida vigente) con fecha de modificación y fotos.
    Depende de: lib/queries/{categories,properties}.js, lib/seo.js (SITE_URL) */

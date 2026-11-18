@@ -7,12 +7,12 @@ import styles from './paginacion.module.css';
 
 /**
  * Paginación del listado (Server Component): Anterior / "Página X de Y" / Siguiente, con links reales
- * que conservan el filtro de localidad. No se muestra si hay una sola página.
- * @param {{ base: string, pagina: number, totalPaginas: number, localidad?: string }} props
+ * que conservan los filtros (ciudad, barrio y precio). No se muestra si hay una sola página.
+ * @param {{ base: string, pagina: number, totalPaginas: number, filtros?: object }} props
  */
-export default function Paginacion({ base, pagina, totalPaginas, localidad }) {
+export default function Paginacion({ base, pagina, totalPaginas, filtros = {} }) {
   if (totalPaginas <= 1) return null;
-  const href = (n) => urlListado(base, { localidad, pagina: n });
+  const href = (n) => urlListado(base, { ...filtros, pagina: n });
 
   return (
     <nav className={styles.nav} aria-label="Paginación">
@@ -43,4 +43,4 @@ export default function Paginacion({ base, pagina, totalPaginas, localidad }) {
 
 /* RESUMEN
    Paginación del listado público (Server Component, sin JS): links Anterior/Siguiente con rel prev/next
-   y estado "Página X de Y"; conserva ?localidad=. Depende de: lib/listado.js, ui/link-pending.jsx, paginacion.module.css */
+   y estado "Página X de Y"; conserva los filtros. Depende de: lib/listado.js, ui/link-pending.jsx, paginacion.module.css */

@@ -123,7 +123,8 @@ export function metadataPropiedad(p, { precio, datos, descripcion }) {
 
   return {
     ...pageMetadata({ title: `${p.titulo} | ${precio}`, description, path, images: [imagen] }),
-    robots: { index: p.estado === 'publicada', follow: true },
+    /* Vendidas: indexables mientras se ven (60 días); al vencer RLS las oculta y dan 404 */
+    robots: { index: p.estado === 'publicada' || p.estado === 'vendida', follow: true },
   };
 }
 
@@ -166,7 +167,7 @@ export function jsonLdPropiedad(p) {
         '@type': 'PostalAddress',
         streetAddress: p.direccion ?? undefined,
         addressLocality: p.localidad ?? 'Chajarí',
-        addressRegion: 'Entre Ríos',
+        addressRegion: p.provincia ?? 'Entre Ríos',
         addressCountry: 'AR',
       },
       ...(p.lat && p.lng

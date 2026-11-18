@@ -1,5 +1,5 @@
 // src/components/property/property-contact.jsx
-import { MapPin, MapPinned, Phone } from 'lucide-react';
+import { BadgeCheck, MapPin, MapPinned, Phone } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/icons';
 import ShareButton from '@/components/ui/share-button';
 import { whatsappUrl } from '@/lib/contacto';
@@ -24,15 +24,18 @@ function mapaUrl(lat, lng) {
 export default async function PropertyContact({ propiedad: p }) {
   const contacto = await getContacto();
   const url = new URL(`/propiedades/${p.slug}`, SITE_URL).toString();
-  const mensaje = `Hola, me interesa "${p.titulo}". ${url}`;
+  const vendida = p.estado === 'vendida';
+  const mensaje = vendida
+    ? `Hola, vi que "${p.titulo}" ya se vendió. ¿Tienen algo similar? ${url}`
+    : `Hola, me interesa "${p.titulo}". ${url}`;
   const mapa = mapaUrl(p.lat, p.lng);
 
   return (
     <aside className={styles.panel} aria-labelledby="propiedad-titulo">
       <p className={styles.chips}>
         <span className={styles.chip}>{p.categoria.nombre}</span>
-        <span className={`${styles.chip} ${styles.op}`}>
-          {p.operacion === 'venta' ? 'Venta' : 'Alquiler'}
+        <span className={`${styles.chip} ${vendida ? styles.sold : styles.op}`}>
+          {vendida ? 'Vendida' : p.operacion === 'venta' ? 'Venta' : 'Alquiler'}
         </span>
       </p>
 
@@ -43,7 +46,9 @@ export default async function PropertyContact({ propiedad: p }) {
       {(p.localidad || p.direccion) && (
         <p className={styles.place}>
           <MapPin size={18} aria-hidden="true" />
-          {[p.direccion, p.localidad].filter(Boolean).join(', ')}
+          {[p.direccion, p.barrio && `Barrio ${p.barrio}`, p.localidad, p.provincia]
+            .filter(Boolean)
+            .join(', ')}
         </p>
       )}
 
@@ -51,6 +56,12 @@ export default async function PropertyContact({ propiedad: p }) {
         <span className="sr-only">Precio: </span>
         {precioPublico(p)}
       </p>
+      {vendida && (
+        <p className={styles.soldNote}>
+          <BadgeCheck size={20} aria-hidden="true" />
+          Esta propiedad ya fue vendida. Escríbanos y le mostramos opciones similares.
+        </p>
+      )}
 
       <div className={styles.actions}>
         <a
@@ -60,7 +71,7 @@ export default async function PropertyContact({ propiedad: p }) {
           rel="noopener noreferrer"
         >
           <WhatsAppIcon size={20} />
-          Consultar por WhatsApp
+          {vendida ? 'Consultar por similares' : 'Consultar por WhatsApp'}
         </a>
         <a href={contacto.telefonoHref} className={styles.secondary}>
           <Phone size={18} aria-hidden="true" />
@@ -85,7 +96,8 @@ export default async function PropertyContact({ propiedad: p }) {
 }
 
 /* RESUMEN
-   Panel del detalle (Server Component): chips de categoría y operación, H1, ubicación, precio grande y
-   CTAs a WhatsApp (mensaje con título y URL de la propiedad), llamada, Ver en Google Maps (solo con lat y
+   Panel del detalle (Server Component): chips de categoría y operación (o "Vendida"), H1, ubicación,
+   precio grande, aviso si ya se vendió y CTAs a WhatsApp (mensaje con título y URL; si está vendida,
+   pide opciones similares), llamada, Ver en Google Maps (solo con lat y
    lng válidas) y Compartir. Recibe `propiedad`.
    Depende de: components/ui/{icons,share-button}.jsx, lib/{contacto,format,seo}.js, lib/queries/settings.js, module.css */

@@ -127,6 +127,8 @@
   --float-distance: -6px;
   --blob-opacity: 0.5;
   --blob-opacity-soft: 0.22;
+  /* Foto de una propiedad vendida: apenas apagada para que se note sin esconderla */
+  --vendida-filtro: grayscale(0.45) brightness(0.96);
 }
 
 /* ≥768px */

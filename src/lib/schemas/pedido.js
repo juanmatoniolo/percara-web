@@ -1,6 +1,6 @@
 // src/lib/schemas/pedido.js
 import { z } from 'zod';
-import { fechaOpcional, textoOpcional, uuidOpcional, vacioANull } from './campos';
+import { fechaOpcional, numeroOpcional, textoOpcional, uuidOpcional, vacioANull } from './campos';
 import { ESTADOS_PEDIDO, PRIORIDADES } from './agenda-etiquetas';
 
 const claves = (o) => /** @type {[string, ...string[]]} */ (Object.keys(o));
@@ -20,6 +20,13 @@ export const pedidoSchema = z.object({
   estado: z.enum(claves(ESTADOS_PEDIDO), { error: 'Estado inválido.' }),
   cliente_id: uuidOpcional,
   propiedad_id: uuidOpcional,
+  /* Qué busca el cliente (opcional) */
+  categoria_id: z.preprocess(
+    (v) => (vacioANull(v) === null ? null : Number(v)),
+    z.number({ error: 'Tipo inválido.' }).int().positive().nullable(),
+  ),
+  presupuesto: numeroOpcional('Presupuesto inválido.', { max: 1e12 }),
+  moneda: z.enum(['USD', 'ARS'], { error: 'Elija la moneda.' }),
 });
 
 export const estadoPedidoSchema = pedidoSchema.shape.estado;
@@ -31,6 +38,6 @@ export const volverSchema = z
   .catch('/dashboard/pedidos');
 
 /* RESUMEN
-   Schemas Zod de la Carpeta de pedidos: pedidoSchema (título, detalle, fecha, hora, prioridad, estado y
-   cliente/propiedad opcionales), estadoPedidoSchema y volverSchema (redirección solo a /dashboard...).
+   Schemas Zod de la Carpeta de pedidos: pedidoSchema (título, detalle, fecha, hora, prioridad, estado,
+   cliente/propiedad opcionales y qué busca: tipo, presupuesto y moneda), estadoPedidoSchema y volverSchema (redirección solo a /dashboard...).
    Depende de: zod, ./campos.js, ./agenda-etiquetas.js */

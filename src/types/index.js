@@ -47,6 +47,9 @@
  * @property {string | null} og_image_url
  * @property {boolean} destacada
  * @property {'borrador' | 'publicada' | 'vendida'} estado
+ * @property {string | null} [provincia]  Lista cerrada (lib/lugares.js PROVINCIAS). Migración 009.
+ * @property {string | null} [barrio]     Unificado con los ya cargados de su localidad. Migración 009.
+ * @property {string | null} [vendida_hasta]  Hasta cuándo se ve una vendida en el sitio (60 días, renovable).
  * @property {string} created_at
  * @property {string} updated_at
  */
@@ -76,11 +79,8 @@
  * @property {string | null} telefono_alt
  * @property {string | null} email
  * @property {string | null} localidad
- * @property {string | null} busca        Lo que busca, en sus palabras.
- * @property {number | null} presupuesto
- * @property {'ARS' | 'USD'} moneda
- * @property {number | null} categoria_id
- * @property {string | null} notas
+ * @property {string | null} notas        (busca/presupuesto/moneda/categoria_id siguen en la tabla pero
+ *                                        ya no se usan: lo que busca va a la Carpeta de pedidos)
  * @property {boolean} activo
  * @property {string | null} dni_cuit
  * @property {string | null} fecha_nacimiento  YYYY-MM-DD
@@ -117,6 +117,9 @@
  * @property {'pendiente' | 'hecho' | 'cancelado'} estado
  * @property {string | null} cliente_id
  * @property {string | null} propiedad_id
+ * @property {number | null} categoria_id  Qué busca: tipo de propiedad.
+ * @property {number | null} presupuesto   Qué busca: presupuesto máximo.
+ * @property {'ARS' | 'USD'} moneda
  * @property {string | null} completado_en
  */
 

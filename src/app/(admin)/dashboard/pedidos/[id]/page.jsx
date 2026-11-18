@@ -8,6 +8,7 @@ import { borrarPedido } from '@/actions/pedidos';
 import { requireAdmin } from '@/lib/auth';
 import { opcionesClientes, opcionesPropiedades } from '@/lib/queries/admin-clientes';
 import { getPedido } from '@/lib/queries/admin-pedidos';
+import { categoriasConId } from '@/lib/queries/admin-properties';
 import { volverSchema } from '@/lib/schemas/pedido';
 import editor from '../../propiedades/editor.module.css';
 import styles from '../pedidos.module.css';
@@ -18,10 +19,11 @@ export default async function EditarPedidoPage({ params, searchParams }) {
   await requireAdmin();
   const { id } = await params;
   const volver = volverSchema.parse((await searchParams).volver ?? '');
-  const [res, clientes, propiedades] = await Promise.all([
+  const [res, clientes, propiedades, categorias] = await Promise.all([
     getPedido(id),
     opcionesClientes(),
     opcionesPropiedades(),
+    categoriasConId(),
   ]);
   if (!res.ok) throw new Error(res.error);
   if (!res.data) notFound();
@@ -36,7 +38,13 @@ export default async function EditarPedidoPage({ params, searchParams }) {
         Volver
       </Link>
       <h1 className={editor.title}>Editar pedido</h1>
-      <PedidoForm pedido={p} clientes={clientes} propiedades={propiedades} volver={volver} />
+      <PedidoForm
+        pedido={p}
+        clientes={clientes}
+        propiedades={propiedades}
+        categorias={categorias}
+        volver={volver}
+      />
       <ConfirmForm
         action={borrarPedido}
         campos={{ id: p.id, volver }}

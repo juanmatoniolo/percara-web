@@ -108,6 +108,36 @@ SEO y velocidad (2026-11-14)
   flechas de vidrio solo con mouse, tira de miniaturas (variante 400) y teclado ← →. En celular se desliza.
 - Botón "Ver en Google Maps" en la tarjeta del detalle (2026-11-17): Maps URLs `search/?api=1&query=lat,lng`
   (sin API key), solo si lat/lng son válidas y no 0,0 (146 de 152 lo tienen).
+- Clientes (2026-11-17): se quitó la sección "Qué busca" del formulario de cliente (las columnas viejas
+  siguen en `clientes`, sin datos, y no se tocan). Ahora vive en la Carpeta: cada pedido tiene "Qué busca
+  (opcional)" con tipo (`categoria_id`), `presupuesto` y `moneda`; el detalle es "en sus palabras" y el
+  pedido muestra "Busca: Casas · hasta USD 50.000". SQL en migración 008.
+- Provincia / localidad / barrio y filtros (2026-11-18): columnas `provincia` (lista cerrada en
+  `lib/lugares.js`) y `barrio` (migración 009, que además unifica "Juan Pujol Corrientes" y "Saenz Valiente",
+  asigna provincia por coordenadas y carga barrios Las 14, Tagüé y Citrícola). Panel: `lugar-select.jsx`
+  encadena provincia > localidad > barrio con lo ya cargado + "Agregar nueva…"; `unificarLugar` en
+  `actions/properties.js` reutiliza la forma existente sin tildes/mayúsculas (no conviven "Chajari" y
+  "Chajarí"). Sitio (2026-11-18, revisado): `filtros-listado.jsx` (cliente; sin JS es un GET) en cascada
+  provincia > ciudad > barrio: cada nivel aparece al elegir el anterior y solo ofrece lo que existe
+  (`getLugares` arma el árbol con cantidades; "Sin barrio asignado" = `?barrio=sin-asignar`), más "solo con
+  precio publicado". Se quitó el rango de precio. Sin la 009 arranca directo por ciudad. Pestañas de
+  categorías siempre en una fila (sin íconos desde 1024 px, nombres cortos). Botón flotante de WhatsApp
+  con "x" (`whatsapp-float-cerrable.jsx`, oculto durante la visita vía sessionStorage). Pendiente confirmar: "Corrientes" (Paraje Piedritas) y "Departamento
+  Curuzú" (San Jaime).
+- Alta con fotos en un solo paso (2026-11-17): en "Nueva propiedad" las fotos se recortan y quedan en el
+  navegador (`fotos-nuevas.jsx`); al crear, `guardarPropiedad` devuelve `{ ok, id }` (ya no redirige en
+  el alta), `lib/subir-fotos.js` las sube de a una con `subirImagen` mostrando el progreso y se abre la
+  edición con `?aviso=creada&fotos=N&fallidas=M`.
+- Vendidas visibles 60 días (2026-11-17): `propiedades.vendida_hasta` + trigger (pasar a vendida = hoy +
+  60 días; otro estado = null) + RLS pública `publicada OR (vendida AND vendida_hasta > now())`: al vencer
+  desaparecen solas (con hasta 1 h de ISR). Las queries públicas usan `.in('estado', VISIBLES)` y ordenan
+  por estado (vendidas al final); la home (destacadas) usa `soloDisponibles`. `precioPublico` devuelve
+  "Vendida". Card con banda azul "Vendida" y foto atenuada (`--vendida-filtro`); detalle con chip, aviso
+  y WhatsApp "Consultar por similares"; indexables y en el sitemap mientras se ven. Panel:
+  `visibilidad-vendida.jsx` (días restantes + "Renovar 60 días" -> `renovarVendida`) en la lista y la
+  edición.
+- Home, texto de "¿Por qué elegirnos?": nombra campos, quintas, forestaciones, casas, terrenos,
+  departamentos y locales comerciales (pedido del cliente), cada uno con enlace a su categoría.
 - `/login` muestra el header del sitio (`SiteHeader`) para volver al inicio con un clic; sigue sin haber
   links del sitio hacia el login.
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
@@ -116,7 +146,8 @@ SEO y velocidad (2026-11-14)
 - Caché de 1 semana para estáticos de /public (logo, íconos, banner, OG, favicon) y headers básicos de
   seguridad en `next.config.mjs` (CSP completa sigue pendiente, fase 8).
 - 404 de una propiedad inexistente: código 404 correcto, pero Next 15 (ruta ISR) manda el contenido del 404
-  armado en el navegador. No afecta la indexación.
+  armado en el navegador. No afecta la indexación. Por eso `not-found.jsx` es mínimo (2026-11-17): solo
+  "Error 404" + "Volver al inicio", sin header ni footer (sus estilos no llegaban y se veía mezclado).
 
 Diseño
 
@@ -179,7 +210,10 @@ localidad-filter,paginacion,listing-skeleton,category-tabs}.jsx`.
   `lib/fechas.js`; cuotas `lib/cuotas.js` (`proximaCuota`, `calendarioCuotas`); teléfonos `lib/telefono.js`.
 - Seguridad: `lib/auth.js` (getAdmin, requireAdmin, assertAdmin), `lib/rate-limit.js` (en memoria, por
   instancia: en Vercel con varias instancias no es global).
-- SQL: `supabase/schema.sql`, `supabase/migrations/002` a `007` (todas ejecutadas).
+- SQL: `supabase/schema.sql`, `supabase/migrations/002` a `008` (ejecutadas; 008 verificada 2026-11-18) y
+  `009_provincia_barrio.sql` (PENDIENTE al 2026-11-18; sin ella todo funciona sin barrio/provincia). Sin ella el panel funciona igual: `listarPropiedadesAdmin` y
+  `admin-pedidos` reintentan sin las columnas nuevas (códigos 42703 / PGRST200) y `guardarPedido` guarda
+  sin "qué busca" (PGRST204); vendidas y "qué busca" se activan solas al correrla.
 
 ## 8. Infraestructura
 

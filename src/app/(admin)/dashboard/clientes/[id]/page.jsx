@@ -12,14 +12,13 @@ import { borrarCliente } from '@/actions/clientes';
 import { requireAdmin } from '@/lib/auth';
 import { getCliente, opcionesPropiedades } from '@/lib/queries/admin-clientes';
 import { pedidosDeCliente } from '@/lib/queries/admin-pedidos';
-import { categoriasConId } from '@/lib/queries/admin-properties';
 import editor from '../../propiedades/editor.module.css';
 import styles from './ficha.module.css';
 
 export const metadata = { title: 'Cliente' };
 
 const AVISOS = {
-  creado: 'Cliente creado. Ahora puede vincularlo a sus propiedades.',
+  creado: 'Cliente creado. Vincúlelo a sus propiedades o anote lo que busca con "Nuevo pedido".',
   guardado: 'Cambios guardados.',
 };
 
@@ -27,11 +26,10 @@ export default async function ClientePage({ params, searchParams }) {
   await requireAdmin();
   const { id } = await params;
   const { aviso } = await searchParams;
-  const [res, propiedades, pedidos, categorias] = await Promise.all([
+  const [res, propiedades, pedidos] = await Promise.all([
     getCliente(id),
     opcionesPropiedades(),
     pedidosDeCliente(id),
-    categoriasConId(),
   ]);
   if (!res.ok) throw new Error(res.error);
   if (!res.data) notFound();
@@ -119,7 +117,7 @@ export default async function ClientePage({ params, searchParams }) {
       </section>
 
       <h2 className={styles.h2}>Datos del cliente</h2>
-      <ClienteForm cliente={c} categorias={categorias} />
+      <ClienteForm cliente={c} />
 
       <ConfirmForm
         action={borrarCliente}

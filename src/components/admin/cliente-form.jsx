@@ -10,7 +10,7 @@ import base from './property-form.module.css';
 import styles from './cliente-form.module.css';
 
 const s = (v) => (v === null || v === undefined ? '' : String(v));
-const NUEVO = { moneda: 'USD', activo: true };
+const NUEVO = { activo: true };
 const opciones = (o) =>
   Object.entries(o).map(([v, t]) => (
     <option key={v} value={v}>
@@ -30,9 +30,9 @@ const ESCRITURA = [
 
 /**
  * Alta / edición de cliente (Client Component: useActionState para errores y envío).
- * @param {{ cliente?: any, categorias: { id: number, nombre: string }[] }} props
+ * @param {{ cliente?: any }} props
  */
-export default function ClienteForm({ cliente, categorias }) {
+export default function ClienteForm({ cliente }) {
   const [estado, accion, pendiente] = useActionState(guardarCliente, null);
   const v = estado?.valores ?? cliente ?? NUEVO;
   const err = estado?.campos ?? {};
@@ -87,49 +87,13 @@ export default function ClienteForm({ cliente, categorias }) {
             <small>Los inactivos quedan al final de la lista.</small>
           </span>
         </label>
-      </fieldset>
 
-      <fieldset className={base.group}>
-        <legend className={base.legend}>Qué busca</legend>
-        {campo('busca', 'En sus palabras', {
+        {campo('notas', 'Notas', {
           as: 'textarea',
           ancho: 'full',
-          maxLength: 1000,
-          hint: 'Ej.: casa de 3 dormitorios con patio, zona centro.',
+          maxLength: 3000,
+          hint: 'Lo que busca se anota como pedido en la Carpeta de pedidos (desde la ficha del cliente).',
         })}
-        {campo('categoria_id', 'Tipo de propiedad', {
-          as: 'select',
-          children: [
-            <option key="" value="">
-              Cualquiera
-            </option>,
-            ...categorias.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nombre}
-              </option>
-            )),
-          ],
-        })}
-        {campo('presupuesto', 'Presupuesto', {
-          type: 'number',
-          min: '0',
-          step: 'any',
-          inputMode: 'decimal',
-          ancho: 'third',
-        })}
-        {campo('moneda', 'Moneda', {
-          as: 'select',
-          ancho: 'third',
-          children: [
-            <option key="USD" value="USD">
-              USD
-            </option>,
-            <option key="ARS" value="ARS">
-              ARS
-            </option>,
-          ],
-        })}
-        {campo('notas', 'Notas', { as: 'textarea', ancho: 'full', maxLength: 3000 })}
       </fieldset>
 
       <details className={styles.extra} open={Boolean(tieneEscritura)}>
@@ -173,6 +137,6 @@ export default function ClienteForm({ cliente, categorias }) {
 }
 
 /* RESUMEN
-   Formulario de cliente (Client Component): contacto, qué busca (tipo, presupuesto, notas) y un
-   desplegable con datos opcionales para escritura. Envía a guardarCliente; errores por campo sin perder lo
+   Formulario de cliente (Client Component): contacto y notas (lo que busca va a la Carpeta de pedidos) y
+   un desplegable con datos opcionales para escritura. Envía a guardarCliente; errores por campo sin perder lo
    escrito. Depende de: form-field.jsx, actions/clientes.js, lib/schemas/agenda-etiquetas.js, module.css */

@@ -23,12 +23,20 @@ const opciones = (o) =>
  * @param {{
  *   pedido?: any, iniciales?: { fecha?: string, cliente_id?: string, propiedad_id?: string },
  *   clientes: { id: string, nombre: string, telefono?: string | null }[], propiedades: { id: string, titulo: string }[],
- *   volver: string
+ *   categorias: { id: number, nombre: string }[], volver: string
  * }} props
  */
-export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedades, volver }) {
+export default function PedidoForm({
+  pedido,
+  iniciales = {},
+  clientes,
+  propiedades,
+  categorias,
+  volver,
+}) {
   const [estado, accion, pendiente] = useActionState(guardarPedido, null);
-  const v = estado?.valores ?? pedido ?? { prioridad: 'normal', estado: 'pendiente', ...iniciales };
+  const v = estado?.valores ??
+    pedido ?? { prioridad: 'normal', estado: 'pendiente', moneda: 'USD', ...iniciales };
   const err = estado?.campos ?? {};
   const conError = Object.keys(err).map((k) => ETIQUETAS_AGENDA[k] ?? k);
   const campo = (name, label, props = {}) => (
@@ -58,7 +66,12 @@ export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedad
           ancho: 'full',
           hint: 'Ej.: Llamar a Gómez por la casa de calle Sarmiento',
         })}
-        {campo('detalle', 'Detalle', { as: 'textarea', ancho: 'full', maxLength: 3000 })}
+        {campo('detalle', 'Detalle', {
+          as: 'textarea',
+          ancho: 'full',
+          maxLength: 3000,
+          hint: 'Si es una búsqueda: qué quiere, en sus palabras (ej.: casa de 3 dormitorios con patio).',
+        })}
         {campo('fecha', 'Fecha', {
           type: 'date',
           ancho: 'third',
@@ -113,6 +126,43 @@ export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedad
         />
       </fieldset>
 
+      <fieldset className={base.group}>
+        <legend className={base.legend}>Qué busca (opcional)</legend>
+        {campo('categoria_id', 'Tipo de propiedad', {
+          as: 'select',
+          hint: 'Lo que busca en sus palabras va en "Detalle".',
+          children: [
+            <option key="" value="">
+              Cualquiera
+            </option>,
+            ...categorias.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nombre}
+              </option>
+            )),
+          ],
+        })}
+        {campo('presupuesto', 'Presupuesto', {
+          type: 'number',
+          min: '0',
+          step: 'any',
+          inputMode: 'decimal',
+          ancho: 'third',
+        })}
+        {campo('moneda', 'Moneda', {
+          as: 'select',
+          ancho: 'third',
+          children: [
+            <option key="USD" value="USD">
+              USD
+            </option>,
+            <option key="ARS" value="ARS">
+              ARS
+            </option>,
+          ],
+        })}
+      </fieldset>
+
       <div className={base.bar}>
         <button type="submit" className={base.submit} disabled={pendiente} aria-busy={pendiente}>
           {pendiente ? (
@@ -129,5 +179,5 @@ export default function PedidoForm({ pedido, iniciales = {}, clientes, propiedad
 
 /* RESUMEN
    Formulario de la Carpeta de pedidos (Client Component): qué hacer, detalle, fecha, hora, prioridad,
-   estado (al editar) y cliente/propiedad opcionales con buscador. Envía a guardarPedido, que vuelve a `volver`.
+   estado (al editar), cliente/propiedad opcionales con buscador y qué busca (tipo, presupuesto, moneda). Envía a guardarPedido, que vuelve a `volver`.
    Depende de: form-field.jsx, buscador-select.jsx, actions/pedidos.js, lib/schemas/agenda-etiquetas.js, property-form.module.css */

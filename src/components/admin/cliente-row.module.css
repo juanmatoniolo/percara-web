@@ -62,16 +62,6 @@
   display: none;
 }
 
-.busca {
-  display: -webkit-box;
-  overflow: hidden;
-  font-size: var(--text-sm);
-  color: var(--color-text-soft);
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
 .actions {
   grid-column: 1 / -1;
   display: flex;
@@ -115,5 +105,5 @@
 
 /* RESUMEN
    Fila de cliente: tarjeta blanca (gris si está inactivo) con avatar de iniciales azul, nombre recortado,
-   meta gris, etiquetas y "busca" en dos líneas; botones de contacto abajo en móvil y a la derecha desde
+   meta gris, etiquetas; botones de contacto abajo en móvil y a la derecha desde
    768px. Depende de: styles/tokens.css */

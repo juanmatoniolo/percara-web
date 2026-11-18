@@ -14,6 +14,7 @@ import {
   uuidSchema,
 } from '@/lib/schemas/propiedad';
 import { slugify } from '@/lib/slug';
+import { canonico } from '@/lib/lugares';
 import { borrarPrefijo, claves } from '@/lib/r2';
 import { regenerarOg } from '@/lib/og-propiedad';
 
@@ -25,6 +26,25 @@ function revalidarTodo() {
   revalidateTag(TAG_PROPIEDADES);
   revalidatePath('/dashboard', 'layout');
 }
+
+/**
+ * Localidad y barrio escritos igual que los ya cargados ("chajari" -> "Chajarí"; el barrio se compara
+ * dentro de su localidad). Sin la migración 009 (sin provincia/barrio) quita esas claves.
+ */
+async function unificarLugar(supabase, fila) {
+  const r = await supabase.from('propiedades').select('localidad, barrio');
+  if (r.error?.code === '42703') {
+    const { data } = await supabase.from('propiedades').select('localidad');
+    const { provincia, barrio, ...resto } = fila;
+    return { ...resto, localidad: canonico(fila.localidad, unicos(data, 'localidad')) };
+  }
+  const filas = r.data ?? [];
+  const localidad = canonico(fila.localidad, unicos(filas, 'localidad'));
+  const deLaLocalidad = filas.filter((f) => f.localidad === localidad);
+  return { ...fila, localidad, barrio: canonico(fila.barrio, unicos(deLaLocalidad, 'barrio')) };
+}
+
+const unicos = (filas, k) => [...new Set((filas ?? []).map((f) => f[k]).filter(Boolean))];
 
 /** Slug único: base, base-2, base-3... */
 async function slugUnico(supabase, titulo) {
@@ -38,10 +58,11 @@ async function slugUnico(supabase, titulo) {
 }
 
 /**
- * Alta o edición (useActionState). Con `id` en el form actualiza; sin `id` crea. El slug se genera al
- * crear y no cambia al editar, para no romper links compartidos.
+ * Alta o edición. Con `id` en el form actualiza y redirige al listado; sin `id` crea y devuelve
+ * `{ ok: true, id }` (el formulario sube las fotos y abre la edición). El slug se genera al crear y no
+ * cambia al editar, para no romper links compartidos.
  * En error devuelve `valores` para que el formulario no pierda lo escrito (React 19 resetea el form).
- * @returns {Promise<{ ok: false, error: string, campos?: Record<string, string[]>, valores?: object }>}
+ * @returns {Promise<{ ok: true, id: string } | { ok: false, error: string, campos?: Record<string, string[]>, valores?: object }>}
  */
 export async function guardarPropiedad(_prev, formData) {
   const valores = desdeFormData(formData);
@@ -60,7 +81,7 @@ export async function guardarPropiedad(_prev, formData) {
 
   const id = formData.get('id');
   const { supabase } = auth;
-  const fila = aFila(parsed.data);
+  const fila = await unificarLugar(supabase, aFila(parsed.data));
 
   if (id) {
     if (!uuidSchema.safeParse(id).success)
@@ -108,8 +129,9 @@ export async function guardarPropiedad(_prev, formData) {
     };
   }
   revalidarTodo();
-  /* Recién creada: se abre la edición en la sección de fotos (necesitan el id para su carpeta en R2) */
-  redirect(`/dashboard/propiedades/${creada.id}?aviso=creada#fotos`);
+  /* Alta: devuelve el id para que el formulario suba las fotos elegidas (necesitan el id para su
+     carpeta en R2) y recién después abra la edición. */
+  return { ok: true, id: creada.id };
 }
 
 /** Cambia el estado (borrador / publicada / vendida). Form con inputs `id` y `estado`. */
@@ -125,6 +147,30 @@ export async function cambiarEstado(formData) {
     .update({ estado: estado.data })
     .eq('id', id.data);
   if (error) return { ok: false, error: 'No se pudo cambiar el estado.' };
+  revalidarTodo();
+  return { ok: true };
+}
+
+/** Días que una vendida sigue visible en el sitio (el trigger de la base usa el mismo plazo). */
+const DIAS_VENDIDA = 60;
+
+/**
+ * Renueva la visibilidad de una vendida: vuelve a contar 60 días desde hoy. Solo actúa si está
+ * vendida (el trigger de la base limpia la fecha en cualquier otro estado). Form con input `id`.
+ */
+export async function renovarVendida(formData) {
+  const auth = await assertAdmin();
+  if (!auth.ok) return auth;
+  const id = uuidSchema.safeParse(formData.get('id'));
+  if (!id.success) return { ok: false, error: 'Datos inválidos.' };
+
+  const hasta = new Date(Date.now() + DIAS_VENDIDA * 864e5).toISOString();
+  const { error } = await auth.supabase
+    .from('propiedades')
+    .update({ vendida_hasta: hasta })
+    .eq('id', id.data)
+    .eq('estado', 'vendida');
+  if (error) return { ok: false, error: 'No se pudo renovar.' };
   revalidarTodo();
   return { ok: true };
 }
@@ -164,6 +210,6 @@ export async function borrarPropiedad(formData) {
 
 /* RESUMEN
    Server Actions de propiedades (cada una verifica admin con assertAdmin y valida con Zod): guardarPropiedad
-   (alta con slug único -> abre fotos; edición regenera la OG si cambian título o precio), cambiarEstado,
-   alternarDestacada y borrarPropiedad (borra también su carpeta en R2). Invalidan el tag 'propiedades'.
-   Depende de: lib/{auth,slug,r2,og-propiedad}.js, lib/schemas/propiedad.js, supabase/public.js */
+   (unifica localidad y barrio con los ya cargados; alta con slug único -> devuelve el id para subir las fotos; edición regenera la OG si cambian título o precio), cambiarEstado,
+   renovarVendida (60 días más visible en el sitio), alternarDestacada y borrarPropiedad (borra también su carpeta en R2). Invalidan el tag 'propiedades'.
+   Depende de: lib/{auth,slug,r2,og-propiedad,lugares}.js, lib/schemas/propiedad.js, supabase/public.js */

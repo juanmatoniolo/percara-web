@@ -3,9 +3,9 @@ import Breadcrumbs from '@/components/ui/breadcrumbs';
 import CategoryTabs from './category-tabs';
 import PropertyGrid from './property-grid';
 import EmptyState from './empty-state';
-import LocalidadFilter from './localidad-filter';
+import FiltrosListado from './filtros-listado';
 import Paginacion from './paginacion';
-import { POR_PAGINA } from '@/lib/listado';
+import { POR_PAGINA, lugarElegido } from '@/lib/listado';
 import { plural } from '@/lib/format';
 import styles from './listing-view.module.css';
 
@@ -15,8 +15,8 @@ import styles from './listing-view.module.css';
  *   titulo: string, bajada: string, Icono: import('react').ComponentType<any>,
  *   slug?: string, nombreCategoria?: string, migas: { nombre: string, path: string }[],
  *   resultado: { ok: true, data: import('@/types').Propiedad[], total: number } | { ok: false, error: string },
- *   conteo: Record<string, number>, base: string, localidades: { nombre: string, n: number }[],
- *   localidad?: string, pagina: number
+ *   conteo: Record<string, number>, base: string,
+ *   arbol: import('@/lib/listado').ArbolLugares, filtros: import('@/lib/listado').Filtros
  * }} props
  */
 export default function ListingView({
@@ -29,10 +29,11 @@ export default function ListingView({
   resultado,
   conteo,
   base,
-  localidades,
-  localidad,
-  pagina,
+  arbol,
+  filtros,
 }) {
+  const { pagina } = filtros;
+  const lugar = lugarElegido(filtros);
   const propiedades = resultado.ok ? resultado.data : [];
   const total = resultado.ok ? resultado.total : 0;
 
@@ -55,7 +56,7 @@ export default function ListingView({
           {total > 0 && (
             <p className={styles.total}>
               {plural(total, 'propiedad disponible', 'propiedades disponibles')}
-              {localidad && ` en ${localidad}`}
+              {lugar && ` en ${lugar}`}
             </p>
           )}
         </div>
@@ -65,7 +66,7 @@ export default function ListingView({
 
       <section className={styles.results} aria-label="Resultados">
         <div className={styles.inner}>
-          <LocalidadFilter base={base} localidades={localidades} actual={localidad} />
+          <FiltrosListado base={base} arbol={arbol} filtros={filtros} />
           {propiedades.length > 0 ? (
             <>
               <PropertyGrid propiedades={propiedades} prioridadPrimera nivel="h2" />
@@ -73,7 +74,7 @@ export default function ListingView({
                 base={base}
                 pagina={pagina}
                 totalPaginas={Math.ceil(total / POR_PAGINA)}
-                localidad={localidad}
+                filtros={filtros}
               />
             </>
           ) : (
@@ -87,7 +88,7 @@ export default function ListingView({
 
 /* RESUMEN
    Vista compartida de /propiedades y /categorias/[categoria] (Server Component): migas, encabezado con
-   ícono, H1, bajada y total, pestañas de categorías, filtro de localidad, grilla paginada o estado
+   ícono, H1, bajada y total, pestañas de categorías, filtros (provincia, ciudad, barrio y con precio), grilla paginada o estado
    vacío/error.
    Recibe `migas` (las mismas del JSON-LD). Depende de: components/ui/breadcrumbs.jsx, category-tabs.jsx,
-   property-grid.jsx, empty-state.jsx, localidad-filter.jsx, paginacion.jsx, lib/{format,listado}.js, listing-view.module.css */
+   property-grid.jsx, empty-state.jsx, filtros-listado.jsx, paginacion.jsx, lib/{format,listado}.js, listing-view.module.css */

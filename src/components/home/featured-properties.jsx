@@ -8,7 +8,7 @@ import styles from './featured-properties.module.css';
 
 /** Últimas propiedades publicadas (destacadas primero). No se muestra si no hay ninguna. */
 export default async function FeaturedProperties() {
-  const res = await getPropiedades({ limite: 6, destacadasPrimero: true });
+  const res = await getPropiedades({ limite: 6, destacadasPrimero: true, soloDisponibles: true });
   if (!res.ok || res.data.length === 0) return null;
 
   return (

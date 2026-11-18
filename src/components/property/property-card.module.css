@@ -89,6 +89,29 @@
   box-shadow: var(--shadow-glow-green);
 }
 
+/* Vendida: banda azul de lado a lado al pie de la foto, foto apenas apagada y precio en verde */
+.vendida {
+  position: absolute;
+  inset: auto 0 0;
+  padding-block: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  box-shadow: inset 0 var(--underline-h) 0 var(--color-accent);
+}
+
+.card[data-vendida] .img {
+  filter: var(--vendida-filtro);
+}
+
+.card[data-vendida] .price {
+  color: var(--color-accent-text);
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -239,10 +262,17 @@
   .foot {
     display: none;
   }
+
+  .vendida {
+    color: CanvasText;
+    background: none;
+    box-shadow: none;
+  }
 }
 
 /* RESUMEN
    Card de propiedad estilo Apple (la tarjeta es el <article>; el link y el pie con Compartir van dentro): blanca con radio amplio y sombra flotante, imagen 4:3 con zoom al
-   hover, chip de vidrio con la categoría, badge verde "Destacada", precio azul y ficha fija de 4 columnas
+   hover, chip de vidrio con la categoría, badge verde "Destacada" o banda azul "Vendida" (foto
+   atenuada, precio verde), precio azul y ficha fija de 4 columnas
    (ícono verde, valor azul, etiqueta gris; atenuada si falta el dato).
    Se eleva al hover y se encoge al tocar. Depende de: styles/tokens.css */

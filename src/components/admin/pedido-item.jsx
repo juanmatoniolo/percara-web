@@ -1,11 +1,12 @@
 // src/components/admin/pedido-item.jsx
 import Link from 'next/link';
-import { Check, Clock, House, Pencil, RotateCcw, User } from 'lucide-react';
+import { Check, Clock, House, Pencil, RotateCcw, Search, User } from 'lucide-react';
 import ContactButtons from './contact-buttons';
 import Tag, { TONOS } from './tag';
 import { cambiarEstadoPedido } from '@/actions/pedidos';
 import { ESTADOS_PEDIDO, PRIORIDADES } from '@/lib/schemas/agenda-etiquetas';
 import { fechaLarga, horaCorta } from '@/lib/fechas';
+import { formatPrecio } from '@/lib/format';
 import styles from './pedido-item.module.css';
 
 /**
@@ -18,6 +19,13 @@ export default function PedidoItem({ pedido: p, volver, mostrarFecha = true, atr
     .filter(Boolean)
     .join(' · ');
   const editar = `/dashboard/pedidos/${p.id}?volver=${encodeURIComponent(volver)}`;
+  /* "Casas · hasta USD 50.000" si el pedido trae qué busca */
+  const busca = [
+    p.categoria?.nombre,
+    p.presupuesto > 0 ? `hasta ${formatPrecio(p.presupuesto, p.moneda)}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
     <li className={styles.item} data-estado={p.estado} data-atrasado={atrasado || undefined}>
@@ -61,6 +69,14 @@ export default function PedidoItem({ pedido: p, volver, mostrarFecha = true, atr
             {cuando}
           </p>
         )}
+        {busca && (
+          <p className={styles.busca}>
+            <Search size={14} aria-hidden="true" />
+            <span>
+              <strong>Busca:</strong> {busca}
+            </span>
+          </p>
+        )}
         {p.detalle && <p className={styles.detalle}>{p.detalle}</p>}
 
         {(p.cliente || p.propiedad) && (
@@ -99,5 +115,6 @@ export default function PedidoItem({ pedido: p, volver, mostrarFecha = true, atr
 
 /* RESUMEN
    Pedido de la Carpeta (Server Component): botón para marcar hecho/pendiente (Server Action), título con
-   link a editar, prioridad, fecha y hora (o "Atrasado"), detalle, cliente y propiedad, y WhatsApp/Llamar
-   al cliente. Recibe `pedido`, `volver`, `mostrarFecha`, `atrasado`. Depende de: contact-buttons, tag, lib/fechas */
+   link a editar, prioridad, fecha y hora (o "Atrasado"), qué busca (tipo y presupuesto), detalle, cliente
+   y propiedad, y WhatsApp/Llamar al cliente. Recibe `pedido`, `volver`, `mostrarFecha`, `atrasado`.
+   Depende de: contact-buttons, tag, lib/fechas, lib/format */

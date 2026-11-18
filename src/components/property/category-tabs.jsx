@@ -5,6 +5,9 @@ import { CATEGORIAS } from '@/lib/queries/categories';
 import { iconoCategoria } from '@/lib/categories-meta';
 import styles from './category-tabs.module.css';
 
+/* Nombres cortos en las pestañas para que entren en una fila (el H1 de cada página usa el completo) */
+const CORTOS = { 'locales-y-oficinas': 'Locales y oficinas', 'otras-propiedades': 'Otras' };
+
 /**
  * Pestañas de navegación por categoría ("Todas" + 9). Son links reales: cada una es una URL indexable.
  * @param {{ activa?: string, conteo?: Record<string, number> }} props  activa = slug o undefined (Todas)
@@ -15,7 +18,7 @@ export default function CategoryTabs({ activa, conteo = {} }) {
     { slug: undefined, nombre: 'Todas', href: '/propiedades', Icono: LayoutList, n: total },
     ...CATEGORIAS.map((c) => ({
       slug: c.slug,
-      nombre: c.nombre,
+      nombre: CORTOS[c.slug] ?? c.nombre,
       href: `/categorias/${c.slug}`,
       Icono: iconoCategoria(c.slug),
       n: conteo[c.slug] ?? 0,
