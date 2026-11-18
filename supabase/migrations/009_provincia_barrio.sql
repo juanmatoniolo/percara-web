@@ -26,9 +26,9 @@ update public.propiedades set provincia = 'Entre Ríos'
     and localidad in ('Chajarí', 'Santa Ana', 'Colonia Ensanche Sauce', 'Villa del Rosario',
                       'Colonia Belgrano', 'San Pedro', 'Federación', 'Los Conquistadores',
                       'Colonia San Ramón', 'Colonia San Roque', 'Tatutí', 'La Florida',
-                      'Colonia Santa María', 'La Paz');
--- TODO (confirmar con el cliente, sin coordenadas): localidad "Corrientes" (Paraje Piedritas) y
--- "Departamento Curuzú" (San Jaime). Se corrigen desde el panel al editarlas.
+                      'Colonia Santa María', 'La Paz', 'San Jaime de la Frontera');
+-- Confirmado por el cliente (2026-11-18) y ya corregido en la base: "Corrientes" (Paraje Piedritas)
+-- -> Colonia Piedrita y "Departamento Curuzú" (San Jaime) -> San Jaime de la Frontera.
 
 -- ========== BARRIOS que ya figuraban en la dirección (Chajarí) ==========
 update public.propiedades set barrio = 'Las 14'

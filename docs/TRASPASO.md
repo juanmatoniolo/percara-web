@@ -122,8 +122,8 @@ SEO y velocidad (2026-11-14)
   (`getLugares` arma el árbol con cantidades; "Sin barrio asignado" = `?barrio=sin-asignar`), más "solo con
   precio publicado". Se quitó el rango de precio. Sin la 009 arranca directo por ciudad. Pestañas de
   categorías siempre en una fila (sin íconos desde 1024 px, nombres cortos). Botón flotante de WhatsApp
-  con "x" (`whatsapp-float-cerrable.jsx`, oculto durante la visita vía sessionStorage). Pendiente confirmar: "Corrientes" (Paraje Piedritas) y "Departamento
-  Curuzú" (San Jaime).
+  con "x" (`whatsapp-float-cerrable.jsx`, oculto durante la visita vía sessionStorage). Localidades corregidas en la base (2026-11-18, confirmado): Paraje
+  Piedritas -> Colonia Piedrita (Corrientes) y San Jaime -> San Jaime de la Frontera (Entre Ríos).
 - Alta con fotos en un solo paso (2026-11-17): en "Nueva propiedad" las fotos se recortan y quedan en el
   navegador (`fotos-nuevas.jsx`); al crear, `guardarPropiedad` devuelve `{ ok, id }` (ya no redirige en
   el alta), `lib/subir-fotos.js` las sube de a una con `subirImagen` mostrando el progreso y se abre la
