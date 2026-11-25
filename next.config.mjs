@@ -29,6 +29,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    /* Imágenes de R2 servidas desde el dominio propio (/media/propiedades/...): las usa la OG de cada
+       propiedad para que WhatsApp la tome del mismo dominio. Solo la carpeta propiedades/. */
+    const r2 = process.env.R2_PUBLIC_URL?.replace(/\/$/, '');
+    return r2
+      ? [{ source: '/media/propiedades/:path*', destination: `${r2}/propiedades/:path*` }]
+      : [];
+  },
   async headers() {
     /* Archivos de /public (logo, íconos, banner, OG): caché de 1 semana en el navegador y la CDN.
        Next los sirve con max-age=0 por defecto, lo que fuerza a revalidarlos en cada visita. */
@@ -63,5 +71,5 @@ export default nextConfig;
 /* RESUMEN
    Configuración de Next: loader propio de imágenes (variantes pregeneradas en R2), límite de 12 MB para
    Server Actions (subida de fotos) e inclusión de la fuente Montserrat en el bundle del panel (OG). distDir configurable (NEXT_DIST_DIR).
-   301 de percara-web.vercel.app al dominio propio. Caché de 1 semana para los estáticos de /public y
+   301 de percara-web.vercel.app al dominio propio, proxy /media/propiedades/* a R2 (OG desde el dominio). Caché de 1 semana para los estáticos de /public y
    headers de seguridad básicos (CSP y 301 de URLs viejas en la fase 8). Depende de: src/lib/image-loader.js */

@@ -98,6 +98,18 @@ export function jsonLdInmobiliaria(contacto) {
 }
 
 /**
+ * Pasa una URL de R2 al dominio propio (`/media/...`, proxy en next.config.mjs). WhatsApp y Facebook
+ * leen mejor la imagen desde el mismo dominio que la página que desde el subdominio r2.dev.
+ * @param {string} url
+ */
+function mediaPropia(url) {
+  const r2 = process.env.R2_PUBLIC_URL?.replace(/\/$/, '');
+  return r2 && url.startsWith(`${r2}/propiedades/`)
+    ? `${SITE_URL}/media${url.slice(r2.length)}`
+    : url;
+}
+
+/**
  * Metadata completa de una propiedad: title y description con sus datos (precio, superficie,
  * dormitorios, localidad), canonical, Open Graph y Twitter con la OG precalculada (1200x630).
  * @param {import('@/types').Propiedad} p
@@ -108,10 +120,16 @@ export function metadataPropiedad(p, { precio, datos, descripcion }) {
   /* Orden: OG precalculada (JPEG 1200x630 hecha con la primera foto) > la primera foto > la del sitio */
   const portada = p.imagenes[0];
   const imagen = p.og_image_url
-    ? { url: p.og_image_url, width: 1200, height: 630, type: 'image/jpeg', alt: p.titulo }
+    ? {
+        url: mediaPropia(p.og_image_url),
+        width: 1200,
+        height: 630,
+        type: 'image/jpeg',
+        alt: p.titulo,
+      }
     : portada
       ? {
-          url: portada.url,
+          url: mediaPropia(portada.url),
           width: portada.ancho,
           height: portada.alto,
           alt: portada.alt || p.titulo,
