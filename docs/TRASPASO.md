@@ -149,6 +149,8 @@ SEO y velocidad (2026-11-14)
   edición.
 - Home, texto de "¿Por qué elegirnos?": nombra campos, quintas, forestaciones, casas, terrenos,
   departamentos y locales comerciales (pedido del cliente), cada uno con enlace a su categoría.
+- Cards (2026-11-25): el título se muestra sin "Casa en Chajarí, " (`tituloCorto` en `lib/format.js`);
+  detalle, metadata y compartir siguen con el título completo.
 - `/login` muestra el header del sitio (`SiteHeader`) para volver al inicio con un clic; sigue sin haber
   links del sitio hacia el login.
 - Header: "Sobre nosotros" y "Contacto" son páginas propias (antes anclas de la home).
@@ -195,7 +197,9 @@ medir a mano en pagespeed.web.dev.
    "Departamento Curuzú", "Saenz Valiente" (unificar nombres; el filtro las lista tal cual).
 3. ROTAR claves expuestas antes: secret key de Supabase y token/claves de R2 `percara-web-r2`.
 4. Dominio propio para R2 (`r2.dev` tiene límite de tasa) y actualizar `R2_PUBLIC_URL` (y `remotePatterns`).
-5. En Vercel: `NEXT_PUBLIC_SITE_URL=https://inmobiliariapercara.com`.
+5. En Vercel: `NEXT_PUBLIC_SITE_URL=https://inmobiliariapercara.com` (opcional desde 2026-11-25: en Vercel
+   `lib/seo.js` ignora localhost y `*.vercel.app` y usa el dominio propio; `percara-web.vercel.app` hace 301
+   al dominio en `next.config.mjs`).
 6. CSP completa en `next.config.mjs` y checklist Lighthouse >= 95 (fase 8).
 7. Banner del hero (`public/banner.webp`, 1024x434) trae texto y "Rivadavia 3935"; el sitio usa
    "Salvarredy 1919" (editable en /dashboard/configuracion). Confirmar dirección y conseguir foto >= 1600 px sin texto.

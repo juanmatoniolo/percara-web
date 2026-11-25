@@ -17,6 +17,18 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/dashboard/**': ['./src/assets/fonts/**'],
   },
+  async redirects() {
+    /* El subdominio de Vercel de producción manda con 301 al dominio propio (evita contenido duplicado).
+       Las URLs de preview (percara-web-xxxx.vercel.app) no coinciden y siguen funcionando. */
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'percara-web.vercel.app' }],
+        destination: 'https://inmobiliariapercara.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     /* Archivos de /public (logo, íconos, banner, OG): caché de 1 semana en el navegador y la CDN.
        Next los sirve con max-age=0 por defecto, lo que fuerza a revalidarlos en cada visita. */
@@ -51,5 +63,5 @@ export default nextConfig;
 /* RESUMEN
    Configuración de Next: loader propio de imágenes (variantes pregeneradas en R2), límite de 12 MB para
    Server Actions (subida de fotos) e inclusión de la fuente Montserrat en el bundle del panel (OG). distDir configurable (NEXT_DIST_DIR).
-   Caché de 1 semana para los estáticos de /public y headers de seguridad básicos (CSP y redirects 301
-   en la fase 8). Depende de: src/lib/image-loader.js */
+   301 de percara-web.vercel.app al dominio propio. Caché de 1 semana para los estáticos de /public y
+   headers de seguridad básicos (CSP y 301 de URLs viejas en la fase 8). Depende de: src/lib/image-loader.js */

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Bath, BedDouble, Car, MapPin, Maximize2 } from 'lucide-react';
 import ShareButton from '@/components/ui/share-button';
 import { iconoCategoria } from '@/lib/categories-meta';
-import { formatSuperficie, precioPublico } from '@/lib/format';
+import { formatSuperficie, precioPublico, tituloCorto } from '@/lib/format';
 import styles from './property-card.module.css';
 
 const SIZES = '(min-width: 1280px) 25rem, (min-width: 768px) 50vw, 100vw';
@@ -59,7 +59,7 @@ export default function PropertyCard({ propiedad: p, prioridad = false, nivel: T
 
         <div className={styles.body}>
           <p className={styles.price}>{precioPublico(p)}</p>
-          <Titulo className={styles.title}>{p.titulo}</Titulo>
+          <Titulo className={styles.title}>{tituloCorto(p.titulo)}</Titulo>
           {p.localidad && (
             <p className={styles.place}>
               <MapPin size={16} aria-hidden="true" />

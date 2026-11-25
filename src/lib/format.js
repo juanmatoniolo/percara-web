@@ -77,8 +77,21 @@ export function recortar(texto, max = 155) {
   return `${limpio.slice(0, limpio.lastIndexOf(' ', max - 1))}…`;
 }
 
+/** Prefijo "Tipo en Lugar, " al inicio del título (hasta 6 palabras antes de la primera coma). */
+const PREFIJO_TITULO = /^(?:[^\s,]+\s){0,3}en\s[^,]{1,40},\s*/i;
+
+/**
+ * Título sin el prefijo "Casa en Chajarí, " para la card (el tipo y el lugar ya se ven en el chip
+ * y en la ubicación). Si no hay prefijo o no queda nada, devuelve el título completo.
+ * @param {string} titulo
+ */
+export function tituloCorto(titulo) {
+  const corto = titulo.replace(PREFIJO_TITULO, '').trim();
+  return corto ? corto.charAt(0).toUpperCase() + corto.slice(1) : titulo;
+}
+
 /* RESUMEN
    Formateo es-AR: formatPrecio (USD/$ o "Consultar precio"), precioPublico(p) (respeta mostrar_precio),
-   formatSuperficie (m² o ha), formatMedidas (frente x fondo), plural,
+   formatSuperficie (m² o ha), formatMedidas (frente x fondo), plural, tituloCorto (sin "Casa en X, "),
    datosClave(propiedad) para cards y metadata, y recortar(texto) para descriptions.
    Depende de: types/index.js (solo JSDoc) */

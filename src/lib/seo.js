@@ -1,13 +1,14 @@
 // src/lib/seo.js
 
-/* URL absoluta del sitio para canonical y og:image (WhatsApp exige URLs absolutas y accesibles).
-   Si la variable apunta a localhost estando en Vercel, se usa el dominio del proyecto en Vercel. */
+const DOMINIO_CANONICO = 'https://inmobiliariapercara.com';
+
+/* URL absoluta del sitio para canonical, og:image y links compartidos (WhatsApp exige URLs absolutas).
+   En Vercel nunca se usa localhost ni el subdominio *.vercel.app: siempre el dominio propio. */
 function resolverSiteUrl() {
-  const env = process.env.NEXT_PUBLIC_SITE_URL;
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (env && !(vercel && /localhost|127\.0\.0\.1/.test(env))) return env.replace(/\/$/, '');
-  if (vercel) return `https://${vercel}`;
-  return 'https://inmobiliariapercara.com';
+  const env = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
+  const enVercel = Boolean(process.env.VERCEL);
+  if (env && !(enVercel && /localhost|127\.0\.0\.1|\.vercel\.app/.test(env))) return env;
+  return DOMINIO_CANONICO;
 }
 
 export const SITE_URL = resolverSiteUrl();
@@ -198,4 +199,4 @@ export function serializeJsonLd(data) {
    (RealEstateAgent), jsonLdBreadcrumb(items) y jsonLdPropiedad(p) (RealEstateListing + Offer).
    metadataPropiedad(p, textos) arma la metadata del detalle; OG_SITIO (public/og-percara.jpg) es la
    imagen por defecto al compartir. jsonLdInmobiliaria(contacto) usa los datos del panel.
-   Depende de: NEXT_PUBLIC_SITE_URL / VERCEL_* */
+   Depende de: NEXT_PUBLIC_SITE_URL / VERCEL (en Vercel cae siempre a https://inmobiliariapercara.com) */
