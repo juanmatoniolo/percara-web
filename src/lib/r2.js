@@ -32,10 +32,14 @@ export const claves = {
 /** @param {string} clave */
 export const urlPublica = (clave) => `${env.R2_PUBLIC_URL}/${clave}`;
 
-/** URL pública -> clave del objeto, o null si no es de nuestro bucket. */
+/** URL pública -> clave del objeto, o null si no es de nuestro bucket.
+    Acepta también el subdominio r2.dev anterior al CDN propio (fotos viejas sin migrar). */
 export function claveDesdeUrl(url) {
+  if (typeof url !== 'string') return null;
   const base = `${env.R2_PUBLIC_URL}/`;
-  return typeof url === 'string' && url.startsWith(base) ? url.slice(base.length) : null;
+  if (url.startsWith(base)) return url.slice(base.length);
+  const vieja = url.match(/^https:\/\/pub-[a-z0-9]+\.r2\.dev\/(propiedades\/.+)$/);
+  return vieja ? vieja[1] : null;
 }
 
 /** Sube un objeto inmutable (las claves llevan uuid, nunca se sobrescriben). */

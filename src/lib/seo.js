@@ -98,15 +98,13 @@ export function jsonLdInmobiliaria(contacto) {
 }
 
 /**
- * Pasa una URL de R2 al dominio propio (`/media/...`, proxy en next.config.mjs). WhatsApp y Facebook
- * leen mejor la imagen desde el mismo dominio que la página que desde el subdominio r2.dev.
+ * Pasa una URL del subdominio de prueba r2.dev al dominio propio (`/media/...`, proxy en
+ * next.config.mjs): WhatsApp y Facebook no siempre leen r2.dev. Las URLs del CDN propio quedan igual.
  * @param {string} url
  */
 function mediaPropia(url) {
-  const r2 = process.env.R2_PUBLIC_URL?.replace(/\/$/, '');
-  return r2 && url.startsWith(`${r2}/propiedades/`)
-    ? `${SITE_URL}/media${url.slice(r2.length)}`
-    : url;
+  const m = url.match(/^https:\/\/pub-[a-z0-9]+\.r2\.dev\/(propiedades\/.+)$/);
+  return m ? `${SITE_URL}/media/${m[1]}` : url;
 }
 
 /**

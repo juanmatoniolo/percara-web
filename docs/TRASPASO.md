@@ -196,7 +196,10 @@ medir a mano en pagespeed.web.dev.
 2. Corregir localidades mal cargadas desde el panel: "Corrientes", "Juan Pujol Corrientes",
    "Departamento Curuzú", "Saenz Valiente" (unificar nombres; el filtro las lista tal cual).
 3. ROTAR claves expuestas antes: secret key de Supabase y token/claves de R2 `percara-web-r2`.
-4. Dominio propio para R2 (`r2.dev` tiene límite de tasa) y actualizar `R2_PUBLIC_URL` (y `remotePatterns`).
+4. Dominio propio para R2 (`r2.dev` tiene límite de tasa). Código listo (2026-11-25): `claveDesdeUrl`
+   acepta r2.dev y el CDN; la OG de r2.dev sale por el proxy `/media/propiedades/*`. Falta, en orden:
+   conectar `cdn.inmobiliariapercara.com` al bucket en Cloudflare, `R2_PUBLIC_URL` en Vercel y
+   `.env.local`, redeploy y correr `supabase/migrations/010_cdn_propio.sql`.
 5. En Vercel: `NEXT_PUBLIC_SITE_URL=https://inmobiliariapercara.com` (opcional desde 2026-11-25: en Vercel
    `lib/seo.js` ignora localhost y `*.vercel.app` y usa el dominio propio; `percara-web.vercel.app` hace 301
    al dominio en `next.config.mjs`).
