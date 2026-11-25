@@ -24,7 +24,31 @@ export const recordatorioSchema = z.object({
   observaciones: textoOpcional(5000),
 });
 
+/** Edición por tarjeta en la vista del recordatorio: cada sección guarda solo sus campos. */
+export const SECCIONES_RECORDATORIO = {
+  negocio: recordatorioSchema.pick({
+    titulo: true,
+    fecha_operacion: true,
+    cliente_id: true,
+    propiedad_id: true,
+    estado: true,
+  }),
+  pago: recordatorioSchema.pick({
+    forma_pago: true,
+    medio_pago: true,
+    moneda: true,
+    monto_total: true,
+    anticipo: true,
+    cantidad_cuotas: true,
+    monto_cuota: true,
+    moneda_cuotas: true,
+    primer_vencimiento: true,
+  }),
+  observaciones: recordatorioSchema.pick({ observaciones: true }),
+};
+
 /* RESUMEN
    Schema Zod de Recordatorios: título, fecha, cliente y propiedad opcionales, forma/medio de pago, moneda,
-   montos, cuotas (cantidad, monto, moneda, primer vencimiento), estado y observaciones libres.
+   montos, cuotas (cantidad, monto, moneda, primer vencimiento), estado y observaciones libres; y
+   SECCIONES_RECORDATORIO (negocio, pago, observaciones) para editar por tarjeta.
    Depende de: zod, ./campos.js, ./recordatorio-etiquetas.js */

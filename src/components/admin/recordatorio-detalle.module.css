@@ -15,6 +15,93 @@
   border: var(--border-w) solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
+  transition:
+    box-shadow var(--dur) var(--ease-spring),
+    border-color var(--dur-fast) var(--ease);
+}
+
+/* Tarjeta editable: toda la tarjeta abre la edición */
+.card[data-editable]:not([data-editando]) {
+  cursor: pointer;
+}
+
+.card[data-editando] {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 0 calc(var(--border-w) * 3) var(--color-primary-soft),
+    var(--shadow-sm);
+}
+
+.cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.cabeza .h2 {
+  flex: 1;
+  min-width: 0;
+}
+
+.lapiz {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.lapiz svg {
+  color: var(--color-accent-text);
+}
+
+.lapiz:active {
+  transform: scale(var(--press-scale));
+}
+
+.lapiz:focus-visible,
+.cancelar:focus-visible {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.guardado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent-text);
+}
+
+/* Formulario de la tarjeta: grilla de 6 columnas como los grupos del formulario completo */
+.editor {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.acciones {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+}
+
+.cancelar {
+  min-height: var(--tap);
+  padding-inline: var(--space-4);
+  font-weight: 700;
+  color: var(--color-text-soft);
+  border-radius: var(--radius-pill);
 }
 
 .h2 {
@@ -51,6 +138,11 @@
 .dato dd {
   font-weight: 600;
   color: var(--color-text);
+}
+
+.dato dd[data-vacio] {
+  font-weight: 400;
+  color: var(--color-muted);
 }
 
 .dato a {
@@ -140,6 +232,12 @@
 
 /* 2. ≥480px */
 @media (min-width: 480px) {
+  .acciones {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .dato {
     grid-template-columns: 10rem 1fr;
     align-items: baseline;
@@ -151,6 +249,10 @@
   .card {
     padding: var(--space-6);
   }
+
+  .editor {
+    column-gap: var(--space-5);
+  }
 }
 
 /* 4. ≥1024px */
@@ -158,18 +260,54 @@
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* La tarjeta que se edita ocupa todo el ancho: los campos respiran */
+  .card[data-editando] {
+    grid-column: 1 / -1;
+  }
 }
 
 /* 9. hover: hover */
 @media (hover: hover) {
+  .card[data-editable]:not([data-editando]):hover {
+    border-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .lapiz:hover {
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+  }
+
+  .lapiz:hover svg {
+    color: var(--color-accent);
+  }
+
+  .cancelar:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-alt);
+  }
+
   .dato a:hover,
   .calendario summary:hover {
     text-decoration: underline;
   }
 }
 
+/* 11. prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .lapiz {
+    transition: none;
+  }
+}
+
 /* 12. print */
 @media print {
+  .lapiz {
+    display: none;
+  }
+
   .card {
     box-shadow: none;
     break-inside: avoid;
@@ -179,4 +317,6 @@
 /* RESUMEN
    Vista de un recordatorio: tarjetas blancas (dos columnas desde 1024px) con lista de datos etiqueta/valor,
    aviso de próxima cuota, calendario desplegable con cuotas pasadas en gris y la próxima resaltada, y
-   observaciones con saltos de línea. Depende de: styles/tokens.css */
+   observaciones con saltos de línea. Tarjetas editables: cursor y elevación al pasar, lápiz de 44px, marco
+   azul en edición (ancho completo desde 1024px), grilla de campos y acciones. Datos vacíos en gris.
+   Depende de: styles/tokens.css */

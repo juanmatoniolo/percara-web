@@ -1,48 +1,72 @@
 // src/components/admin/recordatorio-detalle.jsx
 import Link from 'next/link';
 import { CalendarClock, Home, NotebookPen, User, Wallet } from 'lucide-react';
+import RecordatorioTarjeta from './recordatorio-tarjeta';
 import { formatPrecio } from '@/lib/format';
 import { fechaLarga } from '@/lib/fechas';
 import { calendarioCuotas, proximaCuota } from '@/lib/cuotas';
-import { CON_CUOTAS, FORMAS_PAGO, MEDIOS_PAGO } from '@/lib/schemas/recordatorio-etiquetas';
+import {
+  CON_CUOTAS,
+  ESTADOS_RECORDATORIO,
+  FORMAS_PAGO,
+  MEDIOS_PAGO,
+} from '@/lib/schemas/recordatorio-etiquetas';
 import styles from './recordatorio-detalle.module.css';
 
 const conAnio = (iso) => (iso ? `${fechaLarga(iso)} de ${iso.slice(0, 4)}` : null);
 const corta = (iso) => iso.split('-').reverse().join('/');
 const monto = (n, moneda) => (n ? formatPrecio(n, moneda) : null);
 
-/** Fila de la lista de datos: no se muestra si no hay valor. */
+/** Fila de la lista de datos: si no hay valor muestra "Sin indicar" (se ve qué falta cargar). */
 function Dato({ label, children }) {
-  if (children === null || children === undefined || children === '') return null;
+  const vacio =
+    children === null || children === undefined || children === '' || children === false;
   return (
     <div className={styles.dato}>
       <dt>{label}</dt>
-      <dd>{children}</dd>
+      <dd data-vacio={vacio || undefined}>{vacio ? 'Sin indicar' : children}</dd>
     </div>
   );
 }
 
+/** Cabecera de tarjeta (va como prop a la tarjeta cliente). */
+const Cabecera = ({ icono: Icono, children }) => (
+  <h2 className={styles.h2}>
+    <Icono size={20} aria-hidden="true" />
+    {children}
+  </h2>
+);
+
 /**
- * Vista de solo lectura de un recordatorio (Server Component): negocio, pago, cuotas y observaciones.
- * @param {{ recordatorio: import('@/types').Recordatorio & { cliente?: any, propiedad?: any }, hoy: string }} props
+ * Vista de un recordatorio (Server Component): negocio, pago, cuotas y observaciones. Negocio, pago y
+ * observaciones se editan en el lugar con un clic (RecordatorioTarjeta).
+ * @param {{ recordatorio: import('@/types').Recordatorio & { cliente?: any, propiedad?: any }, hoy: string,
+ *   clientes: any[], propiedades: any[] }} props
  */
-export default function RecordatorioDetalle({ recordatorio: r, hoy }) {
+export default function RecordatorioDetalle({ recordatorio: r, hoy, clientes, propiedades }) {
   const conCuotas = CON_CUOTAS.has(r.forma_pago);
   const monedaCuotas = r.moneda_cuotas ?? r.moneda;
   const cuotas = conCuotas ? calendarioCuotas(r) : [];
   const proxima = conCuotas && r.estado === 'en_curso' ? proximaCuota(r, hoy) : null;
+  /* Lo que necesita el editor (sin los objetos anidados, que no hacen falta en el navegador) */
+  const { cliente: _c, propiedad: _p, ...datos } = r;
+  const tarjeta = { recordatorio: datos };
   const saldo =
     r.monto_total && r.anticipo && r.anticipo < r.monto_total ? r.monto_total - r.anticipo : null;
 
   return (
     <div className={styles.grid}>
-      <section className={styles.card} aria-labelledby="neg-titulo">
-        <h2 id="neg-titulo" className={styles.h2}>
-          <User size={20} aria-hidden="true" />
-          Negocio
-        </h2>
+      <RecordatorioTarjeta
+        seccion="negocio"
+        nombre="Negocio"
+        cabecera={<Cabecera icono={User}>Negocio</Cabecera>}
+        clientes={clientes}
+        propiedades={propiedades}
+        {...tarjeta}
+      >
         <dl className={styles.datos}>
           <Dato label="Fecha">{conAnio(r.fecha_operacion)}</Dato>
+          <Dato label="Estado">{ESTADOS_RECORDATORIO[r.estado]}</Dato>
           <Dato label="Cliente">
             {r.cliente && (
               <Link href={`/dashboard/clientes/${r.cliente.id}`}>{r.cliente.nombre}</Link>
@@ -57,33 +81,30 @@ export default function RecordatorioDetalle({ recordatorio: r, hoy }) {
             )}
           </Dato>
         </dl>
-        {!r.fecha_operacion && !r.cliente && !r.propiedad && (
-          <p className={styles.empty}>Sin fecha, cliente ni propiedad vinculados.</p>
-        )}
-      </section>
+      </RecordatorioTarjeta>
 
-      <section className={styles.card} aria-labelledby="pago-titulo">
-        <h2 id="pago-titulo" className={styles.h2}>
-          <Wallet size={20} aria-hidden="true" />
-          Cómo se pagó
-        </h2>
+      <RecordatorioTarjeta
+        seccion="pago"
+        nombre="Cómo se pagó"
+        cabecera={<Cabecera icono={Wallet}>Cómo se pagó</Cabecera>}
+        {...tarjeta}
+      >
         <dl className={styles.datos}>
           <Dato label="Forma de pago">{FORMAS_PAGO[r.forma_pago]}</Dato>
           <Dato label="Medio de pago">{r.medio_pago && MEDIOS_PAGO[r.medio_pago]}</Dato>
+          <Dato label="Moneda">{r.moneda}</Dato>
           <Dato label="Monto total">{monto(r.monto_total, r.moneda)}</Dato>
           <Dato label="Anticipo / seña">{monto(r.anticipo, r.moneda)}</Dato>
-          <Dato label="Saldo">{monto(saldo, r.moneda)}</Dato>
+          {saldo && <Dato label="Saldo">{monto(saldo, r.moneda)}</Dato>}
           {conCuotas && (
             <>
-              <Dato label="Cuotas">
-                {r.cantidad_cuotas &&
-                  `${r.cantidad_cuotas}${r.monto_cuota ? ` de ${formatPrecio(r.monto_cuota, monedaCuotas)}` : ''}`}
-              </Dato>
+              <Dato label="Cantidad de cuotas">{r.cantidad_cuotas}</Dato>
+              <Dato label="Monto de cada cuota">{monto(r.monto_cuota, monedaCuotas)}</Dato>
               <Dato label="Primer vencimiento">{conAnio(r.primer_vencimiento)}</Dato>
             </>
           )}
         </dl>
-      </section>
+      </RecordatorioTarjeta>
 
       {cuotas.length > 0 && (
         <section className={styles.card} aria-labelledby="cuotas-titulo">
@@ -118,23 +139,25 @@ export default function RecordatorioDetalle({ recordatorio: r, hoy }) {
         </section>
       )}
 
-      <section className={styles.card} aria-labelledby="obs-titulo">
-        <h2 id="obs-titulo" className={styles.h2}>
-          <NotebookPen size={20} aria-hidden="true" />
-          Observaciones
-        </h2>
+      <RecordatorioTarjeta
+        seccion="observaciones"
+        nombre="Observaciones"
+        cabecera={<Cabecera icono={NotebookPen}>Observaciones</Cabecera>}
+        {...tarjeta}
+      >
         {r.observaciones ? (
           <p className={styles.obs}>{r.observaciones}</p>
         ) : (
-          <p className={styles.empty}>Sin observaciones.</p>
+          <p className={styles.empty}>Sin observaciones. Toque para agregar.</p>
         )}
-      </section>
+      </RecordatorioTarjeta>
     </div>
   );
 }
 
 /* RESUMEN
-   Vista de solo lectura de un recordatorio (Server Component): tarjetas de negocio (fecha, cliente y propiedad
-   con links), cómo se pagó (con saldo), calendario de cuotas desplegable con la próxima marcada y observaciones
-   completas. Recibe `recordatorio` y `hoy`. Depende de: lib/{format,fechas,cuotas}.js,
+   Vista de un recordatorio (Server Component): tarjetas de negocio, cómo se pagó y observaciones con todos
+   sus datos ("Sin indicar" si faltan) que se editan con un clic, y calendario de cuotas con la próxima
+   marcada. Recibe `recordatorio`, `hoy`, `clientes` y `propiedades`. Depende de: recordatorio-tarjeta.jsx,
+   lib/{format,fechas,cuotas}.js,
    lib/schemas/recordatorio-etiquetas.js, recordatorio-detalle.module.css */

@@ -2,7 +2,7 @@
 'use client';
 
 import { useId, useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Plus, Search, X } from 'lucide-react';
 import styles from './buscador-select.module.css';
 
 const MAX_RESULTADOS = 8;
@@ -22,8 +22,9 @@ const digitos = (t) => String(t ?? '').replace(/\D/g, '');
  *   name: string, label: string, opciones: { id: string, texto: string, detalle?: string }[],
  *   defaultValue?: string, placeholder?: string, error?: string[], hint?: string,
  *   className?: string, labelClassName?: string, inputClassName?: string,
- *   ancho?: 'full' | 'half' | 'third'
- * }} props
+ *   ancho?: 'full' | 'half' | 'third', onChange?: (o: { id: string, texto: string } | null) => void,
+ *   onCrear?: (texto: string) => void, crearTexto?: string
+ * }} props  onCrear: si no hay resultados ofrece "{crearTexto} «texto»" (ej. alta rápida de cliente)
  */
 export default function BuscadorSelect({
   name,
@@ -37,6 +38,9 @@ export default function BuscadorSelect({
   labelClassName = '',
   inputClassName = '',
   ancho,
+  onChange,
+  onCrear,
+  crearTexto = 'Crear',
 }) {
   const uid = useId();
   const inicial = opciones.find((o) => o.id === defaultValue) ?? null;
@@ -58,14 +62,23 @@ export default function BuscadorSelect({
       .slice(0, MAX_RESULTADOS);
   }, [texto, opciones]);
 
+  const textoCrear = onCrear && resultados.length === 0 ? texto.trim() : '';
+
   function elegir(o) {
     setElegida(o);
+    onChange?.(o);
     setTexto(o.texto);
     setAbierto(false);
   }
 
+  function crear() {
+    setAbierto(false);
+    onCrear?.(textoCrear);
+  }
+
   function limpiar() {
     setElegida(null);
+    onChange?.(null);
     setTexto('');
     setAbierto(true);
     setActivo(0);
@@ -80,6 +93,9 @@ export default function BuscadorSelect({
     } else if (e.key === 'Enter' && abierto && resultados[activo]) {
       e.preventDefault(); // elige en vez de enviar el formulario
       elegir(resultados[activo]);
+    } else if (e.key === 'Enter' && abierto && textoCrear) {
+      e.preventDefault();
+      crear();
     } else if (e.key === 'Escape') {
       setAbierto(false);
     }
@@ -106,7 +122,9 @@ export default function BuscadorSelect({
           aria-autocomplete="list"
           aria-expanded={abierto}
           aria-controls={`${uid}-list`}
-          aria-activedescendant={abierto && resultados[activo] ? `${uid}-o${activo}` : undefined}
+          aria-activedescendant={
+            abierto && (resultados[activo] || textoCrear) ? `${uid}-o${activo}` : undefined
+          }
           aria-invalid={error?.length || sinElegir ? true : undefined}
           aria-describedby={descr || undefined}
           className={`${inputClassName} ${styles.input}`}
@@ -114,6 +132,7 @@ export default function BuscadorSelect({
           value={texto}
           onChange={(e) => {
             setTexto(e.target.value);
+            if (elegida) onChange?.(null);
             setElegida(null);
             setAbierto(true);
             setActivo(0);
@@ -139,7 +158,21 @@ export default function BuscadorSelect({
           className={styles.list}
           hidden={!abierto}
         >
-          {resultados.length === 0 ? (
+          {textoCrear ? (
+            <li
+              id={`${uid}-o0`}
+              role="option"
+              aria-selected="true"
+              className={`${styles.opt} ${styles.crear}`}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={crear}
+            >
+              <span className={styles.texto}>
+                <Plus size={16} aria-hidden="true" /> {crearTexto} «{textoCrear}»
+              </span>
+              <span className={styles.detalle}>No está en la lista</span>
+            </li>
+          ) : resultados.length === 0 ? (
             <li className={styles.none}>Sin resultados</li>
           ) : (
             resultados.map((o, i) => (
@@ -176,4 +209,5 @@ export default function BuscadorSelect({
 /* RESUMEN
    Combobox con buscador (Client Component): filtra sin tildes por texto, detalle y dígitos de teléfono,
    muestra hasta 8 resultados, navega con teclado y guarda el id elegido en un input oculto `name`.
-   Recibe opciones { id, texto, detalle } y clases/ancho para integrarse al form. Depende de: buscador-select.module.css, lucide-react */
+   Recibe opciones { id, texto, detalle } y clases/ancho; avisa con onChange y, si no hay resultados,
+   puede ofrecer crear (onCrear). Depende de: buscador-select.module.css, lucide-react */

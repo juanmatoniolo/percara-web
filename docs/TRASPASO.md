@@ -87,6 +87,17 @@ Recordatorios (2026-11-16)
   SQL: `supabase/migrations/007_recordatorios.sql`. Acceso "Registrar negocio" desde cada propiedad.
   `/dashboard/recordatorios/[id]` es la vista (solo lectura, con calendario de cuotas y saldo) y
   `/[id]/editar` el formulario; guardar vuelve a la vista.
+- Vista del recordatorio editable por tarjeta (2026-11-19): Negocio, Cómo se pagó (con cuotas) y
+  Observaciones muestran todos sus datos ("Sin indicar" si faltan) y un clic en la tarjeta (o el lápiz)
+  la edita en el lugar (`recordatorio-tarjeta.jsx` + `recordatorio-editor.jsx`, campos compartidos con el
+  form completo en `recordatorio-campos.jsx`); `guardarSeccionRecordatorio` guarda solo esa sección sin
+  redirigir. En el listado toda la tarjeta abre la vista.
+- Alta rápida de cliente en el recordatorio (2026-11-19): botón "Cliente nuevo" (y "Crear cliente «texto»"
+  si el buscador no encuentra) abre `cliente-rapido.jsx` (dialog por portal): nombre + apellido (se guardan
+  juntos en `clientes.nombre`, sin migración), celular, rol y 1 o más propiedades (`propiedades-multi.jsx`).
+  `crearClienteRapido` avisa celular repetido (compara con `normalizarTelefono`; "Usar a X" vincula a ese
+  o "crear igual"), vincula sin pisar vínculos existentes y deja al cliente elegido; si el campo Propiedad
+  estaba vacío, toma la primera.
 
 Listado y panel (2026-11-16)
 

@@ -2,6 +2,7 @@
 
 /* 1. Base (móvil 320px) */
 .row {
+  position: relative;
   display: grid;
   gap: var(--space-2);
   padding: var(--space-4);
@@ -9,7 +10,28 @@
   border: var(--border-w) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--dur) var(--ease-spring);
+  transition:
+    box-shadow var(--dur) var(--ease-spring),
+    border-color var(--dur-fast) var(--ease);
+}
+
+/* El link del título cubre toda la tarjeta: un clic en cualquier parte abre el recordatorio */
+.title::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* Los links a cliente y propiedad quedan por encima y siguen funcionando */
+.vinculos a {
+  position: relative;
+  z-index: 1;
+}
+
+.row:has(.title:focus-visible) {
+  outline: var(--border-w) solid var(--color-focus);
+  outline-offset: var(--space-1);
 }
 
 .head {
@@ -26,7 +48,10 @@
   color: var(--color-heading);
 }
 
-.title:focus-visible,
+.title:focus-visible {
+  outline: none;
+}
+
 .vinculos a:focus-visible {
   outline: var(--border-w) solid var(--color-focus);
   outline-offset: var(--space-1);
@@ -101,7 +126,12 @@
 /* 9. hover: hover */
 @media (hover: hover) {
   .row:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
     box-shadow: var(--shadow-md);
+  }
+
+  .row:hover .title {
+    text-decoration: underline;
   }
 
   .vinculos a:hover {
@@ -127,4 +157,5 @@
 /* RESUMEN
    Fila de Recordatorios: tarjeta blanca con título y estado, fecha, vínculos con íconos verdes, resumen del
    pago, píldora azul con la próxima cuota (verde si ya pasaron todas) y observaciones recortadas a 3 líneas.
+   Toda la tarjeta es clickeable (::after del título) sin tapar los links de cliente y propiedad.
    Depende de: styles/tokens.css */

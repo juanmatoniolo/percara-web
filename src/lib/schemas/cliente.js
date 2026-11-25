@@ -53,7 +53,24 @@ export const vinculoSchema = z
 
 export const estadoInteresSchema = z.enum(claves(ESTADOS_INTERES));
 
+/** Alta rápida (desde Recordatorios): lo mínimo para agendar a alguien y vincularle propiedades. */
+export const clienteRapidoSchema = z.object({
+  nombre: z.string().trim().min(2, 'Escriba el nombre.').max(60, 'Máximo 60 caracteres.'),
+  apellido: z.string().trim().min(2, 'Escriba el apellido.').max(60, 'Máximo 60 caracteres.'),
+  telefono: z
+    .string()
+    .trim()
+    .regex(/^[\d\s()+\-.]{6,30}$/, 'Escriba el celular (solo números, espacios, guiones o +).'),
+  rol: z.enum(claves(ROLES), { error: 'Elija si es comprador o dueño.' }),
+  propiedad_ids: z
+    .array(uuidSchema, { error: 'Elija al menos una propiedad.' })
+    .min(1, 'Elija al menos una propiedad.')
+    .max(20, 'Máximo 20 propiedades.')
+    .transform((ids) => [...new Set(ids)]),
+});
+
 /* RESUMEN
    Schemas Zod de la agenda de clientes: clienteSchema (contacto, notas y datos opcionales para
-   escritura; lo que busca va a la Carpeta de pedidos) y vinculoSchema (cliente + propiedad + rol; el estado se fuerza a null si es
-   dueño). Depende de: zod, ./campos.js, ./agenda-etiquetas.js */
+   escritura; lo que busca va a la Carpeta de pedidos), vinculoSchema (cliente + propiedad + rol; el estado se fuerza a null si es
+   dueño) y clienteRapidoSchema (nombre, apellido, celular, rol y 1 a 20 propiedades).
+   Depende de: zod, ./campos.js, ./agenda-etiquetas.js */

@@ -75,7 +75,7 @@ export default function RecordatorioRow({ recordatorio: r, hoy }) {
 }
 
 /* RESUMEN
-   Fila de Recordatorios (Server Component): título (link a la vista) con estado, fecha, links al cliente y a la
+   Fila de Recordatorios (Server Component): título (su link cubre toda la tarjeta y abre la vista) con estado, fecha, links al cliente y a la
    propiedad, resumen del pago y próxima cuota calculada (o aviso si ya pasaron todas) y observaciones.
    Recibe `recordatorio` y `hoy`. Depende de: tag.jsx, lib/{format,fechas,cuotas}.js,
    lib/schemas/recordatorio-etiquetas.js, recordatorio-row.module.css */

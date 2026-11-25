@@ -89,6 +89,18 @@
   color: var(--color-muted);
 }
 
+.crear .texto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-primary);
+}
+
+.crear .texto svg {
+  flex: none;
+  color: var(--color-accent-text);
+}
+
 .none {
   padding: var(--space-3);
   font-size: var(--text-sm);
@@ -130,4 +142,4 @@
 /* RESUMEN
    Buscador con lista desplegable: lupa verde a la izquierda, botón borrar de 44px a la derecha, lista
    blanca flotante con sombra (máx. 7 filas y scroll), opción activa en azul con marca verde, ayuda y
-   error. El aspecto del input lo pone quien lo usa (inputClassName). Depende de: styles/tokens.css */
+   error, y opción "Crear «texto»" en azul con + verde. El aspecto del input lo pone quien lo usa (inputClassName). Depende de: styles/tokens.css */
